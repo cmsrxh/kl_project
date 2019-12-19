@@ -58,12 +58,13 @@ ByteString HttpUtil::formatEmpty(const ByteString &query)
 }
 
 /**
- * @details 把‘%’表示的字符，替换的回来
- * @brief HttpUtil::fromPercentEncoding
+ * @brief HttpUtil::urlDecoding
  * @param query [in] 网络地址, 字符指向的地址时可以操作的
  * @param percent
+ * @details 把‘%’表示的字符，替换的回来
+ *  例如：%e9%99%88%e7%8c%9b 转成："陈猛"
  */
-void HttpUtil::fromPercentEncoding(ByteString &query, char percent)
+void HttpUtil::urlDecoding(ByteString &query, char percent)
 {
     char *data = query.string();
     const char *inputPtr = query.string();
@@ -104,6 +105,44 @@ void HttpUtil::fromPercentEncoding(ByteString &query, char percent)
     {
         query.resize(outlen);
     }
+}
+
+/**
+ * @brief HttpUtil::urlEncoding
+ * @param query [in] 网络地址, 字符指向的地址时可以操作的
+ * @param result [out] 返回的转换后的数据
+ * @param percent
+ * @details 把‘%’表示的字符，替换的回来
+ *  例如："陈猛" 转成： %e9%99%88%e7%8c%9b
+ */
+void HttpUtil::urlEncoding(const ByteString &query, ByteString &result, char percent)
+{
+    char *data = new char[query.size() * 3]; // 按照最大长度分配
+    const char *inputPtr = query.string();
+    const char *pattern = "0123456789abcdef";
+
+    int i = 0;
+    int len = query.size();
+    int outlen = 0;
+    char c;
+
+    while (i < len)
+    {
+        c = inputPtr[i];
+        if (inputPtr[i] & 0x80)
+        {
+            data[outlen++] = percent;
+            data[outlen++] = pattern[c >> 4 & 0xF];
+            data[outlen++] = pattern[c  & 0xF];
+        } else
+        {
+            data[outlen++] = c;
+        }
+        ++i;
+    }
+    data[outlen] = '\0';
+
+    result = ByteString(data, outlen);
 }
 
 /**

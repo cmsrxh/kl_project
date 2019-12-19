@@ -13,7 +13,8 @@ public:
 
     ByteString formatEmpty(const ByteString &query);
 
-    void fromPercentEncoding(ByteString &query, char percent = '%');
+    void urlDecoding(ByteString &query, char percent = '%');
+    void urlEncoding(const ByteString &query, ByteString &result, char percent = '%');
 
     void replace(ByteString &str, const char *src, const char *dest);
 

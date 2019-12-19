@@ -1,8 +1,8 @@
 #include "events/common_log.h"
 #include "app_common.h"
 #include "net_util/load_item.h"
-#include "application.h"
 #include "net_util/http_util.h"
+#include "application.h"
 
 Application::Application()
 {
@@ -12,7 +12,12 @@ Application::Application()
 
 void Application::initialize()
 {
+    ByteString result;
+    HttpUtil().urlEncoding("陈猛", result);
 
+    GEN_Printf(LOG_INFO, "string: %s", result.string());
+
+    exit(1);
 }
 
 void Application::runLoop()
