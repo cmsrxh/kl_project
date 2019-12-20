@@ -30,6 +30,7 @@ CurlLoadItem::CurlLoadItem(const char *url, CurlLoadData fdata, CurlLoadState fs
         throw -1;
     }
 
+    // my_curl_easy_setopt(m_pCurl, CURLOPT_HTTPGET, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, CurlLoadItem::writeData);
     my_curl_easy_setopt(m_pCurl, CURLOPT_HEADER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url);

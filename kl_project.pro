@@ -16,7 +16,7 @@ QMAKE_LFLAGS   += -Wl,-rpath,$$HOME/framework/$$PLATFORM/lib
 
 LIBS += -L$$HOME/framework/$$PLATFORM/lib
 LIBS += -levents_core -levents_log -levents_util -lpthread
-LIBS += -lcurl
+LIBS += -lcurl -lssl -lcrypto
 
 
 # Input
@@ -24,11 +24,13 @@ HEADERS += app_common.h application.h \
     net_util/curl_load_proc.h \
     net_util/curl_load_item.h \
     net_util/load_item.h \
-    net_util/http_util.h
+    net_util/http_util.h \
+    kl_url/kl_active_manage.h
 
 
 SOURCES += application.cpp main.cpp \ 
     net_util/curl_load_proc.cpp \
     net_util/curl_load_item.cpp \
     net_util/load_item.cpp \
-    net_util/http_util.cpp
+    net_util/http_util.cpp \
+    kl_url/kl_active_manage.cpp

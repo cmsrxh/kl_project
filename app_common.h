@@ -14,5 +14,8 @@ enum {
 typedef void (*CurlLoadData) (uint8_t *data, size_t len, void *arg);
 typedef void (*CurlLoadState) (bool state, const char *desc, void *arg);
 
+#define APPID      "cn5290"
+#define SECRETKEY  "d673b807770b49b4077cb3bfa0d6aedd"
+#define STR_PATTERN "0123456789abcdef"
 
 #endif // _APP_COMMON_H
