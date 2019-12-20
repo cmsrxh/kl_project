@@ -29,11 +29,7 @@ void Application::initialize()
 
     kl::ActiveManage act;
 
-    ByteString url = act.genQueryUrl();
-
-    GEN_Printf(LOG_DEBUG, "url: %s", url.string());
-
-    LoadItem().setLoad(url.string(), loadData, loadState, NULL);
+    LoadItem().setLoad(act.genQueryUrl(), loadData, loadState, NULL);
 }
 
 void Application::runLoop()

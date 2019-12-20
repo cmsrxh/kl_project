@@ -11,25 +11,16 @@
 #include <openssl/md5.h>
 #include "kl_active_manage.h"
 
-kl::ActiveManage::ActiveManage()
-    : mBaseUrl("http://open.kaolafm.com/v1/app/active")
+static char *genSign(NetUrl &url)
 {
-}
-
-ByteString kl::ActiveManage::genQueryUrl()
-{
-    int size = mBaseUrl.size() + 10 + sizeof(APPID) + sizeof(SECRETKEY) + 33 + 64;
-    char *sign_url = new char [size];
     unsigned char sign_bytes[16];
-    char sign[33];
+    static char sign[33];
 
-    int len = snprintf(sign_url, size, "get%s" APPID SECRETKEY, mBaseUrl.string());
+    ByteString gen = url.genKLSign(ByteString(APPID, sizeof (APPID) - 1), ByteString(SECRETKEY, sizeof(SECRETKEY) - 1));
 
-    GEN_Printf(LOG_DEBUG, "sign url: %s", sign_url);
+    GEN_Printf(LOG_DEBUG, "gen: %s", gen.string());
 
-    unsigned char *tmp = MD5((unsigned char *)sign_url, len, sign_bytes);
-
-    GEN_Printf(LOG_DEBUG, "%p - %p", tmp, sign_bytes);
+    MD5((unsigned char *)gen.string(), gen.size(), sign_bytes);
 
     for (int i = 0; i < 16; ++i)
     {
@@ -39,9 +30,21 @@ ByteString kl::ActiveManage::genQueryUrl()
     }
     sign[32] = '\0';
 
-    len = snprintf(sign_url, size, "%s?deviceid=%s&appid=%s&sign=%s",
-                   mBaseUrl.string(), "akjdhfaksdfhkjdshfkjah", APPID,
-                   "a6309ffd3ba9e291bdbd0a64a1b62a35");
+    GEN_Printf(LOG_DEBUG, "sign: %s", sign);
 
-    return ByteString(sign_url, len);
+    return sign;
+}
+
+kl::ActiveManage::ActiveManage()
+    : url("http://open.kaolafm.com/v1/app/active", NetUrl::NET_HTTP_METHOD_POST)
+{}
+
+NetUrl &  kl::ActiveManage::genQueryUrl()
+{   
+//    url.append("deviceid", "akjdhfaksdfhkjdshfkjah");
+    url.append("appid", APPID);
+    url.append("sign", "359b410e439fbdb3098f488a0cb8f9d1");
+//    url.append("sign", genSign(url));
+
+    return url;
 }

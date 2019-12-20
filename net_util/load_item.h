@@ -2,6 +2,7 @@
 #define LOAD_ITEM_H
 
 #include "app_common.h"
+#include "net_url.h"
 
 /**
  * @brief The LoadItem class
@@ -14,7 +15,7 @@ public:
     /** 是否一次性把数据反回来 */
     LoadItem(bool = true);
 
-    bool setLoad(const char *url, CurlLoadData fdata, CurlLoadState fstate, void *ptr);
+    bool setLoad(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *ptr);
 
     bool cancel();
 

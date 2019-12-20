@@ -5,6 +5,7 @@
 #include <util/byte_string.h>
 #include <util/list_node.h>
 #include "app_common.h"
+#include "net_url.h"
 
 /**
  * @brief The CurlLoadItem class
@@ -17,7 +18,7 @@ class CurlGlobal;
 class CurlLoadItem : public ListNode
 {
 public:
-    CurlLoadItem(const char *url, CurlLoadData fdata, CurlLoadState fstate, void *ptr);
+    CurlLoadItem(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *ptr);
     ~CurlLoadItem();
 
     void setBuffer();

@@ -13,12 +13,12 @@
     }while(0)
 
 
-CurlLoadItem::CurlLoadItem(const char *url, CurlLoadData fdata, CurlLoadState fstate, void *priv)
+CurlLoadItem::CurlLoadItem(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *priv)
     : m_pCurl(nullptr), m_pPriv(priv)
     , mMemory(nullptr), mSize(0)
     , m_fData(fdata), m_fState(fstate)
 {
-    if (!url)
+    if (url.empty())
     {
         GEN_Printf(LOG_ERROR, "Url addr is null !!!");
         throw -1;
@@ -30,13 +30,33 @@ CurlLoadItem::CurlLoadItem(const char *url, CurlLoadData fdata, CurlLoadState fs
         throw -1;
     }
 
+    switch (url.mMethodType)
+    {
+    case NetUrl::NET_HTTP_METHOD_POST:{
+        ByteString tab = url.genTable();
+        my_curl_easy_setopt(m_pCurl, CURLOPT_POST, 1L);
+        my_curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDS, tab.string());
+        my_curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDSIZE, tab.size());
+        my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.baseUrl().string());
+
+        GEN_Printf(LOG_INFO, "string: %s", tab.string());
+        GEN_Printf(LOG_INFO, "size: %d", tab.size());
+        break;
+    }
+    case NetUrl::NET_HTTP_METHOD_GET:
+        my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.genUrl().string());
+    default:
+        break;
+    }
+
+    GEN_Printf(LOG_DEBUG, "string: %s", url.genUrl().string());
+
     // my_curl_easy_setopt(m_pCurl, CURLOPT_HTTPGET, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, CurlLoadItem::writeData);
     my_curl_easy_setopt(m_pCurl, CURLOPT_HEADER, 0L);
-    my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url);
     my_curl_easy_setopt(m_pCurl, CURLOPT_PRIVATE, this);
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEDATA, this);
-    my_curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 0L);
+    my_curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 1L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYPEER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYHOST, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, 15L);

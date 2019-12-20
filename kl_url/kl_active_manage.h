@@ -8,7 +8,7 @@
 #ifndef _KL_ACTIVE_MANAGE_H_
 #define _KL_ACTIVE_MANAGE_H_
 
-#include "util/byte_string.h"
+#include "net_util/net_url.h"
 
 namespace kl
 {
@@ -17,9 +17,10 @@ class ActiveManage
 public:
     ActiveManage();
 
-    ByteString genQueryUrl();
+    NetUrl & genQueryUrl();
+
 private:
-    ByteString  mBaseUrl;
+    NetUrl url;
 };
 }
 

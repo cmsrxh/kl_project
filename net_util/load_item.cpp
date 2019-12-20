@@ -9,7 +9,7 @@ LoadItem::LoadItem(bool isAll)
 {
 }
 
-bool LoadItem::setLoad(const char *url, CurlLoadData fdata, CurlLoadState fstate, void *ptr)
+bool LoadItem::setLoad(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *ptr)
 {
     try
     {
