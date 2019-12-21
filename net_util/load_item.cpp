@@ -9,7 +9,7 @@ LoadItem::LoadItem(bool isAll)
 {
 }
 
-bool LoadItem::setLoad(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *ptr)
+bool LoadItem::setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr)
 {
     try
     {
@@ -18,7 +18,7 @@ bool LoadItem::setLoad(const NetUrl &url, CurlLoadData fdata, CurlLoadState fsta
             CurlGlobal::instance()->removeHandler(m_pLoad);
         }
 
-        m_pLoad = new CurlLoadItem(url, fdata, fstate, ptr);
+        m_pLoad = new CurlLoadItem(url, fstate, ptr);
 
         if (mIsLoadAll)
         {
@@ -39,6 +39,7 @@ bool LoadItem::cancel()
 {
     bool ret = CurlGlobal::instance()->removeHandler(m_pLoad);
 
+    CurlLoadProc::instance()->removeItem(m_pLoad);
     m_pLoad = nullptr;
 
     return ret;

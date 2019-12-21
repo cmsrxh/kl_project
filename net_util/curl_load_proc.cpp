@@ -102,6 +102,20 @@ void CurlLoadProc::addItem(CurlLoadItem *item)
     }
 }
 
+void CurlLoadProc::removeItem(CurlLoadItem *item)
+{
+    Autolock l(&mMtx);
+    TRAVEL_LIST_AND_DEL(mRoot)
+    {
+        if (tmp == item)
+        {
+            tmp->del();
+            delete item;
+            return;
+        }
+    }
+}
+
 void CurlLoadProc::cleanCurlMsg()
 {
     CURLMsg *msg;
@@ -133,8 +147,8 @@ void CurlLoadProc::cleanCurlMsg()
                     cur_load->tryCallBack();
                 } else
                 {
-                    GEN_Printf(LOG_WARN, "message result: %d", msg->data.result);
-                    cur_load->callbackState(false, curl_easy_strerror(msg->data.result));
+                    GEN_Printf(LOG_WARN, "message result: %s", curl_easy_strerror(msg->data.result));
+                    cur_load->errorState(msg->data.result);
                 }
 
                 CurlGlobal::instance()->clean(e);

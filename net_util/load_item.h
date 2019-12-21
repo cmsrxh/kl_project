@@ -15,9 +15,17 @@ public:
     /** 是否一次性把数据反回来 */
     LoadItem(bool = true);
 
-    bool setLoad(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *ptr);
+    bool setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr);
 
     bool cancel();
+    bool isLoading()
+    {
+        return !!m_pLoad;
+    }
+    void loadOver()
+    {
+        m_pLoad = nullptr;
+    }
 
 private:    
     CurlLoadItem  *m_pLoad;

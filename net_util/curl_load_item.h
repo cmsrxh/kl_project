@@ -18,7 +18,7 @@ class CurlGlobal;
 class CurlLoadItem : public ListNode
 {
 public:
-    CurlLoadItem(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *ptr);
+    CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *ptr);
     ~CurlLoadItem();
 
     void setBuffer();
@@ -30,12 +30,9 @@ public:
         return curl == m_pCurl;
     }
 
-    inline void callbackState(bool state, const char *desc)
+    inline void errorState(int state)
     {
-        if (m_fState)
-        {
-            m_fState(state, desc, m_pPriv);
-        }
+        m_fStatus(OP_CURL_STATUS_ERROR_TYPE + state, NULL, 0, m_pPriv);
     }
 
 private:
@@ -45,8 +42,7 @@ private:
     void            *m_pPriv;
     uint8_t         *mMemory;
     size_t           mSize;
-    CurlLoadData     m_fData;
-    CurlLoadState    m_fState;
+    OpCurlStatus     m_fStatus;
     friend class CurlGlobal;
 };
 

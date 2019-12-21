@@ -3,7 +3,7 @@
 #include "net_url.h"
 
 NetUrl::NetUrl(const ByteString &url, int method)
-    : mMethodType(method), mTmpAllocLen(0)
+    : mMethodType(method), mTmpAllocLen(0), mTmpAlloc(nullptr)
     , mBaseUrl(url)
 {}
 
@@ -11,6 +11,12 @@ NetUrl::~NetUrl()
 {
 //    mList.removeAll(delQueryKV);
 //    mBaseUrl.clear();
+    mList.clear();
+    mContentList.clear();
+    if (mTmpAlloc)
+    {
+        delete [] mTmpAlloc;
+    }
 }
 
 ByteString NetUrl::genUrl()
@@ -20,56 +26,12 @@ ByteString NetUrl::genUrl()
         return mBaseUrl;
     }
 
-    int urlLen = mBaseUrl.size() + 2; //uri + ?
-    ListTable<QueryKV>::iterator it = mList.begin();
+    ByteString tmp = tar2String(mList);
 
-    for (; it != mList.end(); ++it)
-    {
-        urlLen += it->key.size() + it->value.size() + 2;  // &key=value
-    }
+    memcpy(mTmpAlloc, mBaseUrl.string(), mBaseUrl.size());
+    mTmpAlloc[mBaseUrl.size()] = '?';
 
-    char *urlStr;
-    int i = 0;
-    if (mTmp.empty() || (mTmpAllocLen < urlLen))
-    {
-        mTmp.clear();
-        urlStr = new char[urlLen + 1];
-        mTmpAllocLen = urlLen;
-    } else
-    {
-        urlStr = mTmp.string();
-    }
-
-    memcpy(urlStr, mBaseUrl.string(), mBaseUrl.size());
-    i += mBaseUrl.size();
-    urlStr[i++] = '?';
-
-    for (it = mList.begin(); it != mList.end(); ++it)
-    {
-        if (!it->key.empty())
-        {
-            memcpy(urlStr + i, it->key.string(), it->key.size());
-            i += it->key.size();
-            urlStr[i++] = '=';
-            if (!it->value.empty())
-            {
-                memcpy(urlStr + i, it->value.string(), it->value.size());
-                i += it->value.size();
-            }
-            urlStr[i++] = '&';
-        }
-    }
-    urlStr[i - 1] = '\0';
-    mTmp = ByteString(urlStr, i);
-
-    return mTmp;
-}
-
-ByteString NetUrl::genTable()
-{
-    ByteString tab = genUrl();
-
-    return ByteString(tab.string() + mBaseUrl.size() + 1, tab.size() - mBaseUrl.size() - 1);
+    return ByteString(mTmpAlloc, mBaseUrl.size() + 1 + tmp.size());
 }
 
 static size_t _sf_strlcpy (char *dst, const char *src, size_t size)
@@ -105,7 +67,7 @@ ByteString NetUrl::genConcat(const ByteString &first, const char *str0, ...)
 {
     va_list args;
     const char *arg;
-    size_t length = first.size(), pos = first.size();
+    int length = first.size(), pos = first.size();
     char *s;
     if(!str0 || first.empty()) return first;
 
@@ -116,15 +78,7 @@ ByteString NetUrl::genConcat(const ByteString &first, const char *str0, ...)
     }
     va_end (args);
 
-    if (mTmp.empty() || (mTmpAllocLen < (int)length))
-    {
-        mTmp.clear();
-        s = new char[length + 1];
-        mTmpAllocLen = length;
-    } else
-    {
-        s = mTmp.string();
-    }
+    s = allocAddr(length);
 
     //GEN_Printf(LOG_DEBUG, "[%s], size: %d, length: %d", first.string(), first.size(), length);
     strncpy(s, first.string(), first.size());
@@ -136,9 +90,7 @@ ByteString NetUrl::genConcat(const ByteString &first, const char *str0, ...)
     }
     va_end (args);
 
-    mTmp = ByteString(s, length);
-
-    return mTmp;
+    return ByteString(s, length);
 }
 
 /**
@@ -157,17 +109,8 @@ ByteString NetUrl::genKLSign(const ByteString &appid, const ByteString &secretke
     }
     int urlLen = 5 + mBaseUrl.size() + appid.size() + secretkey.size();
 
-    char *urlStr;
-    int i = 0;
-    if (mTmp.empty() || (mTmpAllocLen < urlLen))
-    {
-        mTmp.clear();
-        urlStr = new char[urlLen + 1];
-        mTmpAllocLen = urlLen;
-    } else
-    {
-        urlStr = mTmp.string();
-    }
+    int   i = 0;
+    char *urlStr = allocAddr(urlLen);
 
     strcpy(urlStr, method);
     i += strlen(method);
@@ -182,9 +125,58 @@ ByteString NetUrl::genKLSign(const ByteString &appid, const ByteString &secretke
     i += secretkey.size();
 
     urlStr[i] = '\0';
-    mTmp = ByteString(urlStr, i);
 
-    return mTmp;
+    return ByteString(urlStr, i);
+}
+
+ByteString NetUrl::tar2String(ListTable<NetUrl::QueryKV> &list)
+{
+    int urlLen = mBaseUrl.size() + 2; //uri + ?
+    ListTable<QueryKV>::iterator it = list.begin();
+
+    for (; it != list.end(); ++it)
+    {
+        urlLen += it->key.size() + it->value.size() + 2;  // &key=value
+    }
+
+    int   i = 0;
+    char *urlStr = allocAddr(urlLen);
+
+    // 跳过基本地址的长度，这部分的位置
+    // memcpy(urlStr, mBaseUrl.string(), mBaseUrl.size());
+    // int i = mBaseUrl.size();
+    // urlStr[i++] = '?';
+    urlStr += mBaseUrl.size() + 1;
+
+    for (it = list.begin(); it != list.end(); ++it)
+    {
+        if (!it->key.empty())
+        {
+            memcpy(urlStr + i, it->key.string(), it->key.size());
+            i += it->key.size();
+            urlStr[i++] = '=';
+            if (!it->value.empty())
+            {
+                memcpy(urlStr + i, it->value.string(), it->value.size());
+                i += it->value.size();
+            }
+            urlStr[i++] = '&';
+        }
+    }
+    urlStr[i - 1] = '\0';
+
+    return ByteString(urlStr, i);
+}
+
+char *NetUrl::allocAddr(int len)
+{
+    if (mTmpAlloc || (mTmpAllocLen < len))
+    {
+        delete [] mTmpAlloc;
+        mTmpAlloc = new char[len + 1];
+        mTmpAllocLen = len;
+    }
+    return  mTmpAlloc;
 }
 
 

@@ -13,14 +13,14 @@
     }while(0)
 
 
-CurlLoadItem::CurlLoadItem(const NetUrl &url, CurlLoadData fdata, CurlLoadState fstate, void *priv)
+CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
     : m_pCurl(nullptr), m_pPriv(priv)
     , mMemory(nullptr), mSize(0)
-    , m_fData(fdata), m_fState(fstate)
+    , m_fStatus(fstate)
 {
-    if (url.empty())
+    if (url.empty() || !fstate)
     {
-        GEN_Printf(LOG_ERROR, "Url addr is null !!!");
+        GEN_Printf(LOG_ERROR, "Url addr is null, fstate: %p !!!", fstate);
         throw -1;
     }
     m_pCurl = curl_easy_init();
@@ -33,18 +33,15 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, CurlLoadData fdata, CurlLoadState 
     switch (url.mMethodType)
     {
     case NetUrl::NET_HTTP_METHOD_POST:{
-        ByteString tab = url.genTable();
+        ByteString tab = url.genContent();
         my_curl_easy_setopt(m_pCurl, CURLOPT_POST, 1L);
         my_curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDS, tab.string());
         my_curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDSIZE, tab.size());
-        my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.baseUrl().string());
-
         GEN_Printf(LOG_INFO, "string: %s", tab.string());
         GEN_Printf(LOG_INFO, "size: %d", tab.size());
         break;
     }
-    case NetUrl::NET_HTTP_METHOD_GET:
-        my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.genUrl().string());
+    case NetUrl::NET_HTTP_METHOD_GET:        
     default:
         break;
     }
@@ -52,6 +49,7 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, CurlLoadData fdata, CurlLoadState 
     GEN_Printf(LOG_DEBUG, "string: %s", url.genUrl().string());
 
     // my_curl_easy_setopt(m_pCurl, CURLOPT_HTTPGET, 0L);
+    my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.genUrl().string());
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, CurlLoadItem::writeData);
     my_curl_easy_setopt(m_pCurl, CURLOPT_HEADER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_PRIVATE, this);
@@ -125,9 +123,9 @@ void CurlLoadItem::callbackData(uint8_t *data, size_t size)
         memcpy(&(mMemory[mSize]), data, size);
         mSize += size;
         mMemory[mSize] = 0;
-    } else if (m_fData)
+    } else if (m_fStatus)
     {
-        m_fData(data, size, m_pPriv);
+        m_fStatus(OP_CURL_STATUS_LOAD_ONE_FRAME, data, size, m_pPriv);
     }
 }
 
@@ -137,13 +135,8 @@ void CurlLoadItem::callbackData(uint8_t *data, size_t size)
  */
 void CurlLoadItem::tryCallBack()
 {
-    if (mMemory && m_fData)
-    {
-        m_fData(mMemory, mSize, m_pPriv);
-    } else if (m_fState)
-    {
-        m_fState(true, nullptr, m_pPriv);
-    }
+    m_fStatus(mMemory ? OP_CURL_STATUS_LOAD_ALL_OVER
+                      : OP_CURL_STATUS_LOAD_OVER, mMemory, mSize, m_pPriv);
 }
 
 CurlGlobal::CurlGlobal()

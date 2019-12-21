@@ -5,24 +5,25 @@
  * @date:    2019年12月20日 星期五 14时43分37秒
  * @details: 激活管理
  ************************************************************************/
-#ifndef _KL_ACTIVE_MANAGE_H_
-#define _KL_ACTIVE_MANAGE_H_
+#ifndef KL_ACTIVE_MANAGE_H
+#define KL_ACTIVE_MANAGE_H
 
-#include "net_util/net_url.h"
+#include "kl_object.h"
 
 namespace kl
 {
-class ActiveManage
+
+class ActiveManage : public KLObject
 {
 public:
     ActiveManage();
 
-    NetUrl & genQueryUrl();
+    NetUrl &genQueryUrl();
 
-private:
-    NetUrl url;
+    void loadData (uint8_t *data, unsigned long size);
 };
+
 }
 
-#endif // _KL_ACTIVE_MANAGE_H_
+#endif // KL_ACTIVE_MANAGE_H
 

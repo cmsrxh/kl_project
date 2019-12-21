@@ -26,7 +26,9 @@ HEADERS += app_common.h application.h \
     net_util/load_item.h \
     net_util/http_util.h \
     kl_url/kl_active_manage.h \
-    net_util/net_url.h
+    net_util/net_url.h \
+    kl_url/kl_init_manage.h \
+    kl_url/kl_object.h
 
 
 SOURCES += application.cpp main.cpp \ 
@@ -35,4 +37,6 @@ SOURCES += application.cpp main.cpp \
     net_util/load_item.cpp \
     net_util/http_util.cpp \
     kl_url/kl_active_manage.cpp \
-    net_util/net_url.cpp
+    net_util/net_url.cpp \
+    kl_url/kl_init_manage.cpp \
+    kl_url/kl_object.cpp

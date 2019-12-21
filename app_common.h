@@ -11,8 +11,18 @@ enum {
 
 #define NO_RETUEN __attribute__((noreturn))
 
-typedef void (*CurlLoadData) (uint8_t *data, size_t len, void *arg);
-typedef void (*CurlLoadState) (bool state, const char *desc, void *arg);
+enum
+{
+    OP_CURL_STATUS_LOAD_ALL_OVER,      // 表示数据下载全部一次性返回了
+    OP_CURL_STATUS_LOAD_ONE_FRAME,     // 表示数据下载方式按照块来计算，有多少数据就来多少
+    OP_CURL_STATUS_LOAD_OVER,          // 表示数据下载完成了，与上一个枚举配合，表示下载已经完成，可以关闭文件。
+
+    OP_CURL_STATUS_ERROR_TYPE,         // 往下的枚举表示数据下载过程中curl的错误定义值
+
+};
+typedef void (*OpCurlStatus) (int status, uint8_t *data, size_t len, void *arg);
+
+
 
 #define APPID      "cn5290"
 #define SECRETKEY  "d673b807770b49b4077cb3bfa0d6aedd"

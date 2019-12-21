@@ -4,7 +4,7 @@
 [2] shell 操作参数
 gethttp://open.kaolafm.com/v1/app/activecn5290d673b807770b49b4077cb3bfa0d6aedd
 
-curl -k -L -d "appid=cn5290&sign=a6309ffd3ba9e291bdbd0a64a1b62a35" "http://open.kaolafm.com/v1/app/active"
+curl -k -L -d "appid=cn5290&sign=a6309ffd3ba9e291bdbd0a64a1b62a35"  -X POST "http://open.kaolafm.com/v1/app/active"
 
 
 

@@ -18,6 +18,7 @@ public:
     ~CurlLoadProc();
 
     void addItem(CurlLoadItem *item);
+    void removeItem(CurlLoadItem *item);
 
 protected:
     void run();

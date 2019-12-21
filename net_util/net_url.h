@@ -1,4 +1,4 @@
-#ifndef NET_URL_H
+﻿#ifndef NET_URL_H
 #define NET_URL_H
 
 #include <util/byte_string.h>
@@ -43,6 +43,10 @@ public:
     {
         mList.push_back(QueryKV(key, value));
     }
+    void appendContent(const ByteString &key, const ByteString &value)
+    {
+        mContentList.push_back(QueryKV(key, value));
+    }
     void clean()
     {
         mList.removeAll(delQueryKV);
@@ -58,22 +62,38 @@ public:
         return const_cast<NetUrl *>(this)->genUrl();
     }
 
-    ByteString genTable();
+    ByteString genTable()
+    {
+        return tar2String(mList);
+    }
     ByteString genTable() const
     {
         return const_cast<NetUrl *>(this)->genTable();
+    }
+
+    ByteString genContent()
+    {
+        return tar2String(mContentList);
+    }
+    ByteString genContent() const
+    {
+        return const_cast<NetUrl *>(this)->genContent();
     }
 
     ByteString genConcat(const ByteString &first, const char *str0, ...);
 
     ByteString genKLSign(const ByteString &appid, const ByteString &secretkey);
 private:
-    int mMethodType;
-    int mTmpAllocLen;
+    ByteString tar2String(ListTable<QueryKV> &list);
+    char *allocAddr(int len);
+
+    int     mMethodType;
+    int     mTmpAllocLen;
+    char   *mTmpAlloc;
     ByteString mBaseUrl;
-    ByteString mTmp;
 
     ListTable<QueryKV> mList;
+    ListTable<QueryKV> mContentList;
 
     friend class CurlLoadItem;
 };
