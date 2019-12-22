@@ -147,8 +147,8 @@ void CurlLoadProc::cleanCurlMsg()
                     cur_load->tryCallBack();
                 } else
                 {
-                    GEN_Printf(LOG_WARN, "message result: %s", curl_easy_strerror(msg->data.result));
-                    cur_load->errorState(msg->data.result);
+                    // GEN_Printf(LOG_WARN, "message result: %s", curl_easy_strerror(msg->data.result));
+                    cur_load->errorState(msg->data.result, curl_easy_strerror(msg->data.result));
                 }
 
                 CurlGlobal::instance()->clean(e);

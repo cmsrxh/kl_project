@@ -30,9 +30,9 @@ public:
         return curl == m_pCurl;
     }
 
-    inline void errorState(int state)
+    inline void errorState(int state, const char *str)
     {
-        m_fStatus(OP_CURL_STATUS_ERROR_TYPE + state, NULL, 0, m_pPriv);
+        m_fStatus(OP_CURL_STATUS_ERROR_TYPE + state, (uint8_t *)str, 0, m_pPriv);
     }
 
 private:

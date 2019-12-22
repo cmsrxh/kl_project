@@ -6,7 +6,6 @@
 #include "net_util/net_url.h"
 #include "net_util/load_item.h"
 
-class LoadItem;
 namespace kl
 {
 

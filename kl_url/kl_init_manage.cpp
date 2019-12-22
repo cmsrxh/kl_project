@@ -4,7 +4,6 @@
 kl::InitManage::InitManage()
     : KLObject ("http://open.kaolafm.com/v1/app/init", NetUrl::NET_HTTP_METHOD_POST)
 {
-
 }
 
 NetUrl &kl::InitManage::genQueryUrl()
