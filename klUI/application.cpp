@@ -28,7 +28,7 @@ Application::Application()
 }
 
 void Application::initialize()
-{
+{    
     if (!LocalConfig::instance()->init())
     {
         static  kl::InitManage init;

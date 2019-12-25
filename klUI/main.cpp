@@ -1,5 +1,7 @@
 #include "kl_ui_proc.h"
 #include "application.h"
+#include <events/common_log.h>
+#include <unistd.h>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 

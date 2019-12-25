@@ -20,7 +20,7 @@ LIBS += -lcurl -lssl -lcrypto
 
 
 # Input
-HEADERS += app_common.h application.h \
+HEADERS += application.h \
     $$APISRC/net_util/curl_load_proc.h \
     $$APISRC/net_util/curl_load_item.h \
     $$APISRC/net_util/load_item.h \

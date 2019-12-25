@@ -13,6 +13,7 @@ ApplicationWindow {
     Material.theme: Material.Light
     Material.accent: Material.DeepOrange
     Material.primary: Material.Blue
+
     ColumnLayout{
         anchors.fill: parent
 
@@ -48,13 +49,14 @@ ApplicationWindow {
 
     header: TabBar {
         id: tabBar
-
+        width: parent.width
         onCurrentIndexChanged: cateModel.qmlCateTabClick(currentIndex)
         Repeater {
             model: cateModel
 
             TabButton {
                 text: ctgname
+                width: Math.max(70, tabBar.width / 10)
             }
         }
     }

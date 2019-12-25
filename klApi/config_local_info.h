@@ -2,6 +2,7 @@
 #define CONFIGLOCALINFO_H
 
 #include "app_common.h"
+#include "events/common_log.h"
 #include <util/config_setting.h>
 
 class LocalConfig : public ConfigSetting
