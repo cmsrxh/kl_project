@@ -4,8 +4,7 @@
 #include "curl_load_proc.h"
 
 CurlLoadProc::CurlLoadProc()
-{
-    CurlGlobal::instance();
+{    
 }
 
 CurlLoadProc::~CurlLoadProc()

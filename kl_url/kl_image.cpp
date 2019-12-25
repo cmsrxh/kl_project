@@ -4,7 +4,6 @@
 kl::KLImage::KLImage(const ByteString &imgUrl)
     : LoadItem(false), mUrl(imgUrl, NetUrl::NET_HTTP_METHOD_GET)
 {
-
 }
 
 kl::KLImage::~KLImage()

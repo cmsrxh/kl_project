@@ -1,29 +1,65 @@
 #include "events/common_log.h"
+#include "kl_common.h"
+#include "net_util/net_common.h"
+#include "config_local_info.h"
 #include "kl_init_manage.h"
 
+/*
+GET /v2/app/init?
+appid=cn5290&
+deviceid=4961c879191af84ef352e215642d569c&
+os=linux&
+packagename=com.edog.car.linuxwhhj&
+sign=72e3649e3fd530f41995b8ebc7249050&
+channel=linuxwhhj&
+*/
+/*
+result:
+{"result":{"carConfig":{"reportInterval":20},"openid":"cn52902019122310006506","carInfo":{"firstAppId":null,"marketType":"","firstAppIdName":"芜湖宏景（Linux SDK）","appIdType":"0","oem":"","carBrand":"","carType":"","developer":"3126269"}},"requestId":"cn52901577068486627650","serverTime":"1577068486634"}
+
+*/
 kl::InitManage::InitManage()
-    : KLObject ("http://open.kaolafm.com/v1/app/init", NetUrl::NET_HTTP_METHOD_POST)
+    : KLObject ("http://open.kaolafm.com/v2/app/init", NetUrl::NET_HTTP_METHOD_GET)
 {
 }
 
-NetUrl &kl::InitManage::genQueryUrl()
+kl::InitManage::~InitManage()
 {
-    mUrl.appendContent("deviceid", "akjdhfaksdfhkjdshfkjah");
-    mUrl.appendContent("devicetype", "0");
-    mUrl.appendContent("osversion", "28");
-    mUrl.appendContent("network", "-1");
-//    url.appendContent("imsi", "");
+}
 
+void kl::InitManage::obtain()
+{
+    if (LocalConfig::instance()->openID().empty())
+    {        
+        KLObject::obtain();
+    } else
+    {
+        GEN_Printf(LOG_INFO, "openid: %s is exist", LocalConfig::instance()->openID().string());
+    }
+}
 
-    mUrl.append("appid", APPID);
-//    url.append("sign", "359b410e439fbdb3098f488a0cb8f9d1");
-    mUrl.append("sign", genSign(mUrl));
+NetUrl &kl::InitManage::genQueryUrl()
+{    
+    // mUrl.append("sign", genSign(mUrl));
+    mUrl.append("sign", SIGN_InitManage);
 
     return mUrl;
 }
 
 void kl::InitManage::loadData(uint8_t *data, unsigned long size)
 {
-    data[size] = '\0';
-    GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
+    // GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
+
+    cJSON *root = cJSON_Parse((char *)data, size);
+
+    cJSON *openid = json_items_proc(root, "result", "openid", NULL);
+    if(openid != root)
+    {
+        LocalConfig::instance()->setOpenID(openid->valuestring);
+        LocalConfig::instance()->save();
+        GEN_Printf(LOG_DEBUG, "openid: %s", openid->valuestring);
+    }
+
+    cJSON_Delete(root);
 }
+

@@ -18,6 +18,8 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
     , mMemory(nullptr), mSize(0)
     , m_fStatus(fstate)
 {
+    CurlGlobal::instance();
+
     if (url.empty() || !fstate)
     {
         GEN_Printf(LOG_ERROR, "Url addr is null, fstate: %p !!!", fstate);
@@ -32,7 +34,8 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
 
     switch (url.mMethodType)
     {
-    case NetUrl::NET_HTTP_METHOD_POST:{
+    case NetUrl::NET_HTTP_METHOD_POST:
+    {
         ByteString tab = url.genContent();
         my_curl_easy_setopt(m_pCurl, CURLOPT_POST, 1L);
         my_curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDS, tab.string());
@@ -98,6 +101,7 @@ void CurlLoadItem::setBuffer()
 size_t CurlLoadItem::writeData(void *ptr, size_t size, size_t nmemb, void *stream)
 {
     size_t realsize = size * nmemb;
+    GEN_Printf(LOG_DUMP, "Load Data: %ld", realsize);
     if (stream)
     {
         static_cast<CurlLoadItem *>(stream)->callbackData(static_cast<uint8_t *>(ptr), realsize);
@@ -141,6 +145,7 @@ void CurlLoadItem::tryCallBack()
 
 CurlGlobal::CurlGlobal()
 {
+    GEN_Printf(LOG_DEBUG, "Curl Init.");
     CURLcode ret = curl_global_init(CURL_GLOBAL_ALL);
     if (ret != CURLE_OK)
     {

@@ -18,6 +18,8 @@ class ActiveManage : public KLObject
 public:
     ActiveManage();
 
+    void obtain();
+
     NetUrl &genQueryUrl();
 
     void loadData (uint8_t *data, unsigned long size);

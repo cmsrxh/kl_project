@@ -10,6 +10,9 @@ class InitManage : public KLObject
 {
 public:
     InitManage();
+    ~InitManage();
+
+    void obtain();
 
     NetUrl &genQueryUrl();
 

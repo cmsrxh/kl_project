@@ -4,7 +4,7 @@
 #include <curl/curl.h>
 #include <util/byte_string.h>
 #include <util/list_node.h>
-#include "app_common.h"
+#include "net_common.h"
 #include "net_url.h"
 
 /**

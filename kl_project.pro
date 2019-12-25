@@ -30,7 +30,29 @@ HEADERS += app_common.h application.h \
     kl_url/kl_init_manage.h \
     kl_url/kl_object.h \
     kl_url/kl_image.h \
-    net_util/net_buffer.h
+    net_util/net_buffer.h \
+    net_util/test_data_load.h \
+    net_util/net_common.h \
+    net_util/cJSON.h \
+    config_local_info.h \
+    kl_url/kl_broadcast_area_list.h \
+    kl_url/kl_category_broadcast.h \
+    kl_url/kl_category_sub_list.h \
+    kl_url/kl_common.h \
+    kl_url/kl_save_object.h \
+    kl_url/kl_broadcast_item_list.h \
+    kl_url/kl_broadcast_item_detail.h \
+    kl_url/kl_item_object.h \
+    kl_url/kl_broadcast_item_programlist.h \
+    kl_url/kl_category_all.h \
+    kl_url/kl_operate_list.h \
+    kl_url/kl_type_radio_list.h \
+    kl_url/kl_album_list.h \
+    kl_url/kl_album_detail.h \
+    kl_url/kl_chip_radio_list.h \
+    kl_url/kl_chip_radio_detail.h \
+    kl_url/kl_chip_audio_detail.h \
+    kl_url/kl_chip_audio_list.h
 
 
 SOURCES += application.cpp main.cpp \ 
@@ -43,4 +65,21 @@ SOURCES += application.cpp main.cpp \
     kl_url/kl_init_manage.cpp \
     kl_url/kl_object.cpp \
     kl_url/kl_image.cpp \
-    net_util/net_buffer.cpp
+    net_util/net_buffer.cpp \
+    net_util/test_data_load.cpp \
+    kl_url/kl_broadcast_area_list.cpp \
+    kl_url/kl_category_broadcast.cpp \
+    kl_url/kl_category_sub_list.cpp \
+    kl_url/kl_broadcast_item_list.cpp \
+    kl_url/kl_broadcast_item_detail.cpp \
+    net_util/cJSON.cpp \
+    kl_url/kl_broadcast_item_programlist.cpp \
+    kl_url/kl_category_all.cpp \
+    kl_url/kl_operate_list.cpp \
+    kl_url/kl_type_radio_list.cpp \
+    kl_url/kl_album_list.cpp \
+    kl_url/kl_album_detail.cpp \
+    kl_url/kl_chip_radio_list.cpp \
+    kl_url/kl_chip_radio_detail.cpp \
+    kl_url/kl_chip_audio_detail.cpp \
+    kl_url/kl_chip_audio_list.cpp

@@ -4,7 +4,7 @@
 
 int main(int /*argc*/, char**/*argv*/)
 {
-    Application::init_all(LOG_DUMP, "default", "./zlog.conf");
+    Application::init_all(0/*INIT_NEED_NOSIGNAL*/, "default", "./zlog.conf");
 
     Application::instance()->initialize();
 

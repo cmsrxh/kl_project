@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "app_common.h"
+#include "kl_common.h"
 #include "net_util/net_url.h"
 #include "net_util/load_item.h"
 
@@ -29,6 +30,9 @@ public:
     {
         mLoad.loadOver();
     }
+
+    static void jsonGenAudioItem(AudioItem &item, cJSON *result);
+    static void jsonGenTypeRadio(TypeRadio &item, cJSON *result);
 protected:
     NetUrl    mUrl;
     LoadItem  mLoad;

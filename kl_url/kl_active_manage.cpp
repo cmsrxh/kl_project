@@ -7,18 +7,39 @@
  ************************************************************************/
 
 #include "events/common_log.h"
+#include "kl_common.h"
+#include "net_util/net_common.h"
+#include "config_local_info.h"
 #include "kl_active_manage.h"
 
+/*
+POST /v2/app/active?
+appid=cn5290&
+deviceid=4961c879191af84ef352e215642d569c&
+os=linux&
+packagename=com.edog.car.linuxwhhj&
+sign=72e3649e3fd530f41995b8ebc7249050&
+channel=linuxwhhj&
+HTTP/1.1
+*/
 kl::ActiveManage::ActiveManage()
-    : KLObject ("http://open.kaolafm.com/v1/app/active", NetUrl::NET_HTTP_METHOD_POST)
+    : KLObject ("http://open.kaolafm.com/v2/app/active", NetUrl::NET_HTTP_METHOD_POST)
 {}
+
+void kl::ActiveManage::obtain()
+{   
+    if (LocalConfig::instance()->openID().empty())
+    {
+        KLObject::obtain();
+    } else
+    {
+        GEN_Printf(LOG_INFO, "openid: %s is exist", LocalConfig::instance()->openID().string());
+    }
+}
 
 NetUrl &kl::ActiveManage::genQueryUrl()
 {   
-    mUrl.appendContent("deviceid", "akjdhfaksdfhkjdshfkjah");
-    mUrl.append("appid", APPID);
-//    url.append("sign", "359b410e439fbdb3098f488a0cb8f9d1");
-    mUrl.append("sign", genSign(mUrl));
+    mUrl.append("sign", SIGN_ActiveManage);
 
     return mUrl;
 }

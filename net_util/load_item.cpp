@@ -6,7 +6,7 @@
 LoadItem::LoadItem(bool isAll)
     : m_pLoad(nullptr)
     , mIsLoadAll(isAll)
-{
+{    
 }
 
 LoadItem::~LoadItem()
