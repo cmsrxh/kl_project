@@ -10,6 +10,7 @@
  * @note 收到多少数据就通过回调，返回多少数据，适宜把数据保存在文件中。
  */
 class CurlLoadItem;
+class NetUrl;
 class LoadItem
 {
 public:

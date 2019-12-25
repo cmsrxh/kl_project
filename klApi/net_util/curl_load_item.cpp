@@ -57,7 +57,7 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
     my_curl_easy_setopt(m_pCurl, CURLOPT_HEADER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_PRIVATE, this);
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEDATA, this);
-    my_curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 1L);
+    my_curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYPEER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYHOST, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, 15L);

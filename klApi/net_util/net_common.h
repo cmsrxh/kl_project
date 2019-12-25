@@ -27,7 +27,7 @@ inline static cJSON *json_items_proc(cJSON *item, const char *name, ...)
         obj = cJSON_GetObjectItem(obj, arg);
         if (!obj)
         {
-            GEN_Printf(LOG_WARN, "json section: %s is null", arg);
+            // GEN_Printf(LOG_WARN, "json section: %s is null", arg);
         }
     }
 

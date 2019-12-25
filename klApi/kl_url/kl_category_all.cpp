@@ -62,7 +62,7 @@ void kl::CategoryAll::genResult(const char *data, unsigned long size)
             GEN_Printf(LOG_WARN, "load categoryall list is empty.");
         } else
         {
-            profile();
+            // profile();
         }
     } else
     {

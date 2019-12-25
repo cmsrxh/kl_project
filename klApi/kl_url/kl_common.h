@@ -268,6 +268,13 @@ public:
     RadioItem() {}
 };
 
+// 通知UI，数据加载解析的结果
+class UINotifyIface
+{
+public:
+    virtual void dataPrepare() = 0;
+    virtual void errorInfo(int , const char *) {}
+};
 }
 
 #endif // KL_COMMON_H

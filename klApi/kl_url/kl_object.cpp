@@ -5,7 +5,7 @@
 
 kl::KLObject::KLObject(const ByteString &baseUrl, int methodType)
     : mUrl(baseUrl, methodType)
-    , mLoad(true)
+    , mLoad(true), m_pUINotify(nullptr)
 {
     mUrl.append("appid", LocalConfig::instance()->appID());
     mUrl.append("deviceid", LocalConfig::instance()->deviceID());
@@ -112,15 +112,19 @@ void kl::KLObject::loadStatus(int status, uint8_t *data, size_t len, void *arg)
     case OP_CURL_STATUS_LOAD_ALL_OVER:      // 表示数据下载全部一次性返回了
         static_cast<kl::KLObject *>(arg)->loadData(data, len);
         static_cast<kl::KLObject *>(arg)->loadOver();
+        static_cast<kl::KLObject *>(arg)->uiNotifyOver();
         break;
     case OP_CURL_STATUS_LOAD_ONE_FRAME:     // 表示数据下载方式按照块来计算，有多少数据就来多少
+        static_cast<kl::KLObject *>(arg)->loadData(data, len);
         break;
     case OP_CURL_STATUS_LOAD_OVER:          // 表示数据下载完成了，与上一个枚举配合，表示下载已经完成，可以关闭文件。
         static_cast<kl::KLObject *>(arg)->loadOver();
+        static_cast<kl::KLObject *>(arg)->uiNotifyOver();
         break;
     case OP_CURL_STATUS_ERROR_TYPE:         // 往下的枚举表示数据错误的定义
     default:
         static_cast<kl::KLObject *>(arg)->loadOver();
+        static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         GEN_Printf(LOG_ERROR, "Load Error: %d. %s", status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         break;
     }
