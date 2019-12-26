@@ -15,9 +15,19 @@ public:
         : KLObject(baseUrl, methodType)
         , mSaveFile(nullptr)
     {}
-    virtual ~SaveObject()
+    ~SaveObject()
     {
-        mNodes.clear();
+        clearData();
+    }
+
+    void clearData()
+    {
+        typename ListTable<save_node>::iterator it;
+        for (it = mNodes.pop_front(); it != mNodes.end(); it = mNodes.pop_front())
+        {
+            it->clear();
+            mNodes.remove(it);
+        }
     }
 
     void loadData (uint8_t *data, unsigned long size)

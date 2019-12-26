@@ -28,9 +28,11 @@ namespace kl
 class AreaItem
 {
 public:
-    AreaItem()
-    {}
-
+    void clear()
+    {
+        id.clear();
+        name.clear();
+    }
 
     ByteString id;
     ByteString name;
@@ -39,8 +41,19 @@ public:
 class BDCastItem
 {
 public:
-    BDCastItem()
-    {}
+    void clear()
+    {
+        broadcastId.clear();
+        status.clear();
+        onLineNum.clear();
+        likedNum.clear();
+        isSubscribe.clear();
+        name.clear();
+        image.clear();
+        currentProgramTitle.clear();
+        playUrl.clear();
+        freq.clear();
+    }
 
     ByteString broadcastId;
     ByteString status;
@@ -57,7 +70,16 @@ public:
 class BDCastDetail
 {
 public:
-    BDCastDetail() {}
+    void clear()
+    {
+        mBroadcastId.clear();
+        mName.clear();
+        mImg.clear();
+        mClassifyName.clear();
+        mPlayUrl.clear();
+        mClassifyId.clear();
+        mAreaCode.clear();
+    }
 
     ByteString mBroadcastId;
     ByteString mName;
@@ -71,9 +93,29 @@ public:
 class BDCastProgramItem
 {
 public:
-    BDCastProgramItem()
-
-    {}
+    void clear()
+    {
+        programId.clear();
+        broadcastId.clear();
+        nextProgramId.clear();
+        preProgramId.clear();
+        title.clear();
+        backLiveUrl.clear();
+        stime.clear();
+        etime.clear();
+        playUrl.clear();
+        comperes.clear();
+        beginTime.clear();
+        endTime.clear();
+        startTime.clear();
+        finishTime.clear();
+        status.clear();
+        isSubscribe.clear();
+        desc.clear();
+        broadcastDesc.clear();
+        broadcastName.clear();
+        broadcastImg.clear();
+    }
 
     ByteString programId;
     ByteString broadcastId;
@@ -102,8 +144,13 @@ public:
 class CateBCast
 {
 public:
-    CateBCast()
-    {}
+    void clear()
+    {
+        id.clear();
+        type.clear();
+        name.clear();
+        img.clear();
+    }
 
     ByteString id;
     ByteString type;
@@ -115,8 +162,13 @@ public:
 class CateSub
 {
 public:
-    CateSub()
-    {}
+    void clear()
+    {
+        cid.clear();
+        name.clear();
+        hasSub.clear();
+        img.clear();
+    }
 
     ByteString cid;
     ByteString name;
@@ -136,11 +188,24 @@ public:
 class Operate
 {
 public:
-    Operate() {}
+    void clear()
+    {
+        rid.clear();
+        rtype.clear();
+        rname.clear();
+        image.clear();
+        rvalue.clear();
+        listenNum.clear();
+        desc.clear();
+        optType.clear();
+        isMusic.clear();
+        isOpt.clear();
+        index.clear();
+    }
 
-    ByteString rid;
-    ByteString rtype;
-    ByteString rname;
+    ByteString rid;         // 资源 ID
+    ByteString rtype;       // 资源类型 (0:专辑|3:电台)
+    ByteString rname;       // 资源名称
     ByteString image;
     ByteString rvalue;
     ByteString listenNum;
@@ -155,9 +220,25 @@ public:
 class TypeRadio
 {
 public:
-    TypeRadio()
-    {}
-
+    void clear()
+    {
+        id.clear();
+        name.clear();
+        img.clear();
+        followedNum.clear();
+        isOnline.clear();
+        listenNum.clear();
+        desc.clear();
+        commentNum.clear();
+        isSubscribe.clear();
+        type.clear();
+        host.clear(); // object
+        ListTable<ByteString>::iterator it = keyWords.begin();
+        for(; it != keyWords.end(); ++it)
+        {
+            it->clear();
+        }
+    }
     ByteString id;
     ByteString name;
     ByteString img;
@@ -176,6 +257,15 @@ public:
 class AlbumItem
 {
 public:
+    void clear()
+    {
+        id.clear();
+        name.clear();
+        img.clear();
+        listenNum.clear();
+        source.clear();
+        sourceName.clear();
+    }
     ByteString id;
     ByteString name;
     ByteString img;
@@ -190,6 +280,34 @@ class AlbDetail
 public:
     AlbDetail() {}
 
+    void clear()
+    {
+        id.clear();
+        name.clear();
+        img.clear();
+        followedNum.clear();
+        countNum.clear();
+        isOnline.clear();
+        desc.clear();
+        listenNum.clear();
+        sortType.clear();
+        hasCopyright.clear();
+        host.clear(); // object
+        produce.clear();
+        status.clear();
+        updateDay.clear();
+        copyrightLabel.clear();
+        commentNum.clear();
+        lastCheckDate.clear();
+        type.clear();
+        isSubscribe.clear();
+
+        ListTable<ByteString>::iterator it = keyWords.begin();
+        for (; it != keyWords.end(); ++it)
+        {
+            it->clear();
+        }
+    }
     ByteString id;
     ByteString name;
     ByteString img;
@@ -218,6 +336,43 @@ public:
 class AudioItem
 {
 public:
+    void clear()
+    {
+        audioId.clear();
+        audioName.clear();
+        audioPic.clear();
+        audioDes.clear();
+        albumId.clear();
+        albumName.clear();
+        albumPic.clear();
+        orderNum.clear();
+        mp3PlayUrl32.clear();
+        mp3PlayUrl64.clear();
+        aacPlayUrl.clear();
+        aacPlayUrl32.clear();
+        aacPlayUrl64.clear();
+        aacPlayUrl128.clear();
+        aacPlayUrl320.clear();
+        aacFileSize.clear();
+        mp3FileSize32.clear();
+        mp3FileSize64.clear();
+        updateTime.clear();
+        clockId.clear();
+        duration.clear();
+        originalDuration.clear();
+        listenNum.clear();
+        likedNum.clear();
+        hasCopyright.clear();
+        commentNum.clear();
+        trailerStart.clear();
+        trailerEnd.clear();
+        categoryId.clear();
+        source.clear();
+        isListened.clear();
+        isThirdParty.clear();
+        hasNextPage.clear();
+    }
+
     ByteString audioId;
     ByteString audioName;
     ByteString audioPic;

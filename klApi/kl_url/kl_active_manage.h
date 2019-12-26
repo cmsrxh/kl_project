@@ -23,6 +23,7 @@ public:
     NetUrl &genQueryUrl();
 
     void loadData (uint8_t *data, unsigned long size);
+    void loadErrorInfo(int type, const char *str);
 };
 
 }

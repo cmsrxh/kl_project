@@ -13,8 +13,13 @@
 #include "app_common.h"
 #include "events/sf_thread.h"
 
-class Application : public SFLoop, public SimpleThread
+namespace kl
+{
+class InitManage;
+class ActiveManage;
+}
 
+class Application : public SFLoop, public SimpleThread
 {
 public:
     inline static Application *instance()
@@ -30,11 +35,18 @@ public:
     {
         runLoop();
     }
+    void postKlEvent(int cmd, int ext1 = 0, int ext2 = 0, const char *str = 0);
+
+protected:
+    void klInitActiveManage(GeneralQEvt *evt);
 
 private:
     Application();
     Application(Application &);
     Application &operator =(Application &);
+
+    kl::InitManage      *m_pKLInit;
+    kl::ActiveManage    *m_pKLActive;
 };
 
 #define sfApp (Application::instance())

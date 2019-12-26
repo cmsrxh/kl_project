@@ -14,7 +14,15 @@ public:
     ItemObject(const ByteString &baseUrl, int methodType)
         : KLObject(baseUrl, methodType)
     {}
+    ~ItemObject()
+    {
+        clearData();
+    }
 
+    void clearData()
+    {
+        mItem.clear();
+    }
     void loadData (uint8_t *data, unsigned long size)
     {
         data[size] = '\0';

@@ -34,7 +34,7 @@ void kl::CategoryAll::profile()
 
     for (; it != mNodes.end(); ++it)
     {
-        GEN_Printf(LOG_DUMP, "%s=%s", it->name.string(), it->cid.string());
+        GEN_Printf(LOG_DUMP, "%s=%s, hasSub=%s", it->name.string(), it->cid.string(), it->hasSub.string());
     }
 }
 
@@ -62,7 +62,7 @@ void kl::CategoryAll::genResult(const char *data, unsigned long size)
             GEN_Printf(LOG_WARN, "load categoryall list is empty.");
         } else
         {
-            // profile();
+             profile();
         }
     } else
     {

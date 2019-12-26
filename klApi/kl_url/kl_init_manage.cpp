@@ -2,6 +2,7 @@
 #include "kl_common.h"
 #include "net_util/net_common.h"
 #include "config_local_info.h"
+#include "application.h"
 #include "kl_init_manage.h"
 
 /*
@@ -57,9 +58,18 @@ void kl::InitManage::loadData(uint8_t *data, unsigned long size)
     {
         LocalConfig::instance()->setOpenID(openid->valuestring);
         LocalConfig::instance()->save();
+        Application::instance()->postKlEvent(SIG_HAVE_OPEN_ID);
         GEN_Printf(LOG_DEBUG, "openid: %s", openid->valuestring);
+    } else
+    {
+        Application::instance()->postKlEvent(SIG_KL_INIT_ERROR, 1);
     }
 
     cJSON_Delete(root);
+}
+
+void kl::InitManage::loadErrorInfo(int type, const char *str)
+{
+    Application::instance()->postKlEvent(SIG_KL_INIT_ERROR, 1, type, str);
 }
 

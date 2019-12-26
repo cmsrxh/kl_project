@@ -11,6 +11,7 @@
 #include "net_util/net_common.h"
 #include "config_local_info.h"
 #include "kl_active_manage.h"
+#include "application.h"
 
 /*
 POST /v2/app/active?
@@ -48,4 +49,9 @@ void kl::ActiveManage::loadData(uint8_t *data, unsigned long size)
 {
     data[size] = '\0';
     GEN_Printf(LOG_INFO, "device active data: \n%s", (char *)data);
+}
+
+void kl::ActiveManage::loadErrorInfo(int type, const char *str)
+{
+    Application::instance()->postKlEvent(SIG_KL_INIT_ERROR, 3, type, str);
 }

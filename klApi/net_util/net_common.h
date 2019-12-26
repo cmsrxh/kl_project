@@ -48,9 +48,9 @@ inline static cJSON *json_items_proc(cJSON *item, const char *name, ...)
         } \
     } while(0)
 
-#define JSON_STRING_POINTER_SWAP(json, proc) \
+#define JSON_STRING_POINTER_SWAP(json, parent, proc) \
     do { \
-        if(json) \
+        if(json != parent) \
         { \
             proc = json->valuestring; \
             json->valuestring = NULL; \

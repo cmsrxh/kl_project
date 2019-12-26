@@ -25,6 +25,7 @@ public:
     virtual NetUrl &genQueryUrl() = 0;
 
     virtual void loadData (uint8_t *data, unsigned long size) = 0;
+    virtual void loadErrorInfo(int /*type*/, const char */*str*/) {}
 
     void loadOver()
     {

@@ -124,6 +124,7 @@ void kl::KLObject::loadStatus(int status, uint8_t *data, size_t len, void *arg)
     case OP_CURL_STATUS_ERROR_TYPE:         // 往下的枚举表示数据错误的定义
     default:
         static_cast<kl::KLObject *>(arg)->loadOver();
+        static_cast<kl::KLObject *>(arg)->loadErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         GEN_Printf(LOG_ERROR, "Load Error: %d. %s", status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         break;

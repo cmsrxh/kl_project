@@ -90,7 +90,7 @@ void kl::AlbumDetail::genResult(const char *data, unsigned long size)
         }
 
         cJSON *host = json_items_proc(result, "host", "name", NULL);
-        JSON_STRING_POINTER_SWAP(host, mItem.host);
+        JSON_STRING_POINTER_SWAP(host, result, mItem.host);
 
         profile();
     } else
