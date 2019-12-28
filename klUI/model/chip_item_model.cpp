@@ -7,7 +7,6 @@
 
 ChipItemModel::ChipItemModel()
     : m_pUnion(NULL)
-    , mPlayingIndex(-1)
 {
     roles[CHIP_ITEM_NAME]    = "chipItemName";
 
@@ -73,7 +72,7 @@ void ChipItemModel::onLoadOver(long ptr)
         endResetModel();
     } else
     {
-        beginInsertRows(QModelIndex(), start, mVec.size());
+        beginInsertRows(QModelIndex(), start, mVec.size() - 1);
         endInsertRows();
     }
 }
@@ -97,16 +96,7 @@ QHash<int, QByteArray> ChipItemModel::roleNames() const
 
 int ChipItemModel::playingIndex() const
 {
-    return mPlayingIndex;
-}
-
-void ChipItemModel::setPlayingIndex(int playingIndex)
-{
-    if (mPlayingIndex != playingIndex)
-    {
-        mPlayingIndex = playingIndex;
-        Q_EMIT playingIndexChanged(playingIndex);
-    }
+    return KLDataProc::instance()->getCurChipIndex();
 }
 
 int ChipItemModel::itemCount() const

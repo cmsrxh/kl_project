@@ -31,6 +31,16 @@ public:
      * @return 返回是否还有下一页
      */
     bool loadNextPage();
+
+    /**
+     * @brief getUnionInfoByIndex
+     * @param info [out] 输出index对应的信息
+     * @param index [in]
+     * @return index 超过范围就返回false，就是out数据无效
+     * @details 用于当前列表界面，与上一次的界面不一样时，还能够继续上一次chip列表播放
+     *          用于自动播放下一曲的功能
+     */
+    bool getUnionInfoByIndex(MusicChipItemUnion &info, int index);
 private:
     int                  mChipType;
     UIChipItemList      *m_pChip;

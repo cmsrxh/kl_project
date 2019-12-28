@@ -3,7 +3,7 @@
 
 ViewSwitchStack::ViewSwitchStack()
     : mCurrentSource("CategoryView.qml")
-    , mIsShowReturn(true)
+    , mIsShowReturn(false)
 {
 }
 
@@ -23,14 +23,19 @@ void ViewSwitchStack::push(const QString &url)
 
 void ViewSwitchStack::pop()
 {
+    //把当前界面弹出，然后显示上一个界面
+    mStack.pop_back();
+
     if (mStack.empty())
     {
         setSource("CategoryView.qml");
         setIsShowReturn(false);
+        qDebug() << "pop" << mCurrentSource;
     } else
     {
         setSource(mStack.pop_back());
         setIsShowReturn(true);
+        qDebug() << "pop" << mCurrentSource;
     }
 }
 

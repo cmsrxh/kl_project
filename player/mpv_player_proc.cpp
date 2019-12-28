@@ -59,12 +59,13 @@ void MPVPlayerProc::reCreatePlayer()
 
     mCmd->setMpvHandle(mpv);
 
-    check_error(mpv_set_option_string(mpv, "terminal", "yes"));
+    check_error(mpv_set_option_string(mpv, "terminal", "no"));
     check_error(mpv_set_option_string(mpv, "msg-level", "vd=v")); // "all=trace"
 
 //    check_error(mpv_set_option_string(mpv, "hwdec", "auto"));
 
-    check_error(mpv_set_option_string(mpv, "vo", "null"));
+    check_error(mpv_set_option_string(mpv, "video", "no"));
+//    check_error(mpv_set_option_string(mpv, "vo", "null"));
 //    check_error(mpv_set_option_string(mpv, "gpu-context", "android"));
     check_error(mpv_set_option_string(mpv, "ao", "alsa"));
 

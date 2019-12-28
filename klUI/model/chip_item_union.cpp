@@ -137,6 +137,49 @@ bool ChipItemUnion::loadNextPage()
     return false;
 }
 
+bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
+{
+    if (index < 0) return false;
+
+    switch (mChipType)
+    {
+    case CHIP_ITEM_AUDIO:
+    {
+        // GEN_Printf(LOG_DEBUG, "Get Info by index=%d", index);
+        ListTable<kl::AudioItem> &nodes = ((kl::ChipAudioList *)m_pChip)->nodes();
+        ListTable<kl::AudioItem>::iterator it = nodes.begin();
+        for ( ; it != nodes.end() && index; ++it, --index);
+        if (it != nodes.end())
+        {
+            info.chipId  = it->audioId;
+            info.name    = it->audioName;
+            info.image   = it->audioPic;
+            info.playUrl = it->mp3PlayUrl64;
+            info.desc    = it->audioDes;
+            return true;
+        }
+        return false;
+    }
+    case CHIP_ITEM_RADIO:
+    {
+        ListTable<kl::RadioItem> &nodes = ((kl::ChipRadioList *)m_pChip)->nodes();
+        ListTable<kl::RadioItem>::iterator it = nodes.begin();
+        for ( ; it != nodes.end() && index; ++it, --index);
+        if (it != nodes.end())
+        {
+            info.chipId  = it->audioId;
+            info.name    = it->audioName;
+            info.image   = it->audioPic;
+            info.playUrl = it->mp3PlayUrl64;
+            info.desc    = it->audioDes;
+            return true;
+        }
+        return false;
+    }
+    }
+    return false;
+}
+
 void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)
 {
     ListTable<kl::RadioItem>::iterator it = nodes.begin();

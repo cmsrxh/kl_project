@@ -10,7 +10,7 @@ class ChipItemModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(int playingIndex READ playingIndex WRITE setPlayingIndex NOTIFY playingIndexChanged)
+    Q_PROPERTY(int playingIndex READ playingIndex NOTIFY playingIndexChanged)
 public:
     ChipItemModel();
 
@@ -31,8 +31,6 @@ public:
 
     // property
     int  playingIndex() const;
-    void setPlayingIndex(int playingIndex);
-
 
 public Q_SLOTS:
     void onLoadOver(long ptr);
@@ -42,6 +40,7 @@ public Q_SLOTS:
     void needNextPage();
 
     int  itemCount() const;
+
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
@@ -55,7 +54,6 @@ protected:
 
 private:
     ChipItemUnion                    *m_pUnion;
-    int                               mPlayingIndex;
     QHash<int, QByteArray>            roles;
     VectorTable<MusicChipItemUnion *> mVec;
 };

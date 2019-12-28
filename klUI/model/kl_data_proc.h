@@ -26,6 +26,7 @@ public:
           , cate_tab_index(0)
           , cate_item_index(-1)
           , chip_item_index(-1)
+          , current_play_list(nullptr)
         {}
         void setCateTabIndex(int index)
         {
@@ -42,10 +43,15 @@ public:
         {
             chip_item_index = index;
         }
+        void setCurrentPlayList(ChipItemUnion *chip)
+        {
+            current_play_list = chip;
+        }
         int media_type;
         int cate_tab_index;
         int cate_item_index;
         int chip_item_index;
+        ChipItemUnion *current_play_list;
     };
 
     static KLDataProc *instance()
@@ -64,6 +70,10 @@ public:
     void enterAlbumView();
 
     int  getCateTabIndex();
+    int  getCurChipIndex();
+
+    void playNext();
+    void playPrev();
 private:
     KLDataProc();
 

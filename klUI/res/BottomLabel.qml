@@ -141,7 +141,7 @@ Item {
                 height: parent.height
                 anchors.left: parent.left
                 anchors.leftMargin: 40
-                spacing: 20
+                spacing: 0
                 Text
                 {
                     id: nameInfo
@@ -149,7 +149,7 @@ Item {
                     height: parent.height/3
                     verticalAlignment: Qt.AlignVCenter
                     color: "#AAAAAA"
-                    font.pixelSize: 20
+                    font.pixelSize: 18
                     clip: true
                     elide: Text.ElideRight
                 }
@@ -166,15 +166,12 @@ Item {
                         width: parent.width - 20;
                         verticalAlignment: Qt.AlignVCenter
                         color: "white"
-                        font.pixelSize: 26
+                        font.pixelSize: 16
                         wrapMode: Text.Wrap
                         clip: true
                         //elide: Text.ElideRight
                     }
-
                 }
-
-
             }
         }
     }

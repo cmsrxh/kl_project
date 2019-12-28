@@ -84,12 +84,12 @@ int KLUIProc::qmlGetDuration()
 
 void KLUIProc::qmlPlayPrev()
 {
-
+    KLDataProc::instance()->playPrev();
 }
 
 void KLUIProc::qmlPlayNext()
 {
-
+    KLDataProc::instance()->playNext();
 }
 
 void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
@@ -103,6 +103,7 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         break;
     case MEDIA_PLAYBACK_COMPLETE:
         setPlayState(3);
+        KLDataProc::instance()->playNext();
         break;
     case MEDIA_PREPARED:
         qmlStart();
