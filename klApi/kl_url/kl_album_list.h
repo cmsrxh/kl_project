@@ -25,6 +25,16 @@ public:
 
     void genResult(const char *data, unsigned long size);
 
+    int getHaveNext() const
+    {
+        return haveNext;
+    }
+
+    int getPage() const
+    {
+        return page;
+    }
+
 private:
     ByteString mCID;
     ByteString mSortType;

@@ -24,6 +24,13 @@ public:
 
     void genResult(const char *data, unsigned long size);
 
+    int getCount()
+    {
+        return count;
+    }
+
+    bool loadNextPage();
+
 private:
     ByteString mAudioId;
     ByteString mSortType;

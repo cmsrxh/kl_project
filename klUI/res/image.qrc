@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/playing.png</file>
+        <file>image/scrollBar.png</file>
+    </qresource>
+</RCC>

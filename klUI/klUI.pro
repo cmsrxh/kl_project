@@ -25,14 +25,27 @@ HEADERS += application.h \
     kl_ui_proc.h \
     model/cate_item_model.h \
     model/kl_ui_data_union.h \
-    model/category_model.h
+    model/category_model.h \
+    model/cate_item_union.h \
+    model/category_union.h \
+    model/kl_data_proc.h \
+    qml_view_switch_stack.h \
+    model/chip_item_model.h \
+    model/chip_item_union.h
 
 SOURCES += application.cpp main.cpp \
     kl_ui_proc.cpp \
     model/cate_item_model.cpp \
-    model/category_model.cpp
+    model/category_model.cpp \
+    model/cate_item_union.cpp \
+    model/category_union.cpp \
+    model/kl_data_proc.cpp \
+    qml_view_switch_stack.cpp \
+    model/chip_item_model.cpp \
+    model/chip_item_union.cpp
 
-RESOURCES += res/qml.qrc
+RESOURCES += res/qml.qrc \
+    res/image.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

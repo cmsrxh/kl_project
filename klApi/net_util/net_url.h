@@ -43,6 +43,8 @@ public:
     {
         mList.push_back(QueryKV(key, value));
     }
+    void appendChange(const ByteString &key, const ByteString &value);
+
     void appendContent(const ByteString &key, const ByteString &value)
     {
         mContentList.push_back(QueryKV(key, value));

@@ -5,6 +5,13 @@ import QtGraphicalEffects 1.0
 import Hongjing.HMI.KL 1.0 as KL
 
 Item {
+    Connections {
+        target: KL.Controller
+        onPlayingInfo: {
+            nameInfo.text = name;
+            currDesc.text = desc;
+        }
+    }
 
     RowLayout{
         anchors.fill: parent
@@ -70,7 +77,14 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-
+                    Button
+                    {
+                        visible: stack.isShowReturn
+                        text: qsTr("返回")
+                        onClicked: {
+                            stack.pop();
+                        }
+                    }
 
                     Button
                     {
@@ -108,10 +122,60 @@ Item {
             }
         }
 
-        Rectangle { //Right
-            color: "blue"
+        Rectangle { //Right           
             Layout.fillWidth: true
             Layout.fillHeight: true
+            LinearGradient
+            {
+                anchors.fill: parent
+                start: Qt.point(0, parent.height)
+                end: Qt.point(0, 0)
+                gradient: Gradient{
+                    GradientStop{position: 0.0; color: "#111111"}
+                    GradientStop{position: 1.0; color: "#C5A5A9"}
+                }
+            }
+
+            Column {
+                width: parent.width - 80
+                height: parent.height
+                anchors.left: parent.left
+                anchors.leftMargin: 40
+                spacing: 20
+                Text
+                {
+                    id: nameInfo
+                    width: parent.width
+                    height: parent.height/3
+                    verticalAlignment: Qt.AlignVCenter
+                    color: "#AAAAAA"
+                    font.pixelSize: 20
+                    clip: true
+                    elide: Text.ElideRight
+                }
+                Flickable {
+                    id: flick
+                    width: parent.width
+                    height: parent.height *2/3
+                    contentHeight: currDesc.height
+                    clip: true
+
+                    Text
+                    {
+                        id: currDesc
+                        width: parent.width - 20;
+                        verticalAlignment: Qt.AlignVCenter
+                        color: "white"
+                        font.pixelSize: 26
+                        wrapMode: Text.Wrap
+                        clip: true
+                        //elide: Text.ElideRight
+                    }
+
+                }
+
+
+            }
         }
     }
 }

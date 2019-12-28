@@ -117,3 +117,21 @@ void kl::ChipAudioList::genResult(const char *data, unsigned long size)
 
     cJSON_Delete(root);
 }
+
+bool kl::ChipAudioList::loadNextPage()
+{
+    if (haveNext)
+    {
+        needPage.clear();
+        needPage = ByteString::allocLong(page + 1);
+
+        mUrl.append("pagenum", needPage);
+
+        obtain();
+        return true;
+    } else
+    {
+        GEN_Printf(LOG_DEBUG, "Nothing next page.");
+        return false;
+    }
+}

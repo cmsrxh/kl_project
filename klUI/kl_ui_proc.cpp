@@ -1,7 +1,9 @@
 #include "model/category_model.h"
 #include "model/cate_item_model.h"
+#include "model/chip_item_model.h"
 #include "iface/media_service_i_face.h"
 #include "iface/media_notify.h"
+#include "model/kl_data_proc.h"
 #include "kl_ui_proc.h"
 #include <QDebug>
 
@@ -10,18 +12,24 @@ extern KLUIProc *gInstance;
 KLUIProc::KLUIProc()
     : QObject()
     , mPlayState(0)
+    , m_pViewStack(new ViewSwitchStack)
 {
-
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
 }
 
 void KLUIProc::init(QQmlContext *ctx)
 {
-//    m_pCate = new CategoryModel;
-//    m_pCateItem = new CateItemModel;
+    m_pCate     = new CategoryModel;
+    m_pCateItem = new CateItemModel;
+    m_pChipItem = new ChipItemModel;
 
-//    ctx->setContextProperty("cateItemModel", m_pCateItem);
-//    ctx->setContextProperty("cateModel", m_pCate);
+    KLDataProc::instance()->init(m_pCate, m_pCateItem, m_pChipItem);
+
+    ctx->setContextProperty("cateItemModel", m_pCateItem);
+    ctx->setContextProperty("cateModel", m_pCate);
+    ctx->setContextProperty("chipList", m_pChipItem);
+
+    ctx->setContextProperty("stack", m_pViewStack);
 }
 
 void KLUIProc::qmlStart()
@@ -91,13 +99,14 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
     case MEDIA_SEEK_COMPLETE:
         break;
     case MEDIA_ERROR:
-        qDebug() << "error info" << ext1 << ext2 << str;
+        qWarning() << "error info" << ext1 << ext2 << str;
         break;
     case MEDIA_PLAYBACK_COMPLETE:
         setPlayState(3);
         break;
     case MEDIA_PREPARED:
         qmlStart();
+        KLDataProc::instance()->showPlayingInfo();
         break;
     case MEDIA_STARTED:
         setPlayState(1);
@@ -131,6 +140,16 @@ void KLUIProc::setPlayState(int playState)
         mPlayState = playState;
         Q_EMIT playStateChanged();
     }
+}
+
+void KLUIProc::pushNew(const QString &url)
+{
+    m_pViewStack->push(url);
+}
+
+void KLUIProc::setSourceUrl(const char *url)
+{
+    MediaServiceIFace::instance()->setFile(url);
 }
 
 void MediaNotify::notify(int msg, int ext1, int ext2, const char *str)

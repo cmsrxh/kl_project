@@ -20,11 +20,19 @@ struct MusicCateItemUnion
     ByteString type; // 资源类型 (0:专辑|3:电台)
 };
 
-
+struct MusicChipItemUnion
+{
+    ByteString chipId;
+    ByteString name;
+    ByteString image;
+    ByteString playUrl;
+    ByteString desc;
+};
 
 
 typedef  void UICategory;
 typedef  void UICategoryItemList;
+typedef  void UIChipItemList;
 
 
 

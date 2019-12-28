@@ -21,6 +21,7 @@ public:
 
     void genResult(const char *data, unsigned long size);
 
+    bool loadNextPage();
 private:
     ByteString mRID;
 };

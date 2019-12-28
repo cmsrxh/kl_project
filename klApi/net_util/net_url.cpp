@@ -19,6 +19,21 @@ NetUrl::~NetUrl()
     }
 }
 
+void NetUrl::appendChange(const ByteString &key, const ByteString &value)
+{
+    ListTable<QueryKV>::iterator it = mList.begin();
+    for ( ; it != mList.end(); ++it)
+    {
+        if (it->key == key)
+        {
+            it->value = value;
+            return;
+        }
+    }
+
+    mList.push_back(QueryKV(key, value));
+}
+
 ByteString NetUrl::genUrl()
 {
     if (mBaseUrl.empty() || mList.empty())

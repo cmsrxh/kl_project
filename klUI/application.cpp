@@ -63,6 +63,7 @@ void Application::runLoop()
         switch (evt->sig)
         {
         case SIG_HAVE_OPEN_ID:
+            klInitGetOpenId();
         case SIG_SURFACE_CREATED:
             stateMache->initialize();
             MPVPlayerProc::instance()->setSurface((int64_t)0);
@@ -148,6 +149,15 @@ void Application::klInitActiveManage(GeneralQEvt *evt)
 
     default:
         break;
+    }
+}
+
+void Application::klInitGetOpenId()
+{
+    ListTable<kl::KLObject *>::iterator it = mKlBack.begin();
+    for ( ; it != mKlBack.end(); ++it)
+    {
+        (*it)->obtain();
     }
 }
 

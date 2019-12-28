@@ -66,7 +66,7 @@ void MPVPlayerProc::reCreatePlayer()
 
     check_error(mpv_set_option_string(mpv, "vo", "null"));
 //    check_error(mpv_set_option_string(mpv, "gpu-context", "android"));
-    check_error(mpv_set_option_string(mpv, "ao", "opensles"));
+    check_error(mpv_set_option_string(mpv, "ao", "alsa"));
 
     // Done setting up options.
     check_error(mpv_initialize(mpv));

@@ -5,7 +5,6 @@
 
 namespace kl
 {
-
 class TypeRadioList : public SaveObject<TypeRadio>
 {
 public:

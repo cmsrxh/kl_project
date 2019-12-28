@@ -31,7 +31,13 @@ void kl::ActiveManage::obtain()
 {   
     if (LocalConfig::instance()->openID().empty())
     {
-        KLObject::obtain();
+        if (mLoad.isLoading())
+        {
+            GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
+            mLoad.cancel();
+        }
+
+        mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
     } else
     {
         GEN_Printf(LOG_INFO, "openid: %s is exist", LocalConfig::instance()->openID().string());

@@ -79,3 +79,9 @@ void kl::ChipRadioList::genResult(const char *data, unsigned long size)
     cJSON_Delete(root);
 
 }
+
+bool kl::ChipRadioList::loadNextPage()
+{
+    GEN_Printf(LOG_DEBUG, "Have Next, But can't really.");
+    return false;
+}

@@ -3,5 +3,10 @@
         <file>main.qml</file>
         <file>VideosModel.qml</file>
         <file>BottomLabel.qml</file>
+        <file>CategoryView.qml</file>
+        <file>CateItemInfoView.qml</file>
+        <file>ImageFrame.qml</file>
+        <file>AudioList.qml</file>
+        <file>ScrollBar.qml</file>
     </qresource>
 </RCC>

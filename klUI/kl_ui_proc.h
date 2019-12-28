@@ -1,16 +1,18 @@
 #ifndef KL_UI_PROC_H
 #define KL_UI_PROC_H
 
-#include <QObject>
+#include "qml_view_switch_stack.h"
 
 class CategoryModel;
 class CateItemModel;
+class ChipItemModel;
 class QQmlContext;
+class ViewSwitchStack;
 class KLUIProc : public QObject
 {
     Q_OBJECT
-
     Q_PROPERTY(int playState READ playState WRITE setPlayState NOTIFY playStateChanged)
+
 public:
     KLUIProc();
 
@@ -19,6 +21,9 @@ public:
     int  playState() const;
     void setPlayState(int playState);
 
+    void pushNew(QString const &url);
+
+    void setSourceUrl(const char *url);
 public Q_SLOTS:
     void qmlStart();
     void qmlPlay();
@@ -47,12 +52,15 @@ Q_SIGNALS:
 
     // qml
     void durationChanged(int duration);
-private:
-    int mPlayState;  //空闲=0, 播放=1, 暂停=2, 停止=3
+    void playingInfo(QString const &name, QString const &desc);
 
+private:
+    int               mPlayState;  //空闲=0, 播放=1, 暂停=2, 停止=3
+    ViewSwitchStack  *m_pViewStack;
 
     CategoryModel    *m_pCate;
-    CateItemModel       *m_pCateItem;
+    CateItemModel    *m_pCateItem;
+    ChipItemModel    *m_pChipItem;
 };
 
 #endif // KL_UI_PROC_H

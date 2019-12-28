@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
+import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.0
 import Hongjing.HMI.KL 1.0 as KL
 
@@ -15,49 +16,34 @@ ApplicationWindow {
     Material.accent: Material.DeepOrange
     Material.primary: Material.Blue
 
-    ColumnLayout{
+    Item {
+        id: ei
+        clip: true
         anchors.fill: parent
-
-        GridView
-        {
-            id: cateItemView
-            Layout.fillWidth:true
-            Layout.fillHeight: true //parent.height - showLabel.height
-            model: cateItemModel
-            // currentIndex: YT.Controller.videoCtg
-            clip: true
-            //focus: true
-            //boundsBehavior: Flickable.StopAtBounds
-            //layoutDirection: Qt.LeftToRight
-            //flow: GridView.FlowTopToBottom
-
-            cellWidth: width /3
-            cellHeight: width /4
-            delegate: VideosModel {
-                playing: false
-                onClicked: cateItemModel.qmlClickCategory(index)
-            }
-            onFlickEnded:
+        Rectangle {
+            id: bg
+            anchors.fill: parent
+            // color: "red"
+            LinearGradient
             {
-                if(atYEnd)
-                {
-                    cateItemModel.qmlCtgNextPage();
+                anchors.fill: parent
+                start: Qt.point(0, parent.height)
+                end: Qt.point(0, 0)
+                gradient: Gradient{
+                    GradientStop{position: 0.0; color: "#111111"}
+                    GradientStop{position: 1.0; color: "#A5A5A9"}
                 }
             }
         }
-    }
-
-    header: TabBar {
-        id: tabBar
-        width: parent.width
-        onCurrentIndexChanged: cateModel.qmlCateTabClick(currentIndex)
-        Repeater {
-            model: cateModel
-
-            TabButton {
-                text: ctgname
-                width: Math.max(70, tabBar.width / 10)
-            }
+        MouseArea{
+            anchors.fill: parent
+            enabled: ei.visible
+            //Eats mouse events
+        }
+        Loader{
+            focus: true
+            anchors.fill: parent
+            source: stack.source
         }
     }
 

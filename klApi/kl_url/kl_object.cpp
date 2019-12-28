@@ -1,6 +1,7 @@
 #include <events/common_log.h>
 #include <openssl/md5.h>
 #include "config_local_info.h"
+#include "application.h"
 #include "kl_object.h"
 
 kl::KLObject::KLObject(const ByteString &baseUrl, int methodType)
@@ -30,6 +31,11 @@ kl::KLObject::~KLObject()
  */
 void kl::KLObject::obtain()
 {
+    if (LocalConfig::instance()->openID().empty())
+    {
+        Application::instance()->collectObject(this);
+        return;
+    }
     if (mLoad.isLoading())
     {
         GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
