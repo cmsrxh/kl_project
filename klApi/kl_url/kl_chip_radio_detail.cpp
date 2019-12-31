@@ -17,10 +17,10 @@ kl::ChipRadioDetail::ChipRadioDetail(const ByteString &rid)
 
 NetUrl &kl::ChipRadioDetail::genQueryUrl()
 {
-    mUrl.append("rid", mRID);
+    mUrl.appendChange("rid", mRID);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_ChipRadioDetail);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_ChipRadioDetail);
 
     return mUrl;
 }

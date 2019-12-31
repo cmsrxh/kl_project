@@ -18,16 +18,24 @@ public:
 
     QString source() { return mCurrentSource; }
 
-    Q_INVOKABLE void push(QString const &url);
+    bool push(QString const &url);
 
-    Q_INVOKABLE void pop();
+    void pop();
 
     bool isShowReturn() const;
     void setIsShowReturn(bool isShowReturn);
 
 public slots:
     void setSource(const QString& source);
+    void qmlPush(QString const &url)
+    {
+        push(url);
+    }
 
+    void qmlPop()
+    {
+        pop();
+    }
 signals:
     void sourceChanged(const QString& source);
     void isShowReturnChanged(bool isShowReturn);

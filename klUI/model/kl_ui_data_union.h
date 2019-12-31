@@ -29,12 +29,26 @@ struct MusicChipItemUnion
     ByteString desc;
 };
 
+struct MusicDetail
+{
+    ByteString id;
+    ByteString name;
+    ByteString desc;
+    ByteString image;
+    ByteString hostName;
+    ListTable<ByteString> *keywords;
+};
 
 typedef  void UICategory;
 typedef  void UICategoryItemList;
 typedef  void UIChipItemList;
+typedef  void UIDetail;
 
+#define QStringFromByteString(str) \
+    QString::fromUtf8((str).string(), (str).size())
 
+#define QStringFromCString(str) \
+    QString::fromUtf8(str)
 
 
 #endif // KL_UI_DATA_UNION_H

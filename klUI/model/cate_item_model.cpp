@@ -50,17 +50,29 @@ void CateItemModel::resetAll()
 
 void CateItemModel::onLoadOver(long ptr)
 {   
+    int start = mVec.size();
+
     assert(ptr == (long)m_pUnion);
 
     m_pUnion->onLoadOver(this);
 
     qDebug() << "Load over, size = " << mVec.size();
-    resetAll();
+
+    if (0 == start)
+    {
+        beginResetModel();
+        endResetModel();
+    } else
+    {
+        beginInsertRows(QModelIndex(), start, mVec.size() - 1);
+        endInsertRows();
+    }
 }
 
 void CateItemModel::qmlCtgNextPage()
 {
     qDebug() << "Category Next Page";
+    m_pUnion->loadNextPage();
 }
 
 void CateItemModel::qmlClickCategory(int index)

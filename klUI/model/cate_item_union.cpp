@@ -34,16 +34,14 @@ void CateItemUnion::loadCateItem(int cid, bool sorttype)
         if (m_pCateItem)
         {
             album = (kl::AlbumList *)m_pCateItem;
-
-
         } else
         {
-            album = new kl::AlbumList(cid, sorttype);
-            album->setUINotify(this);
-            album->obtain();
+            album = new kl::AlbumList(cid, sorttype);            
             m_pCateItem = album;
         }
 
+        album->setUINotify(this);
+        album->obtain();
         break;
     }
     case CATE_ITEM_OPERATE:
@@ -52,15 +50,13 @@ void CateItemUnion::loadCateItem(int cid, bool sorttype)
         if (m_pCateItem)
         {
             operate = (kl::OperateList *)m_pCateItem;
-
-
         } else
         {
-            operate = new kl::OperateList();
-            operate->setUINotify(this);
-            operate->obtain();
+            operate = new kl::OperateList();            
             m_pCateItem = operate;
         }
+        operate->setUINotify(this);
+        operate->obtain();
         break;
     }
     case CATE_ITEM_TYPE_RADIO:
@@ -69,15 +65,13 @@ void CateItemUnion::loadCateItem(int cid, bool sorttype)
         if (m_pCateItem)
         {
             typeRadio = (kl::TypeRadioList *)m_pCateItem;
-
-
         } else
         {
-            typeRadio = new kl::TypeRadioList();
-            typeRadio->setUINotify(this);
-            typeRadio->obtain();
+            typeRadio = new kl::TypeRadioList();            
             m_pCateItem = typeRadio;
         }
+        typeRadio->setUINotify(this);
+        typeRadio->obtain();
         break;
     }
     default:
@@ -136,6 +130,25 @@ void CateItemUnion::onLoadOver(CateItemModel *model)
     }
 }
 
+bool CateItemUnion::loadNextPage()
+{
+    bool ret = false;
+    switch (mCateItemType) {
+    case CATE_ITEM_ALBUM:
+        ret = ((kl::AlbumList *)m_pCateItem)->loadNextPage();
+        break;
+    case CATE_ITEM_OPERATE:
+        ret = ((kl::OperateList *)m_pCateItem)->loadNextPage();
+        break;
+    case CATE_ITEM_TYPE_RADIO:
+        ret = ((kl::TypeRadioList *)m_pCateItem)->loadNextPage();
+        break;
+    default:
+        break;
+    }
+    return ret;
+}
+
 int CateItemUnion::page()
 {
     int ret = 1;
@@ -172,8 +185,9 @@ bool CateItemUnion::haveNext()
 
 void CateItemUnion::genCateItemByAlbumItem(ListTable<kl::AlbumItem> &nodes, VectorTable<MusicCateItemUnion *> &vec)
 {
+    int count = vec.size();
     ListTable<kl::AlbumItem>::iterator it = nodes.begin();
-
+    for ( ; it != nodes.end() && count; ++it, --count);
     for ( ; it != nodes.end(); ++it)
     {
         MusicCateItemUnion *tmp = new MusicCateItemUnion;
@@ -189,8 +203,9 @@ void CateItemUnion::genCateItemByAlbumItem(ListTable<kl::AlbumItem> &nodes, Vect
 
 void CateItemUnion::genCateItemByOperate(ListTable<kl::Operate> &nodes, VectorTable<MusicCateItemUnion *> &vec)
 {
+    int count = vec.size();
     ListTable<kl::Operate>::iterator it = nodes.begin();
-
+    for ( ; it != nodes.end() && count; ++it, --count);
     for ( ; it != nodes.end(); ++it)
     {
         MusicCateItemUnion *tmp = new MusicCateItemUnion;
@@ -206,8 +221,9 @@ void CateItemUnion::genCateItemByOperate(ListTable<kl::Operate> &nodes, VectorTa
 
 void CateItemUnion::genCateItemByTypeRadio(ListTable<kl::TypeRadio> &nodes, VectorTable<MusicCateItemUnion *> &vec)
 {
+    int count = vec.size();
     ListTable<kl::TypeRadio>::iterator it = nodes.begin();
-
+    for ( ; it != nodes.end() && count; ++it, --count);
     for ( ; it != nodes.end(); ++it)
     {
         MusicCateItemUnion *tmp = new MusicCateItemUnion;

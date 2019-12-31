@@ -7,56 +7,64 @@ Item {
     Text
     {
         y: 5
-        anchors.left: parent.left
-        //anchors.leftMargin: 30
+        anchors.right: parent.right
+        anchors.rightMargin: 30
 
         verticalAlignment: Qt.AlignVCenter
-        horizontalAlignment: Qt.AlignLeft
-        text: qsTr("共") + chipList.itemCount() + qsTr("期")
+        horizontalAlignment: Qt.AlignRight
+        text: qsTr("共") + chipList.itemCount + qsTr("期")
         color: "white"
         font.pixelSize: 20
     }
 
+//    Rectangle
+//    {
+//        id: sortTitle
+//        width: 80; height: 40
+//        anchors.right: parent.right
+//        anchors.rightMargin: 20
+//        radius: 20
+//        color: "#212121"
+//        Image
+//        {
+//            id: sortImage
+//            anchors.verticalCenter: parent.verticalCenter
+//            anchors.left: parent.left
+//            anchors.leftMargin: 15
+//            width: Image.width
+//            height: Image.height
+//            source: ""
+//        }
+//        Text
+//        {
+//            id: sortText
+
+//            anchors.left:sortImage.right
+//            anchors.leftMargin: 5
+//            anchors.verticalCenter: parent.verticalCenter
+//            verticalAlignment: Qt.AlignVCenter
+//            horizontalAlignment: Qt.AlignLeft
+//            text: 1 ?  qsTr("正序") : qsTr("反序")
+//            color: "white"
+//            font.pixelSize:12
+//        }
+
+//        MouseArea
+//        {
+//            anchors.fill: parent
+//            // onClicked: KaoLa.Controller.qmlAlbumAudioSort();
+//            onPressed: sortTitle.color = "gray"
+//            onReleased: sortTitle.color = "#212121"
+//            onCanceled: sortTitle.color = "#212121"
+//        }
+//    }
+
     Rectangle
     {
-        id: sortTitle
-        width: 80; height: 40
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        radius: 20
-        color: "#212121"
-        Image
-        {
-            id: sortImage
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 15
-            width: Image.width
-            height: Image.height
-            source: ""
-        }
-        Text
-        {
-            id: sortText
-
-            anchors.left:sortImage.right
-            anchors.leftMargin: 5
-            anchors.verticalCenter: parent.verticalCenter
-            verticalAlignment: Qt.AlignVCenter
-            horizontalAlignment: Qt.AlignLeft
-            text: 1 ?  qsTr("正序") : qsTr("反序")
-            color: "white"
-            font.pixelSize:12
-        }
-
-        MouseArea
-        {
-            anchors.fill: parent
-            // onClicked: KaoLa.Controller.qmlAlbumAudioSort();
-            onPressed: sortTitle.color = "gray"
-            onReleased: sortTitle.color = "#212121"
-            onCanceled: sortTitle.color = "#212121"
-        }
+        anchors.bottom: audioView.top
+        width: parent.width
+        height: 2
+        color: "gray"
     }
 
     ListView {
@@ -64,7 +72,8 @@ Item {
         clip: true
         spacing: 0
         width: parent.width
-        anchors.top: sortTitle.bottom
+        anchors.top: parent.top
+        anchors.topMargin: 50
         anchors.bottom: parent.bottom
         model: chipList
         currentIndex: chipList.playingIndex

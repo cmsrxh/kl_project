@@ -101,7 +101,7 @@ void CurlLoadItem::setBuffer()
 size_t CurlLoadItem::writeData(void *ptr, size_t size, size_t nmemb, void *stream)
 {
     size_t realsize = size * nmemb;
-    GEN_Printf(LOG_DUMP, "Load Data: %ld", realsize);
+    // GEN_Printf(LOG_DUMP, "Load Data: %ld", realsize);
     if (stream)
     {
         static_cast<CurlLoadItem *>(stream)->callbackData(static_cast<uint8_t *>(ptr), realsize);

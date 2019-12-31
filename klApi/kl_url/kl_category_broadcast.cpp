@@ -39,10 +39,10 @@ kl::CategoryBroadcast::CategoryBroadcast()
 
 NetUrl &kl::CategoryBroadcast::genQueryUrl()
 {
-    // mUrl.append("sign", genSign(mUrl));
-    mUrl.append("openid", LocalConfig::instance()->openID());
+    // mUrl.appendChange("sign", genSign(mUrl));
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
 
-    mUrl.append("sign", SIGN_CategoryBroadcast);
+    mUrl.appendChange("sign", SIGN_CategoryBroadcast);
 
     return mUrl;
 }

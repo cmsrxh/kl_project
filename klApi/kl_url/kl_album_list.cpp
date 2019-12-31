@@ -52,13 +52,13 @@ kl::AlbumList::~AlbumList()
 
 NetUrl &kl::AlbumList::genQueryUrl()
 {
-    mUrl.append("cid", mCID);
-    mUrl.append("sorttype", mSortType);
-    mUrl.append("pagenum", needPage);
-    mUrl.append("pagesize", needPageSize);
+    mUrl.appendChange("cid", mCID);
+    mUrl.appendChange("sorttype", mSortType);
+    mUrl.appendChange("pagenum", needPage);
+    mUrl.appendChange("pagesize", needPageSize);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_AlbumList);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_AlbumList);
 
     return mUrl;
 }
@@ -130,4 +130,20 @@ void kl::AlbumList::genResult(const char *data, unsigned long size)
     }
 
     cJSON_Delete(root);
+}
+
+bool kl::AlbumList::loadNextPage()
+{
+    if (haveNext)
+    {
+        needPage.clear();
+        needPage = ByteString::allocLong(nextPage);
+
+        obtain();
+        return true;
+    } else
+    {
+        GEN_Printf(LOG_DEBUG, "Nothing next page.");
+        return false;
+    }
 }

@@ -29,11 +29,11 @@ kl::ChipRadioList::~ChipRadioList()
 
 NetUrl &kl::ChipRadioList::genQueryUrl()
 {
-    mUrl.append("rid", mRID);
-    mUrl.append("clockid", "");;
+    mUrl.appendChange("rid", mRID);
+    mUrl.appendChange("clockid", "");;
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_ChipRadioList);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_ChipRadioList);
 
     return mUrl;
 }

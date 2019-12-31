@@ -3,6 +3,7 @@ import QtQuick.Controls 2.0
 import Hongjing.HMI.KL 1.0 as KL
 
 Item {
+
     Column
     {
         id: topLab
@@ -19,7 +20,7 @@ Item {
             color: "white"
             elide: Text.ElideRight
             font.pixelSize: 20
-            text: "TITLE"
+            text: detailObject.albumInfoName
         }
 
         ImageFrame
@@ -28,8 +29,7 @@ Item {
             width: titleText.width
             height: titleText.width
             anchors.horizontalCenter: parent.horizontalCenter
-
-            imageUri: ""//KaoLa.Controller.albumPicture
+            imageUri: detailObject.albumInfoImage
         }
         Row {
             id: hostLab
@@ -56,7 +56,7 @@ Item {
 
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignLeft
-                text: "Host Name"
+                text: detailObject.albumInfoHostName
                 color: "white"
                 elide: Text.ElideRight
                 font.pixelSize: 20
@@ -71,26 +71,10 @@ Item {
             clip: true
             spacing: 8
 
-            ListModel
-            {
-                id: keyWord
-                ListElement {
-                    name: "a"
-                }
-                ListElement {
-                    name: "b"
-                }
-                ListElement {
-                    name: "c"
-                }
-                ListElement {
-                    name: "d"
-                }
-            }
-
             Repeater
             {
-                model: keyWord
+                id: keyWordLab
+                model: detailObject.keyWords
                 anchors.fill: parent
                 property int ypos: 5
                 property int xpos: 5
@@ -108,12 +92,11 @@ Item {
                         anchors.centerIn: parent
                         verticalAlignment: Qt.AlignVCenter
                         horizontalAlignment: Qt.AlignHCenter
-                        text: name
+                        text: detailObject.keyWords[index]
                         color: "white"
                         font.pixelSize: 18
                     }
                 }
-
             }
         }
     }

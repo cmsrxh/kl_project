@@ -47,8 +47,8 @@ void kl::InitManage::obtain()
 
 NetUrl &kl::InitManage::genQueryUrl()
 {    
-    // mUrl.append("sign", genSign(mUrl));
-    mUrl.append("sign", SIGN_InitManage);
+    // mUrl.appendChange("sign", genSign(mUrl));
+    mUrl.appendChange("sign", SIGN_InitManage);
 
     return mUrl;
 }

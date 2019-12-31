@@ -5,12 +5,34 @@
 
 #define CHIP_ITEM_NAME     Qt::UserRole
 
-ChipItemModel::ChipItemModel()
-    : m_pUnion(NULL)
+ChipItemModel::ChipItemModel(bool isPlayModel)
+    : mIsPlayModel(isPlayModel), m_pUnion(NULL)
 {
     roles[CHIP_ITEM_NAME]    = "chipItemName";
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
+
+#if 0
+    MusicChipItemUnion *uni = new MusicChipItemUnion;
+
+    uni->name = "asdasfasf";
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+    mVec.push_back(uni);
+#endif
 }
 
 int ChipItemModel::rowCount(const QModelIndex &) const
@@ -20,14 +42,24 @@ int ChipItemModel::rowCount(const QModelIndex &) const
 
 QVariant ChipItemModel::data(const QModelIndex &index, int role) const
 {
-    if ( index.row() < 0 || index.row() >= (int)mVec.size())
+    int i = index.row();
+    if ( i < 0 || i >= (int)mVec.size())
     {
         return QVariant();
     }
 
     if (CHIP_ITEM_NAME == role)
     {
-        return mVec[index.row()]->name.string();
+//        if (mIsPlayModel)
+//        {
+//            //ByteString name = mVec[i]->name;
+
+//            // GEN_Printf(LOG_DEBUG, "[%d] %p, %s, %d", i, name.string(), name.string(), name.size());
+//            GEN_Printf(LOG_DEBUG, "[%d] %p,", i, mVec[i]/*name.string()*/);
+
+//            return QVariant("abc");
+//        }
+        return QStringFromByteString(mVec[index.row()]->name);
     }
 
     return QVariant();
@@ -46,6 +78,7 @@ void ChipItemModel::setChipItemUnion(ChipItemUnion *pUnion)
 
 void ChipItemModel::clear()
 {
+    GEN_Printf(LOG_INFO, "vector clean");
     mVec.clearPtr();
 
     beginResetModel();
@@ -58,14 +91,14 @@ void ChipItemModel::onLoadOver(long ptr)
 
     assert(ptr == (long)m_pUnion);
 
-    if (mVec.empty())
-    {
-        KLDataProc::instance()->enterAlbumView();
-    }
-
-    m_pUnion->onLoadOver();
+    m_pUnion->onLoadOver(this);
 
     qDebug() << "Load over, size = " << mVec.size() << "start = " << start;
+//    for (int i = 0; i < mVec.size(); ++i)
+//    {
+//        GEN_Printf(LOG_DEBUG, "[%d] %p,", i, mVec[i]/*name.string()*/);
+//    }
+
     if (0 == start)
     {
         beginResetModel();
@@ -86,7 +119,19 @@ void ChipItemModel::chipItemClick(int index)
 void ChipItemModel::needNextPage()
 {
     qDebug() << "Chip Need Next Page";
-    m_pUnion->loadNextPage();
+    m_pUnion->loadNextPage(true);
+}
+
+void ChipItemModel::playNeedNextPage()
+{
+    qDebug() << "Player Chip Need Next Page";
+    m_pUnion->loadNextPage(false);
+}
+
+void ChipItemModel::playItemClick(int index)
+{
+    qDebug() << "Click Index=" << index;
+    KLDataProc::instance()->chipPlayItemClick(index);
 }
 
 QHash<int, QByteArray> ChipItemModel::roleNames() const
@@ -96,10 +141,17 @@ QHash<int, QByteArray> ChipItemModel::roleNames() const
 
 int ChipItemModel::playingIndex() const
 {
-    return KLDataProc::instance()->getCurChipIndex();
+    return mIsPlayModel ? KLDataProc::instance()->getCurPlayIndex()
+                        : KLDataProc::instance()->getCurChipIndex();
 }
 
 int ChipItemModel::itemCount() const
 {
     return m_pUnion->itemCount();
+}
+
+void ChipItemModel::clean()
+{
+    GEN_Printf(LOG_INFO, "vector clean");
+    mVec.clearPtr();
 }

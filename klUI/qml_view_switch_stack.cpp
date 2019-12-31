@@ -7,8 +7,14 @@ ViewSwitchStack::ViewSwitchStack()
 {
 }
 
-void ViewSwitchStack::push(const QString &url)
+bool ViewSwitchStack::push(const QString &url)
 {
+    if (url == mCurrentSource)
+    {
+        qWarning() << "Current View: " << url << mCurrentSource;
+        return false;
+    }
+
     if ("CategoryView.qml" == url)
     {
         mStack.clear();
@@ -19,6 +25,8 @@ void ViewSwitchStack::push(const QString &url)
         setIsShowReturn(true);
     }
     setSource(url);
+
+    return true;
 }
 
 void ViewSwitchStack::pop()

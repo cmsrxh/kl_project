@@ -22,8 +22,8 @@ kl::CategoryAll::CategoryAll()
 
 NetUrl &kl::CategoryAll::genQueryUrl()
 {
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_CategoryAll);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_CategoryAll);
 
     return mUrl;
 }

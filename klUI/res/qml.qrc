@@ -8,5 +8,8 @@
         <file>ImageFrame.qml</file>
         <file>AudioList.qml</file>
         <file>ScrollBar.qml</file>
+        <file>MediaSlider.qml</file>
+        <file>CurrentPlay.qml</file>
+        <file>CurrentDelegate.qml</file>
     </qresource>
 </RCC>

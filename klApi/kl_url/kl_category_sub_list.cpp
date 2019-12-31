@@ -58,9 +58,9 @@ kl::CategorySublist::~CategorySublist()
 
 NetUrl &kl::CategorySublist::genQueryUrl()
 {
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("cid", mCid);
-    mUrl.append("sign", SIGN_CategorySublist);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("cid", mCid);
+    mUrl.appendChange("sign", SIGN_CategorySublist);
 
     return mUrl;
 }

@@ -33,16 +33,29 @@ void Application::initialize()
 //    HttpUtil().urlEncoding("陈猛", result);
 //    GEN_Printf(LOG_INFO, "string: %s", result.string());
 
+    NetUrl url("www.baidu.com");
+
+    url.append("a", "b");
+    url.append("b", "b");
+    url.append("c", "b");
+
+    url.appendChange("a", "d");
+    url.appendChange("b", "e");
+
+    GEN_Printf(LOG_DEBUG, "%s", url.genUrl().string());
+    exit(1);
+
+
     if(!LocalConfig::instance()->init())
     {
-        static  kl::InitManage init;
+//        static  kl::InitManage init;
 
-        GEN_Printf(LOG_DEBUG, "deviceID: %s", LocalConfig::instance()->deviceID().string());
-        GEN_Printf(LOG_DEBUG, "appID: %s", LocalConfig::instance()->appID().string());
-        GEN_Printf(LOG_DEBUG, "secretKey: %s", LocalConfig::instance()->secretKey().string());
-        GEN_Printf(LOG_DEBUG, "openID: %s", LocalConfig::instance()->openID().string());
+//        GEN_Printf(LOG_DEBUG, "deviceID: %s", LocalConfig::instance()->deviceID().string());
+//        GEN_Printf(LOG_DEBUG, "appID: %s", LocalConfig::instance()->appID().string());
+//        GEN_Printf(LOG_DEBUG, "secretKey: %s", LocalConfig::instance()->secretKey().string());
+//        GEN_Printf(LOG_DEBUG, "openID: %s", LocalConfig::instance()->openID().string());
 
-        init.obtain();
+//        init.obtain();
     } else
     {
 //        static kl::ActiveManage act;
@@ -77,23 +90,23 @@ void Application::initialize()
 //        static kl::TypeRadioList typeradio;
 //        typeradio.obtain();
 
-        static kl::AlbumDetail albumDetail("1100000048156");
-        albumDetail.obtain();
+//        static kl::AlbumDetail albumDetail("1100000048156");
+//        albumDetail.obtain();
 
-        static kl::AlbumList albumList(2085);
-        albumList.obtain();
+//        static kl::AlbumList albumList(2085);
+//        albumList.obtain();
 
-        static kl::ChipAudioDetail audioDe("1000013097452");
-        audioDe.obtain();
+//        static kl::ChipAudioDetail audioDe("1000013097452");
+//        audioDe.obtain();
 
-        static kl::ChipAudioList audioList("1100000048156");
-        audioList.obtain();
+//        static kl::ChipAudioList audioList("1100000048156");
+//        audioList.obtain();
 
-        static kl::ChipRadioDetail radioDe("1200000000162");
-        radioDe.obtain();
+//        static kl::ChipRadioDetail radioDe("1200000000162");
+//        radioDe.obtain();
 
-        static kl::ChipRadioList radioList("1200000000162");
-        radioList.obtain();
+//        static kl::ChipRadioList radioList("1200000000162");
+//        radioList.obtain();
 
     }
 }
@@ -108,18 +121,75 @@ void Application::runLoop()
     while(getMessage(evt))
     {
         switch (evt->sig)
-        {        
+        {
+        case SIG_HAVE_OPEN_ID:
+            klInitGetOpenId();
+            break;
+        case SIG_KL_INIT_ERROR:
+            klInitActiveManage((GeneralQEvt *)evt);
+            break;
         case SIG_USER_UNUSED:
         default:
             GEN_Printf(LOG_WARN, "[%d] is UNKOWN.", evt->sig);
             break;
         }
 
+
         recycleEvent(evt);
     }
 
     GEN_Printf(LOG_WARN, "Event Loop is Exit.");
     exit(EXIT_SUCCESS);
+}
+
+
+
+void Application::postKlEvent(int cmd, int ext1, int ext2, const char *str)
+{
+    GeneralQEvt *e = (GeneralQEvt *)newEvt(cmd, sizeof(GeneralQEvt));
+
+    if (e)
+    {
+        e->wParam = ext1;
+        e->lParam = ext2;
+        e->pHander = (void *)str;
+        post(e);
+    } else
+    {
+        GEN_Printf(LOG_ERROR, "Post Kl Cmd failed.");
+    }
+}
+
+void Application::klInitActiveManage(GeneralQEvt *evt)
+{
+    switch (evt->wParam)
+    {
+    case 1: // 考拉调用init，加载OpenId信息的json解析有错
+        // 有可能需要调用Active，来激活设备
+        if (!m_pKLActive)
+        {
+            m_pKLActive = new kl::ActiveManage;
+        }
+        m_pKLActive->obtain();
+
+        break;
+    case 2: // 考拉调用init，加载数据失败
+    case 3: // 考拉调用active，加载数据失败
+        GEN_Printf(LOG_ERROR, "init or active failed, %s", (char *)evt->pHander);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void Application::klInitGetOpenId()
+{
+    ListTable<kl::KLObject *>::iterator it = mKlBack.begin();
+    for ( ; it != mKlBack.end(); ++it)
+    {
+        (*it)->obtain();
+    }
 }
 
 

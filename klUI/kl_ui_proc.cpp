@@ -4,6 +4,8 @@
 #include "iface/media_service_i_face.h"
 #include "iface/media_notify.h"
 #include "model/kl_data_proc.h"
+#include "model/detail_qobject.h"
+#include "qml_view_switch_stack.h"
 #include "kl_ui_proc.h"
 #include <QDebug>
 
@@ -12,6 +14,7 @@ extern KLUIProc *gInstance;
 KLUIProc::KLUIProc()
     : QObject()
     , mPlayState(0)
+    , mCanSeek(true)
     , m_pViewStack(new ViewSwitchStack)
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
@@ -19,17 +22,21 @@ KLUIProc::KLUIProc()
 
 void KLUIProc::init(QQmlContext *ctx)
 {
-    m_pCate     = new CategoryModel;
-    m_pCateItem = new CateItemModel;
-    m_pChipItem = new ChipItemModel;
+    m_pCate         = new CategoryModel;
+    m_pCateItem     = new CateItemModel;
+    m_pChipItem     = new ChipItemModel(false);
+    m_pChipItemPlay = new ChipItemModel(true);
 
-    KLDataProc::instance()->init(m_pCate, m_pCateItem, m_pChipItem);
+    KLDataProc::instance()->init(m_pCate, m_pCateItem, m_pChipItem, m_pChipItemPlay);
 
     ctx->setContextProperty("cateItemModel", m_pCateItem);
     ctx->setContextProperty("cateModel", m_pCate);
     ctx->setContextProperty("chipList", m_pChipItem);
+    ctx->setContextProperty("playList", m_pChipItemPlay);
 
-    ctx->setContextProperty("stack", m_pViewStack);
+    ctx->setContextProperty("detailObject", DetailQobject::instance());
+
+    ctx->setContextProperty("stack", m_pViewStack);    
 }
 
 void KLUIProc::qmlStart()
@@ -92,6 +99,12 @@ void KLUIProc::qmlPlayNext()
     KLDataProc::instance()->playNext();
 }
 
+void KLUIProc::qmlMainTabClick(int index)
+{
+    qDebug() << "main tab index=" << index;
+    KLDataProc::instance()->mainTabClick(index);
+}
+
 void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
 {
     switch (msg)
@@ -129,6 +142,20 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
     }
 }
 
+bool KLUIProc::canSeek() const
+{
+    return mCanSeek;
+}
+
+void KLUIProc::setCanSeek(bool canSeek)
+{
+    if (mCanSeek != canSeek)
+    {
+        mCanSeek = canSeek;
+        Q_EMIT canSeekChanged();
+    }
+}
+
 int KLUIProc::playState() const
 {
     return mPlayState;
@@ -143,9 +170,9 @@ void KLUIProc::setPlayState(int playState)
     }
 }
 
-void KLUIProc::pushNew(const QString &url)
+bool KLUIProc::pushNew(const QString &url)
 {
-    m_pViewStack->push(url);
+    return m_pViewStack->push(url);
 }
 
 void KLUIProc::setSourceUrl(const char *url)

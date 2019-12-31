@@ -46,7 +46,7 @@ void kl::ActiveManage::obtain()
 
 NetUrl &kl::ActiveManage::genQueryUrl()
 {   
-    mUrl.append("sign", SIGN_ActiveManage);
+    mUrl.appendChange("sign", SIGN_ActiveManage);
 
     return mUrl;
 }

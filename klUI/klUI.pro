@@ -31,7 +31,10 @@ HEADERS += application.h \
     model/kl_data_proc.h \
     qml_view_switch_stack.h \
     model/chip_item_model.h \
-    model/chip_item_union.h
+    model/chip_item_union.h \
+    model/detail_union.h \
+    model/detail_qobject.h \
+    model/chip_item_play_manage.h
 
 SOURCES += application.cpp main.cpp \
     kl_ui_proc.cpp \
@@ -42,7 +45,10 @@ SOURCES += application.cpp main.cpp \
     model/kl_data_proc.cpp \
     qml_view_switch_stack.cpp \
     model/chip_item_model.cpp \
-    model/chip_item_union.cpp
+    model/chip_item_union.cpp \
+    model/detail_union.cpp \
+    model/detail_qobject.cpp \
+    model/chip_item_play_manage.cpp
 
 RESOURCES += res/qml.qrc \
     res/image.qrc

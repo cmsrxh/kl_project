@@ -40,10 +40,10 @@ kl::BroadcastItemProgramlist::~BroadcastItemProgramlist()
 
 NetUrl &kl::BroadcastItemProgramlist::genQueryUrl()
 {
-    mUrl.append("bid", mBID);
-    mUrl.append("date", "");
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_BroadcastItemProgramlist);
+    mUrl.appendChange("bid", mBID);
+    mUrl.appendChange("date", "");
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_BroadcastItemProgramlist);
     return mUrl;
 }
 

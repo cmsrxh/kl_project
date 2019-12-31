@@ -5,6 +5,9 @@ import QtGraphicalEffects 1.0
 import Hongjing.HMI.KL 1.0 as KL
 
 Item {
+
+    signal playListShow();
+
     Connections {
         target: KL.Controller
         onPlayingInfo: {
@@ -37,52 +40,24 @@ Item {
 
             ColumnLayout {
                 anchors.fill: parent
-                Connections {
-                    target: KL.Controller
-                    onDurationChanged:
-                    {
-                        slider.to = duration;
-                    }
-                }
 
-                Timer {
-                    repeat: true
-                    interval: 1000
-                    running: (1 === KL.Controller.playState) ? true : false
-
-                    onTriggered:
-                    {
-                        slider.value = KL.Controller.qmlGetCurrentPosition();
-                    }
-                }
-
-                Slider //进度条
-                {
+                MediaSlider {
                     id: slider
                     Layout.fillWidth: true
                     height: 30
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    live: false
-                    from: 0
-                    value: 0
-                    to: 100
-
-                    onMoved: {
-                        console.log("postion: ", position, value, stepSize)
-                    }
                 }
 
                 RowLayout //三个播放控制按钮
                 {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
                     Button
                     {
                         visible: stack.isShowReturn
                         text: qsTr("返回")
                         onClicked: {
-                            stack.pop();
+                            stack.qmlPop();
                         }
                     }
 
@@ -116,7 +91,14 @@ Item {
                             KL.Controller.qmlPlayNext();
                         }
                     }
-
+                    Button
+                    {
+                        width: 40
+                        text: qsTr("曲目")
+                        onClicked: {
+                            playListShow();
+                        }
+                    }
                 }
 
             }

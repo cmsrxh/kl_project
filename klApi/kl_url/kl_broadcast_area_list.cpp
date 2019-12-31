@@ -32,8 +32,8 @@ kl::BroadcastAreaList::BroadcastAreaList()
 
 NetUrl &kl::BroadcastAreaList::genQueryUrl()
 {
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_BroadcastAreaList);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_BroadcastAreaList);
 
     return mUrl;
 }

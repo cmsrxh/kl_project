@@ -13,6 +13,7 @@ class KLUIProc : public QObject
     Q_OBJECT
     Q_PROPERTY(int playState READ playState WRITE setPlayState NOTIFY playStateChanged)
 
+    Q_PROPERTY(bool canSeek READ canSeek WRITE setCanSeek NOTIFY canSeekChanged)
 public:
     KLUIProc();
 
@@ -21,9 +22,12 @@ public:
     int  playState() const;
     void setPlayState(int playState);
 
-    void pushNew(QString const &url);
+    bool pushNew(QString const &url);
 
     void setSourceUrl(const char *url);
+    bool canSeek() const;
+    void setCanSeek(bool canSeek);
+
 public Q_SLOTS:
     void qmlStart();
     void qmlPlay();
@@ -41,6 +45,7 @@ public Q_SLOTS:
     //
     void qmlPlayPrev();
     void qmlPlayNext();
+    void qmlMainTabClick(int index);
     //
     void onRecvNotify(int msg, int ext1, int ext2, const QString &str);
 
@@ -49,18 +54,22 @@ Q_SIGNALS:
 
     // property signal
     void playStateChanged();
+    void canSeekChanged();
 
     // qml
     void durationChanged(int duration);
     void playingInfo(QString const &name, QString const &desc);
-
+    void albumInfoName(QString const &name);
+    void albumInfoDesc(QString const &imgUrl, QString const &desc, const QString &hostName);
 private:
     int               mPlayState;  //空闲=0, 播放=1, 暂停=2, 停止=3
+    bool              mCanSeek;
     ViewSwitchStack  *m_pViewStack;
 
     CategoryModel    *m_pCate;
     CateItemModel    *m_pCateItem;
     ChipItemModel    *m_pChipItem;
+    ChipItemModel    *m_pChipItemPlay;
 };
 
 #endif // KL_UI_PROC_H

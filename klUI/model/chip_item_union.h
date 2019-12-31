@@ -10,19 +10,25 @@ class ChipItemUnion : public kl::UINotifyIface
 {
 public:
     enum {
-        CHIP_ITEM_AUDIO,
+        CHIP_ITEM_AUDIO = 1,
         CHIP_ITEM_RADIO,
     };
     // 资源类型 (0:专辑|3:电台)
-    ChipItemUnion(int type, ChipItemModel *parent);
+    ChipItemUnion(int type);
 
-    void loadChipList(const ByteString &id, bool sorttype = true);
+    /**
+     * @brief loadChipList
+     * @param id [in]
+     * @param sorttype [in]
+     * @param loadAction [in] 下载动作，默认是前台下载，表示需要更新数据
+     */
+    void loadChipList(const ByteString &id, bool sorttype = true, bool loadAction = true);
 
     void dataPrepare();
 
     void errorInfo(int, const char *);
 
-    void onLoadOver();
+    void onLoadOver(ChipItemModel *parent);
 
     int itemCount();
 
@@ -30,7 +36,7 @@ public:
      * @brief loadNextPage
      * @return 返回是否还有下一页
      */
-    bool loadNextPage();
+    bool loadNextPage(bool loadAction);
 
     /**
      * @brief getUnionInfoByIndex
@@ -42,9 +48,10 @@ public:
      */
     bool getUnionInfoByIndex(MusicChipItemUnion &info, int index);
 private:
+    bool                 mLoadAction;
     int                  mChipType;
     UIChipItemList      *m_pChip;
-    ChipItemModel       *m_pParentModel;
+
 
     void genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
     void genCatesByAudioItem(ListTable<kl::AudioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);

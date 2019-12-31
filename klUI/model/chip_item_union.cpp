@@ -3,11 +3,11 @@
 #include "kl_url/kl_chip_radio_list.h"
 #include "chip_item_model.h"
 #include "chip_item_union.h"
+#include "chip_item_play_manage.h"
 
-ChipItemUnion::ChipItemUnion(int type, ChipItemModel *parent)
-    : mChipType(0)
+ChipItemUnion::ChipItemUnion(int type)
+    : mLoadAction(true), mChipType(0)
     , m_pChip(nullptr)
-    , m_pParentModel(parent)
 {
     if (0 == type)
     {
@@ -22,8 +22,10 @@ ChipItemUnion::ChipItemUnion(int type, ChipItemModel *parent)
     }
 }
 
-void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype)
+void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, bool loadAction)
 {
+    mLoadAction = loadAction;
+
     switch (mChipType)
     {
     case CHIP_ITEM_AUDIO:
@@ -34,12 +36,11 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype)
             audioList = ((kl::ChipAudioList *)m_pChip);
         } else
         {
-            audioList = new kl::ChipAudioList(id, sorttype);
-            audioList->setUINotify(this);
-            audioList->obtain();
+            audioList = new kl::ChipAudioList(id, sorttype);            
             m_pChip = audioList;
         }
-
+        audioList->setUINotify(this);
+        audioList->obtain();
         break;
     }
     case CHIP_ITEM_RADIO:
@@ -51,10 +52,11 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype)
         } else
         {
             radioList = new kl::ChipRadioList(id);
-            radioList->setUINotify(this);
-            radioList->obtain();
+
             m_pChip = radioList;
         }
+        radioList->setUINotify(this);
+        radioList->obtain();
         break;
     }
     default:
@@ -79,28 +81,28 @@ void ChipItemUnion::dataPrepare()
     if (isEmpty)
     {
         GEN_Printf(LOG_DEBUG, "Chip Item List is empty.");
-        Q_EMIT m_pParentModel->loadError(0, "Chip Item List is empty.");
+        gPlayInstance->loadError(0, "Chip Item List is empty.");
     } else
     {
-        Q_EMIT m_pParentModel->dataLoadOver((long)this);
+        gPlayInstance->dataLoadOver((long)this, mLoadAction);
     }
 }
 
 void ChipItemUnion::errorInfo(int type, const char *err_str)
 {
     GEN_Printf(LOG_DEBUG, "Chip Item List Error, %s", err_str);
-    Q_EMIT m_pParentModel->loadError(type, err_str);
+    gPlayInstance->loadError(type, QStringFromCString(err_str));
 }
 
-void ChipItemUnion::onLoadOver()
+void ChipItemUnion::onLoadOver(ChipItemModel *parent)
 {
     switch (mChipType)
     {
     case CHIP_ITEM_AUDIO:
-        genCatesByAudioItem(((kl::ChipAudioList *)m_pChip)->nodes(), m_pParentModel->vec());
+        genCatesByAudioItem(((kl::ChipAudioList *)m_pChip)->nodes(), parent->vec());
         break;
     case CHIP_ITEM_RADIO:
-        genCatesByRadioItem(((kl::ChipRadioList *)m_pChip)->nodes(), m_pParentModel->vec());
+        genCatesByRadioItem(((kl::ChipRadioList *)m_pChip)->nodes(), parent->vec());
         break;
     default:
         break;
@@ -109,22 +111,25 @@ void ChipItemUnion::onLoadOver()
 
 int ChipItemUnion::itemCount()
 {
+    int count = 0;
     switch (mChipType)
     {
     case CHIP_ITEM_AUDIO:
-        return ((kl::ChipAudioList *)m_pChip)->getCount();
+        count = ((kl::ChipAudioList *)m_pChip)->getCount();
         break;
     case CHIP_ITEM_RADIO:
-        return ((kl::ChipRadioList *)m_pChip)->nodes().size();
+        count = ((kl::ChipRadioList *)m_pChip)->nodes().size();
         break;
     default:
         break;
     }
-    return 0;
+    GEN_Printf(LOG_DEBUG, "Count = %d", count);
+    return count;
 }
 
-bool ChipItemUnion::loadNextPage()
+bool ChipItemUnion::loadNextPage(bool loadAction)
 {
+    mLoadAction = loadAction;
     switch (mChipType)
     {
     case CHIP_ITEM_AUDIO:
@@ -145,7 +150,7 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
     {
     case CHIP_ITEM_AUDIO:
     {
-        // GEN_Printf(LOG_DEBUG, "Get Info by index=%d", index);
+        GEN_Printf(LOG_DEBUG, "Get Info by index=%d, %p", index, this);
         ListTable<kl::AudioItem> &nodes = ((kl::ChipAudioList *)m_pChip)->nodes();
         ListTable<kl::AudioItem>::iterator it = nodes.begin();
         for ( ; it != nodes.end() && index; ++it, --index);
@@ -158,6 +163,7 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
             info.desc    = it->audioDes;
             return true;
         }
+        GEN_Printf(LOG_DEBUG, "Get Info by index=%d", index);
         return false;
     }
     case CHIP_ITEM_RADIO:
@@ -182,7 +188,10 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
 
 void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)
 {
+    int count = vec.size();
     ListTable<kl::RadioItem>::iterator it = nodes.begin();
+
+    for ( ; it != nodes.end() && count; ++it, --count);
 
     for ( ; it != nodes.end(); ++it)
     {
@@ -200,7 +209,9 @@ void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorT
 
 void ChipItemUnion::genCatesByAudioItem(ListTable<kl::AudioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)
 {
+    int count = vec.size();
     ListTable<kl::AudioItem>::iterator it = nodes.begin();
+    for ( ; it != nodes.end() && count; ++it, --count);
 
     for ( ; it != nodes.end(); ++it)
     {
@@ -211,6 +222,8 @@ void ChipItemUnion::genCatesByAudioItem(ListTable<kl::AudioItem> &nodes, VectorT
         tmp->image   = it->audioPic;
         tmp->playUrl = it->mp3PlayUrl64;
         tmp->desc    = it->audioDes;
+
+        // GEN_Printf(LOG_DEBUG, "[%d] %p, %s, %d", 0, tmp->name.string(), tmp->name.string(), tmp->name.size());
 
         vec.push_back(tmp);
     }

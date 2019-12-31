@@ -31,10 +31,10 @@ kl::TypeRadioList::~TypeRadioList()
 
 NetUrl &kl::TypeRadioList::genQueryUrl()
 {
-    mUrl.append("cid", mCID);
+    mUrl.appendChange("cid", mCID);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_CategoryAll);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_CategoryAll);
 
     return mUrl;
 }
@@ -77,4 +77,10 @@ void kl::TypeRadioList::genResult(const char *data, unsigned long size)
     }
 
     cJSON_Delete(root);
+}
+
+bool kl::TypeRadioList::loadNextPage()
+{
+    GEN_Printf(LOG_DEBUG, "Have Next, But can't really.");
+    return false;
 }

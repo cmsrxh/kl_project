@@ -43,13 +43,13 @@ kl::OperateList::~OperateList()
 
 NetUrl &kl::OperateList::genQueryUrl()
 {
-    mUrl.append("pagenum", mPageNum);
-    mUrl.append("pagesize", mPageSize);
-    mUrl.append("lon", "");
-    mUrl.append("lat", "");
+    mUrl.appendChange("pagenum", mPageNum);
+    mUrl.appendChange("pagesize", mPageSize);
+    mUrl.appendChange("lon", "");
+    mUrl.appendChange("lat", "");
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_OperateList);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_OperateList);
 
     return mUrl;
 }
@@ -126,4 +126,20 @@ void kl::OperateList::genResult(const char *data, unsigned long size)
     }
 
     cJSON_Delete(root);
+}
+
+bool kl::OperateList::loadNextPage()
+{
+    if (haveNext)
+    {
+        mPageNum.clear();
+        mPageNum = ByteString::allocLong(nextPage);
+
+        obtain();
+        return true;
+    } else
+    {
+        GEN_Printf(LOG_DEBUG, "Nothing next page.");
+        return false;
+    }
 }

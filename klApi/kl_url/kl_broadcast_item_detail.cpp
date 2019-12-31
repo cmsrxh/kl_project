@@ -33,10 +33,10 @@ kl::BroadcastItemDetail::~BroadcastItemDetail()
 
 NetUrl &kl::BroadcastItemDetail::genQueryUrl()
 {
-    mUrl.append("broadcastid", mBroadcastId);
+    mUrl.appendChange("broadcastid", mBroadcastId);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_BroadcastItemDetail);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_BroadcastItemDetail);
 
     return mUrl;
 }

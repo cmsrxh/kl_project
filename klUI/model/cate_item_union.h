@@ -11,7 +11,7 @@ class CateItemUnion : public kl::UINotifyIface
 {
 public:
     enum {
-        CATE_ITEM_ALBUM,
+        CATE_ITEM_ALBUM = 1,
         CATE_ITEM_OPERATE,
         CATE_ITEM_TYPE_RADIO,
     };
@@ -24,6 +24,12 @@ public:
     void errorInfo(int, const char *);
 
     void onLoadOver(CateItemModel *model);
+
+    /**
+     * @brief loadNextPage
+     * @return 返回是否还有下一页
+     */
+    bool loadNextPage();
 
     int  page();
     bool haveNext();

@@ -8,8 +8,8 @@ class CategoryUnion : public kl::UINotifyIface
 {
 public:
     enum {
-        MAIN_CATE = 0,
-        SUB_CATE  = 1,
+        MAIN_CATE = 1,
+        SUB_CATE  = 2,
     };
     CategoryUnion(int cate_type, CategoryModel *parent);
 

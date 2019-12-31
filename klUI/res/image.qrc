@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>image/playing.png</file>
         <file>image/scrollBar.png</file>
+        <file>image/slider_hl.png</file>
+        <file>image/slider_bg.png</file>
+        <file>image/songListClose.png</file>
     </qresource>
 </RCC>

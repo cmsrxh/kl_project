@@ -43,13 +43,13 @@ kl::ChipAudioList::~ChipAudioList()
 
 NetUrl &kl::ChipAudioList::genQueryUrl()
 {
-    mUrl.append("aid", mAudioId);
-    mUrl.append("sorttype", mSortType);
-    mUrl.append("pagesize", needPageSize);
-    mUrl.append("pagenum", needPage);
+    mUrl.appendChange("aid", mAudioId);
+    mUrl.appendChange("sorttype", mSortType);
+    mUrl.appendChange("pagesize", needPageSize);
+    mUrl.appendChange("pagenum", needPage);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_ChipAudioList);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_ChipAudioList);
 
     return mUrl;
 }
@@ -123,9 +123,7 @@ bool kl::ChipAudioList::loadNextPage()
     if (haveNext)
     {
         needPage.clear();
-        needPage = ByteString::allocLong(page + 1);
-
-        mUrl.append("pagenum", needPage);
+        needPage = ByteString::allocLong(nextPage);
 
         obtain();
         return true;

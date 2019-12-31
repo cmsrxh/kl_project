@@ -11,8 +11,10 @@ class ChipItemModel : public QAbstractListModel
     Q_OBJECT
 
     Q_PROPERTY(int playingIndex READ playingIndex NOTIFY playingIndexChanged)
+
+    Q_PROPERTY(int itemCount READ itemCount NOTIFY itemCountChanged)
 public:
-    ChipItemModel();
+    ChipItemModel(bool isPlayModel);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -24,6 +26,11 @@ public:
 
     void clear();
 
+    /**
+     * @brief vec
+     * @return 返回的是引用
+     * @warning 警告，获取结构的时候，也必须使用引用，否则定义 的局部变量会释放，vector容器中的指针指向的地址
+     */
     VectorTable<MusicChipItemUnion *> &vec()
     {
         return mVec;
@@ -32,6 +39,24 @@ public:
     // property
     int  playingIndex() const;
 
+    int  itemCount() const;
+
+    int  size() const
+    {
+        return mVec.size();
+    }
+    void  clean();
+
+    bool isPlayModel() const
+    {
+        return mIsPlayModel;
+    }
+
+    bool checkUnion(ChipItemUnion *uni)
+    {
+        return m_pUnion != uni;
+    }
+
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
@@ -39,7 +64,9 @@ public Q_SLOTS:
 
     void needNextPage();
 
-    int  itemCount() const;
+    void playNeedNextPage();
+
+    void playItemClick(int index);
 
 Q_SIGNALS:
     void dataLoadOver(long ptr);
@@ -49,10 +76,13 @@ Q_SIGNALS:
     // property
     void playingIndexChanged(int playingIndex);
 
+    void itemCountChanged();
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
+    const bool                        mIsPlayModel;
     ChipItemUnion                    *m_pUnion;
     QHash<int, QByteArray>            roles;
     VectorTable<MusicChipItemUnion *> mVec;

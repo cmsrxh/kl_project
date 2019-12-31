@@ -20,10 +20,10 @@ kl::ChipAudioDetail::~ChipAudioDetail()
 
 NetUrl &kl::ChipAudioDetail::genQueryUrl()
 {
-    mUrl.append("id", mAudioId);
+    mUrl.appendChange("id", mAudioId);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_ChipAudioDetail);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_ChipAudioDetail);
 
     return mUrl;
 }

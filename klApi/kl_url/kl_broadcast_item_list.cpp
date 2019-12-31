@@ -70,13 +70,13 @@ kl::BroadcastItemList::~BroadcastItemList()
 
 NetUrl &kl::BroadcastItemList::genQueryUrl()
 {
-    mUrl.append("type", type);
-    mUrl.append("area", code);
-    mUrl.append("classifyid", classfyid);
-    mUrl.append("pagenum", needPage);
-    mUrl.append("pagesize", needPageSize);
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_BroadcastItemList);
+    mUrl.appendChange("type", type);
+    mUrl.appendChange("area", code);
+    mUrl.appendChange("classifyid", classfyid);
+    mUrl.appendChange("pagenum", needPage);
+    mUrl.appendChange("pagesize", needPageSize);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_BroadcastItemList);
     return mUrl;
 }
 

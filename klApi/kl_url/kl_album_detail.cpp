@@ -22,10 +22,10 @@ kl::AlbumDetail::~AlbumDetail()
 
 NetUrl &kl::AlbumDetail::genQueryUrl()
 {
-    mUrl.append("ids", mAlbumId);
+    mUrl.appendChange("ids", mAlbumId);
 
-    mUrl.append("openid", LocalConfig::instance()->openID());
-    mUrl.append("sign", SIGN_AlbumDetail);
+    mUrl.appendChange("openid", LocalConfig::instance()->openID());
+    mUrl.appendChange("sign", SIGN_AlbumDetail);
 
     return mUrl;
 }
@@ -55,44 +55,55 @@ void kl::AlbumDetail::profile()
 
 void kl::AlbumDetail::genResult(const char *data, unsigned long size)
 {
-    //GEN_Printf(LOG_DEBUG, "%s", data, size);
+    // GEN_Printf(LOG_DEBUG, "%s", data);
     cJSON *root = cJSON_Parse((char *)data, size);
-    cJSON *result = cJSON_GetObjectItem(root, "result");
+    cJSON *resultArray = cJSON_GetObjectItem(root, "result");
 
-    if (result)
+    if (resultArray)
     {
-        JSON_VALUETRING_SWAP_BYTESTRING(result, id, mItem.id);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, name, mItem.name);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, img, mItem.img);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, followedNum, mItem.followedNum);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, countNum, mItem.countNum);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, isOnline, mItem.isOnline);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, desc, mItem.desc);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, listenNum, mItem.listenNum);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, sortType, mItem.sortType);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, hasCopyright, mItem.hasCopyright);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, produce, mItem.produce);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, status, mItem.status);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, updateDay, mItem.copyrightLabel);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, commentNum, mItem.commentNum);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, lastCheckDate, mItem.lastCheckDate);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, type, mItem.type);
-        JSON_VALUETRING_SWAP_BYTESTRING(result, isSubscribe, mItem.isSubscribe);
-
-        cJSON *keyWord = cJSON_GetObjectItem(result, "keyWords");
-        if (keyWord)
+        for (cJSON *result = resultArray->child; NULL != result; result = result->next )
         {
-            for (cJSON *item = keyWord->child; NULL != item; item = item->next )
+            JSON_VALUETRING_SWAP_BYTESTRING(result, id, mItem.id);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, name, mItem.name);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, img, mItem.img);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, followedNum, mItem.followedNum);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, countNum, mItem.countNum);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, isOnline, mItem.isOnline);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, desc, mItem.desc);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, listenNum, mItem.listenNum);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, sortType, mItem.sortType);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, hasCopyright, mItem.hasCopyright);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, produce, mItem.produce);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, status, mItem.status);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, updateDay, mItem.copyrightLabel);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, commentNum, mItem.commentNum);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, lastCheckDate, mItem.lastCheckDate);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, type, mItem.type);
+            JSON_VALUETRING_SWAP_BYTESTRING(result, isSubscribe, mItem.isSubscribe);
+
+            cJSON *keyWord = cJSON_GetObjectItem(result, "keyWords");
+            if (keyWord)
             {
-                mItem.keyWords.push_back(item->valuestring);
-                item->valuestring = NULL;
+                for (cJSON *item = keyWord->child; NULL != item; item = item->next )
+                {
+                    mItem.keyWords.push_back(item->valuestring);
+                    item->valuestring = NULL;
+                }
             }
+
+            cJSON *host = cJSON_GetObjectItem(result, "host");
+            if (host)
+            {
+                for (cJSON *item = host->child; NULL != item; item = item->next )
+                {
+                    mItem.host = item->valuestring;
+                    item->valuestring = NULL;
+                    break;
+                }
+            }
+
+            profile();
         }
-
-        cJSON *host = json_items_proc(result, "host", "name", NULL);
-        JSON_STRING_POINTER_SWAP(host, result, mItem.host);
-
-        profile();
     } else
     {
         GEN_Printf(LOG_ERROR, "Priser result failed.");
