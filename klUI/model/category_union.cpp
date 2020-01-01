@@ -1,6 +1,8 @@
 #include "events/common_log.h"
 #include "kl_url/kl_category_sub_list.h"
 #include "kl_url/kl_category_all.h"
+#include "kl_url/kl_broadcast_area_list.h"
+#include "kl_url/kl_category_broadcast.h"
 #include "category_model.h"
 #include "cate_item_model.h"
 #include "category_union.h"
@@ -67,17 +69,86 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
 
         break;
     }
+    case BDC_CATE:
+    {
+        kl::CategoryBroadcast *bdc;
+        if (m_pCate)
+        {
+            bdc = (kl::CategoryBroadcast *)m_pCate;
+        } else
+        {
+            bdc = new kl::CategoryBroadcast;
+
+            m_pCate = bdc;
+        }
+        if (bdc->nodes().empty())
+        {
+            bdc->loadNodesFile();
+            if (bdc->nodes().empty())
+            {
+                bdc->obtain();
+            }
+        }
+        if (!bdc->nodes().empty())
+        {
+            genCatesByCateBDC(bdc->nodes(), m_pParentModel->vec());
+        }
+        break;
+    }
+    case BDC_AREA_CATE:
+    {
+        kl::BroadcastAreaList *area;
+        if (m_pCate)
+        {
+            area = (kl::BroadcastAreaList *)m_pCate;
+        } else
+        {
+            area = new kl::BroadcastAreaList;
+
+            m_pCate = area;
+        }
+        if (area->nodes().empty())
+        {
+            area->loadNodesFile();
+            if (area->nodes().empty())
+            {
+                area->obtain();
+            }
+        }
+        if (!area->nodes().empty())
+        {
+            genCatesByBDCArea(area->nodes(), m_pParentModel->vec());
+        }
+        break;
+    }
     default:
         assert(0);
         break;
     }
 }
 
-
 void CategoryUnion::dataPrepare()
 {
-    bool isEmpty = (mCateType == MAIN_CATE) ? ((kl::CategoryAll *)m_pCate)->nodes().empty()
-                                            : ((kl::CategorySublist *) m_pCate)->nodes().empty();
+    bool isEmpty = false;
+
+    switch (mCateType)
+    {
+    case MAIN_CATE:
+        isEmpty = ((kl::CategoryAll *)m_pCate)->nodes().empty();
+        break;
+    case SUB_CATE:
+        isEmpty = ((kl::CategorySublist *) m_pCate)->nodes().empty();
+        break;
+    case BDC_CATE:
+        isEmpty = ((kl::CategoryBroadcast *)m_pCate)->nodes().empty();
+        break;
+    case BDC_AREA_CATE:
+        isEmpty = ((kl::BroadcastAreaList *)m_pCate)->nodes().empty();
+        break;
+    default:
+        assert(0);
+        break;
+    }
 
     if (isEmpty)
     {
@@ -117,7 +188,7 @@ void CategoryUnion::genCatesByCateMain(ListTable<kl::CateMain> &nodes, VectorTab
         tmp->cid    = it->cid;
         tmp->name   = it->name;
         tmp->hasSub = it->hasSub;
-        tmp->hasSub = it->hasSub;
+        tmp->img    = it->img;
 
         vec.push_back(tmp);
     }
@@ -134,7 +205,39 @@ void CategoryUnion::genCatesByCateSub(ListTable<kl::CateSub> &nodes, VectorTable
         tmp->cid    = it->cid;
         tmp->name   = it->name;
         tmp->hasSub = it->hasSub;
-        tmp->hasSub = it->hasSub;
+        tmp->img    = it->img;
+
+        vec.push_back(tmp);
+    }
+}
+
+void CategoryUnion::genCatesByBDCArea(ListTable<kl::AreaItem> &nodes, VectorTable<MusicCateUnion *> &vec)
+{
+    ListTable<kl::AreaItem>::iterator it = nodes.begin();
+
+    for ( ; it != nodes.end(); ++it)
+    {
+        MusicCateUnion *tmp = new MusicCateUnion;
+
+        tmp->cid    = it->id;
+        tmp->name   = it->name;
+
+        vec.push_back(tmp);
+    }
+}
+
+void CategoryUnion::genCatesByCateBDC(ListTable<kl::CateBCast> &nodes, VectorTable<MusicCateUnion *> &vec)
+{
+    ListTable<kl::CateBCast>::iterator it = nodes.begin();
+
+    for ( ; it != nodes.end(); ++it)
+    {
+        MusicCateUnion *tmp = new MusicCateUnion;
+
+        tmp->cid    = it->id;
+        tmp->name   = it->name;
+        tmp->hasSub = it->type;
+        tmp->img    = it->img;
 
         vec.push_back(tmp);
     }

@@ -2,6 +2,7 @@
 #include "kl_url/kl_type_radio_list.h"
 #include "kl_url/kl_album_list.h"
 #include "kl_url/kl_operate_list.h"
+#include "kl_url/kl_broadcast_item_list.h"
 #include "kl_url/kl_chip_radio_list.h"
 #include "cate_item_model.h"
 #include "cate_item_union.h"
@@ -18,15 +19,18 @@ CateItemUnion::CateItemUnion(int cid, CateItemModel *parent)
     } else if (-2 == cid) //type radio list
     {
         mCateItemType = CATE_ITEM_TYPE_RADIO;
+    } else if (-3 == cid)
+    {
+        mCateItemType = CATE_ITEM_BDCAST;
     } else  //album list
     {
         mCateItemType = CATE_ITEM_ALBUM;
     }
 }
 
-void CateItemUnion::loadCateItem(int cid, bool sorttype)
+void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, int area_code)
 {    
-    GEN_Printf(LOG_DEBUG, "type: %d, cid=%d, handler: %p", mCateItemType, cid, m_pCateItem);
+    GEN_Printf(LOG_DEBUG, "type: %d, cid=%d, handler: %p", mCateItemType, cid_or_type, m_pCateItem);
     switch (mCateItemType) {
     case CATE_ITEM_ALBUM:
     {
@@ -36,7 +40,7 @@ void CateItemUnion::loadCateItem(int cid, bool sorttype)
             album = (kl::AlbumList *)m_pCateItem;
         } else
         {
-            album = new kl::AlbumList(cid, sorttype);            
+            album = new kl::AlbumList(cid_or_type, bsorttype_or_classfyid);
             m_pCateItem = album;
         }
 
@@ -74,6 +78,21 @@ void CateItemUnion::loadCateItem(int cid, bool sorttype)
         typeRadio->obtain();
         break;
     }
+    case CATE_ITEM_BDCAST:
+    {
+        kl::BroadcastItemList *bdc;
+        if (m_pCateItem)
+        {
+            bdc = (kl::BroadcastItemList *)m_pCateItem;
+        } else
+        {
+            bdc = new kl::BroadcastItemList(cid_or_type, bsorttype_or_classfyid, area_code);
+            m_pCateItem = bdc;
+        }
+        bdc->setUINotify(this);
+        bdc->obtain();
+        break;
+    }
     default:
         assert(0);
         break;
@@ -92,6 +111,9 @@ void CateItemUnion::dataPrepare()
         break;
     case CATE_ITEM_TYPE_RADIO:
         isEmpty = ((kl::TypeRadioList *)m_pCateItem)->nodes().empty();
+        break;
+    case CATE_ITEM_BDCAST:
+        isEmpty = ((kl::BroadcastItemList *)m_pCateItem)->nodes().empty();
         break;
     default:
         break;
@@ -125,6 +147,9 @@ void CateItemUnion::onLoadOver(CateItemModel *model)
     case CATE_ITEM_TYPE_RADIO:
         genCateItemByTypeRadio(((kl::TypeRadioList *)m_pCateItem)->nodes(), model->vec());
         break;
+    case CATE_ITEM_BDCAST:
+        genCateItemByBDCast(((kl::BroadcastItemList *)m_pCateItem)->nodes(), model->vec());
+        break;
     default:
         break;
     }
@@ -143,6 +168,9 @@ bool CateItemUnion::loadNextPage()
     case CATE_ITEM_TYPE_RADIO:
         ret = ((kl::TypeRadioList *)m_pCateItem)->loadNextPage();
         break;
+    case CATE_ITEM_BDCAST:
+        ret = ((kl::BroadcastItemList *)m_pCateItem)->loadNextPage();
+        break;
     default:
         break;
     }
@@ -158,6 +186,9 @@ int CateItemUnion::page()
         break;
     case CATE_ITEM_OPERATE:
         ret = ((kl::OperateList *)m_pCateItem)->getPage();
+        break;
+    case CATE_ITEM_BDCAST:
+        ret = ((kl::BroadcastItemList *)m_pCateItem)->getPage();
         break;
     case CATE_ITEM_TYPE_RADIO:
     default:
@@ -175,6 +206,9 @@ bool CateItemUnion::haveNext()
         break;
     case CATE_ITEM_OPERATE:
         ret = ((kl::OperateList *)m_pCateItem)->getHaveNext();
+        break;
+    case CATE_ITEM_BDCAST:
+        ret = ((kl::BroadcastItemList *)m_pCateItem)->getPage();
         break;
     case CATE_ITEM_TYPE_RADIO:
     default:
@@ -233,6 +267,24 @@ void CateItemUnion::genCateItemByTypeRadio(ListTable<kl::TypeRadio> &nodes, Vect
         tmp->img  = it->img;
         tmp->type = ByteString("3", 1);
 
+        vec.push_back(tmp);
+    }
+}
+
+void CateItemUnion::genCateItemByBDCast(ListTable<kl::BDCastItem> &nodes, VectorTable<MusicCateItemUnion *> &vec)
+{
+    int count = vec.size();
+    ListTable<kl::BDCastItem>::iterator it = nodes.begin();
+    for ( ; it != nodes.end() && count; ++it, --count);
+    for ( ; it != nodes.end(); ++it)
+    {
+        MusicCateItemUnion *tmp = new MusicCateItemUnion;
+
+        tmp->id      = it->broadcastId;
+        tmp->name    = it->name;
+        tmp->img     = it->image;
+        tmp->type    = ByteString("11", 2);
+        tmp->playUrl = it->playUrl;
         vec.push_back(tmp);
     }
 }

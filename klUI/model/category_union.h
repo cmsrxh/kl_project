@@ -10,6 +10,8 @@ public:
     enum {
         MAIN_CATE = 1,
         SUB_CATE  = 2,
+        BDC_CATE,
+        BDC_AREA_CATE
     };
     CategoryUnion(int cate_type, CategoryModel *parent);
 
@@ -28,6 +30,9 @@ private:
 
     void genCatesByCateMain(ListTable<kl::CateMain> &nodes, VectorTable<MusicCateUnion *> &vec);
     void genCatesByCateSub(ListTable<kl::CateSub> &nodes, VectorTable<MusicCateUnion *> &vec);
+    void genCatesByBDCArea(ListTable<kl::AreaItem> &nodes, VectorTable<MusicCateUnion *> &vec);
+    void genCatesByCateBDC(ListTable<kl::CateBCast> &nodes, VectorTable<MusicCateUnion *> &vec);
+
 };
 
 #endif // CATEGORY_UNION_H

@@ -8,7 +8,7 @@ struct MusicCateUnion
 {
     ByteString cid;
     ByteString name;
-    ByteString hasSub;
+    ByteString hasSub; // or == CateBCast.type
     ByteString img;
 };
 
@@ -17,7 +17,8 @@ struct MusicCateItemUnion
     ByteString id;
     ByteString name;
     ByteString img;
-    ByteString type; // 资源类型 (0:专辑|3:电台)
+    ByteString type; // 资源类型 (0:专辑|3:电台|11:传统广播)
+    ByteString playUrl;
 };
 
 struct MusicChipItemUnion

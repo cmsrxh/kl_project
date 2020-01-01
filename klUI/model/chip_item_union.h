@@ -12,8 +12,9 @@ public:
     enum {
         CHIP_ITEM_AUDIO = 1,
         CHIP_ITEM_RADIO,
+        CHIP_ITEM_BDC_PROGRAM
     };
-    // 资源类型 (0:专辑|3:电台)
+    // 资源类型 (0:专辑|3:电台:11:传统电台)
     ChipItemUnion(int type);
 
     /**
@@ -52,9 +53,9 @@ private:
     int                  mChipType;
     UIChipItemList      *m_pChip;
 
-
     void genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
     void genCatesByAudioItem(ListTable<kl::AudioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
+    void genCatesByBDCProgramItem(ListTable<kl::BDCastProgramItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
 };
 
 #endif // CHIP_ITEM_UNION_H

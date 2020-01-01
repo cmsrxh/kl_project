@@ -18,7 +18,7 @@ public:
     // 设置播放的列表展示
     void setPlayModel(ChipItemModel *playModel);
 
-    void loadError(int type, QString const &err_str);
+    void loadError(bool loadAction, int type, QString const &err_str);
     void dataLoadOver(long ptr, bool loadAction);
 
 private:

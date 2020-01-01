@@ -14,10 +14,12 @@ public:
         CATE_ITEM_ALBUM = 1,
         CATE_ITEM_OPERATE,
         CATE_ITEM_TYPE_RADIO,
+        CATE_ITEM_BDCAST,
     };
     CateItemUnion(int cid, CateItemModel *parent);
 
-    void loadCateItem(int cid = -1, bool sorttype = true);
+    void loadCateItem(int cid_or_type = -1,
+                      int bsorttype_or_classfyid = 1, int area_code = 0);
 
     void dataPrepare();
 
@@ -41,6 +43,7 @@ private:
     void genCateItemByAlbumItem(ListTable<kl::AlbumItem> &nodes, VectorTable<MusicCateItemUnion *> &vec);
     void genCateItemByOperate(ListTable<kl::Operate> &nodes, VectorTable<MusicCateItemUnion *> &vec);
     void genCateItemByTypeRadio(ListTable<kl::TypeRadio> &nodes, VectorTable<MusicCateItemUnion *> &vec);
+    void genCateItemByBDCast(ListTable<kl::BDCastItem> &nodes, VectorTable<MusicCateItemUnion *> &vec);
 };
 
 #endif // CATE_ITEM_UNION_H

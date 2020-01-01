@@ -21,9 +21,15 @@ void ChipPlayManage::setPlayModel(ChipItemModel *playModel)
     m_pPlayModel = playModel;
 }
 
-void ChipPlayManage::loadError(int type, const QString &err_str)
+void ChipPlayManage::loadError(bool loadAction, int type, const QString &err_str)
 {
-    Q_EMIT m_pChipShow->loadError(type, err_str);
+    if (loadAction)
+    {
+        Q_EMIT m_pChipShow->loadError(type, err_str);
+    } else
+    {
+        Q_EMIT m_pPlayModel->loadError(type, err_str);
+    }
 }
 
 void ChipPlayManage::dataLoadOver(long ptr, bool loadAction)

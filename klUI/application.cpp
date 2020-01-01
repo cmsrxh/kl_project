@@ -63,22 +63,8 @@ void Application::runLoop()
         switch (evt->sig)
         {
         case SIG_HAVE_OPEN_ID:
-            klInitGetOpenId();
-        case SIG_SURFACE_CREATED:
+            klInitGetOpenId();        
             stateMache->initialize();
-            MPVPlayerProc::instance()->setSurface((int64_t)0);
-            break;
-        case SIG_SURFACE_CHANGED:
-            GEN_Printf(LOG_DEBUG, "width: %ld, height: %ld",
-                       ((GeneralQEvt *)(evt))->lParam,
-                       ((GeneralQEvt *)(evt))->wParam);
-
-            break;
-        case SIG_SURFACE_DESTROYED:
-            GEN_Printf(LOG_INFO, "destory");
-            stateMache->postEvent(state::STATE_EVENT_EXIT_PLAYING);
-            stateMache->exitState();
-            MPVPlayerProc::instance()->setSurface((int64_t)0);
             break;
 
         case SIG_ON_MPV_EVENT:
