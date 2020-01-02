@@ -21,9 +21,9 @@ void ChipPlayManage::setPlayModel(ChipItemModel *playModel)
     m_pPlayModel = playModel;
 }
 
-void ChipPlayManage::loadError(bool loadAction, int type, const QString &err_str)
+void ChipPlayManage::loadError(int loadAction, int type, const QString &err_str)
 {
-    if (loadAction)
+    if (ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW == loadAction)
     {
         Q_EMIT m_pChipShow->loadError(type, err_str);
     } else
@@ -32,9 +32,11 @@ void ChipPlayManage::loadError(bool loadAction, int type, const QString &err_str
     }
 }
 
-void ChipPlayManage::dataLoadOver(long ptr, bool loadAction)
+void ChipPlayManage::dataLoadOver(long ptr, int loadAction)
 {
-    if (loadAction)
+    GEN_Printf(LOG_DEBUG, "chip load over, loadAction=%d.", loadAction);
+
+    if (ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW == loadAction)
     { // 表示前台界面操作需要加载
         if (0 == m_pChipShow->size())
         {
@@ -42,8 +44,13 @@ void ChipPlayManage::dataLoadOver(long ptr, bool loadAction)
         }
         Q_EMIT m_pChipShow->itemCountChanged();
         Q_EMIT m_pChipShow->dataLoadOver(ptr);
-    } else
+    } else if (ChipItemUnion::LOAD_OVER_ALBUM_IN_PLAYVIEW == loadAction)
     { // 表示播放列表播放到最后，需要列表数据
         Q_EMIT m_pPlayModel->dataLoadOver(ptr);
+    } else if (ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW == loadAction)
+    {
+        Q_EMIT m_pPlayModel->dataLoadOver(ptr);
+
+        KLDataProc::instance()->bdcThirdProgramLoadOver();
     }
 }

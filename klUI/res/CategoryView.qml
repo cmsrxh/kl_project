@@ -14,7 +14,7 @@ Rectangle {
         id: tabBar
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 60
+        height: 40
         currentIndex: cateModel.qmlGetTabIndex();
 
         onCurrentIndexChanged: cateModel.qmlCateTabClick(currentIndex)
@@ -28,36 +28,12 @@ Rectangle {
         }
     }
 
-    GridView {
-        id: cateItemView
+    Loader {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: tabBar.bottom
         anchors.bottom: parent.bottom
 
-        model: cateItemModel
-        // currentIndex: YT.Controller.videoCtg
-        clip: true
-        //focus: true
-        //boundsBehavior: Flickable.StopAtBounds
-        //layoutDirection: Qt.LeftToRight
-        //flow: GridView.FlowTopToBottom
-
-        cellWidth: width /3
-        cellHeight: width /4
-        delegate: VideosModel {
-            playing: false
-            onClicked: {
-                cateItemModel.qmlClickCategory(index)
-                // stack.push("CateItemInfoView.qml")
-            }
-        }
-        onFlickEnded:
-        {
-            if(atYEnd)
-            {
-                cateItemModel.qmlCtgNextPage();
-            }
-        }
+        source: stack.albumSource
     }
 }

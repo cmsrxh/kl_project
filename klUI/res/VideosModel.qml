@@ -7,7 +7,7 @@ Item
     width: cateItemView.cellWidth
     height: cateItemView.cellHeight
 
-    property bool playing: false
+    property bool playing: cateItemModel.currenIndex == index
     signal clicked()
 
     Rectangle

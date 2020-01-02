@@ -53,7 +53,7 @@ void kl::CategoryBroadcast::profile()
 
     for (; it != mNodes.end(); ++it)
     {
-        GEN_Printf(LOG_DUMP, "%s=%d, type=%d", it->name.string(), it->id, it->type);
+        GEN_Printf(LOG_DUMP, "%s=%s, type=%s", it->name.string(), it->id.string(), it->type.string());
     }
 }
 

@@ -50,15 +50,6 @@ QVariant ChipItemModel::data(const QModelIndex &index, int role) const
 
     if (CHIP_ITEM_NAME == role)
     {
-//        if (mIsPlayModel)
-//        {
-//            //ByteString name = mVec[i]->name;
-
-//            // GEN_Printf(LOG_DEBUG, "[%d] %p, %s, %d", i, name.string(), name.string(), name.size());
-//            GEN_Printf(LOG_DEBUG, "[%d] %p,", i, mVec[i]/*name.string()*/);
-
-//            return QVariant("abc");
-//        }
         return QStringFromByteString(mVec[index.row()]->name);
     }
 
@@ -113,25 +104,25 @@ void ChipItemModel::onLoadOver(long ptr)
 void ChipItemModel::chipItemClick(int index)
 {
     qDebug() << "Chip Item Click " << index;
-    KLDataProc::instance()->chipItemChick(index);
+    KLDataProc::instance()->chipAudioThirdChick(index);
 }
 
 void ChipItemModel::needNextPage()
 {
     qDebug() << "Chip Need Next Page";
-    m_pUnion->loadNextPage(true);
+    m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW);
 }
 
 void ChipItemModel::playNeedNextPage()
 {
     qDebug() << "Player Chip Need Next Page";
-    m_pUnion->loadNextPage(false);
+    m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_IN_PLAYVIEW);
 }
 
 void ChipItemModel::playItemClick(int index)
 {
     qDebug() << "Click Index=" << index;
-    KLDataProc::instance()->chipPlayItemClick(index);
+    KLDataProc::instance()->chipPlayThirdClick(index);
 }
 
 QHash<int, QByteArray> ChipItemModel::roleNames() const
@@ -141,8 +132,8 @@ QHash<int, QByteArray> ChipItemModel::roleNames() const
 
 int ChipItemModel::playingIndex() const
 {
-    return mIsPlayModel ? KLDataProc::instance()->getCurPlayIndex()
-                        : KLDataProc::instance()->getCurChipIndex();
+    return mIsPlayModel ? KLDataProc::instance()->getPlayThirdIndex()
+                        : KLDataProc::instance()->getChipAudioThirdIndex();
 }
 
 int ChipItemModel::itemCount() const

@@ -36,6 +36,7 @@ kl::BroadcastItemProgramlist::BroadcastItemProgramlist(const ByteString &bid)
 
 kl::BroadcastItemProgramlist::~BroadcastItemProgramlist()
 {
+    mBID.clear();
 }
 
 NetUrl &kl::BroadcastItemProgramlist::genQueryUrl()
@@ -53,7 +54,8 @@ void kl::BroadcastItemProgramlist::profile()
 
     for (; it != mNodes.end(); ++it)
     {
-        GEN_Printf(LOG_DUMP, "%s=%s", it->title.string(), it->programId.string());
+        GEN_Printf(LOG_DUMP, "%s=%s - %s", it->title.string(),
+                   it->programId.string(), it->playUrl.string());
     }
 }
 

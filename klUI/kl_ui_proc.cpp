@@ -27,13 +27,29 @@ void KLUIProc::init(QQmlContext *ctx)
     m_pChipItem     = new ChipItemModel(false);
     m_pChipItemPlay = new ChipItemModel(true);
 
-    KLDataProc::instance()->init(m_pCate, m_pCateItem, m_pChipItem, m_pChipItemPlay);
+    KLDataProc::instance()->initAlbum(m_pCate, m_pCateItem, m_pChipItem, m_pChipItemPlay);
 
+    m_pBDCTab       = new CategoryModel;
+    m_pBDCArea      = new CategoryModel;
+    m_pBDCItem      = new CateItemModel;
+
+    KLDataProc::instance()->initBroadcast(m_pBDCTab, m_pBDCArea, m_pBDCItem);
+
+    // album
     ctx->setContextProperty("cateItemModel", m_pCateItem);
     ctx->setContextProperty("cateModel", m_pCate);
     ctx->setContextProperty("chipList", m_pChipItem);
+
+    //player
     ctx->setContextProperty("playList", m_pChipItemPlay);
 
+    //broadcast
+    ctx->setContextProperty("bdcTab", m_pBDCTab);
+    ctx->setContextProperty("bdcArea", m_pBDCArea);
+    ctx->setContextProperty("bdcItem", m_pBDCItem);
+
+
+    //detail
     ctx->setContextProperty("detailObject", DetailQobject::instance());
 
     ctx->setContextProperty("stack", m_pViewStack);    
@@ -173,6 +189,16 @@ void KLUIProc::setPlayState(int playState)
 bool KLUIProc::pushNew(const QString &url)
 {
     return m_pViewStack->push(url);
+}
+
+void KLUIProc::viewAlbumBDCSwitch(const QString &url)
+{
+    m_pViewStack->setAlbumSource(url);
+}
+
+void KLUIProc::viewBDCItemAreaSwicth(const QString &url)
+{
+    m_pViewStack->setBdcSource(url);
 }
 
 void KLUIProc::setSourceUrl(const char *url)

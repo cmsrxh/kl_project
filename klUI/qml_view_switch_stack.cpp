@@ -2,7 +2,9 @@
 #include <QDebug>
 
 ViewSwitchStack::ViewSwitchStack()
-    : mCurrentSource("CategoryView.qml")
+    : mCurrentSource("qrc:/CategoryView.qml")
+    , mAlbumSource("qrc:/CateItemListView.qml") //"bdc/KlInlineBroadcast.qml"
+    , mBdcSource("qrc:/bdc/KlInlineChannelView.qml") // KlInlineAreaView.qml
     , mIsShowReturn(false)
 {
 }
@@ -15,7 +17,7 @@ bool ViewSwitchStack::push(const QString &url)
         return false;
     }
 
-    if ("CategoryView.qml" == url)
+    if ("qrc:/CategoryView.qml" == url)
     {
         mStack.clear();
         setIsShowReturn(false);
@@ -36,7 +38,7 @@ void ViewSwitchStack::pop()
 
     if (mStack.empty())
     {
-        setSource("CategoryView.qml");
+        setSource("qrc:/CategoryView.qml");
         setIsShowReturn(false);
         qDebug() << "pop" << mCurrentSource;
     } else
@@ -51,6 +53,31 @@ void ViewSwitchStack::setSource(const QString &source)
 {
     mCurrentSource = source;
     Q_EMIT sourceChanged(source);
+}
+
+QString ViewSwitchStack::bdcSource() const
+{
+    return mBdcSource;
+}
+
+void ViewSwitchStack::setBdcSource(const QString &bdcSource)
+{
+    if (mBdcSource != bdcSource)
+    {
+        mBdcSource = bdcSource;
+        Q_EMIT bdcSourceChanged(bdcSource);
+    }
+}
+
+QString ViewSwitchStack::albumSource() const
+{
+    return mAlbumSource;
+}
+
+void ViewSwitchStack::setAlbumSource(const QString &albumSource)
+{
+    mAlbumSource = albumSource;
+    Q_EMIT albumSourceChanged(albumSource);
 }
 
 bool ViewSwitchStack::isShowReturn() const

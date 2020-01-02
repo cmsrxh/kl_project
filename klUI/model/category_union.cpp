@@ -32,6 +32,7 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
             cate->setUINotify(this);
             m_pCate = (UICategory *)cate;
         }
+        cate->setUINotify(this);
 
         if (cate->nodes().empty())
         {
@@ -61,6 +62,7 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
             subCate->setUINotify(this);
             m_pCate = (UICategory *)subCate;
         }
+        subCate->setUINotify(this);
 
         if (subCate->nodes().empty())
         {
@@ -81,6 +83,8 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
 
             m_pCate = bdc;
         }
+        bdc->setUINotify(this);
+
         if (bdc->nodes().empty())
         {
             bdc->loadNodesFile();
@@ -107,6 +111,8 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
 
             m_pCate = area;
         }
+        area->setUINotify(this);
+
         if (area->nodes().empty())
         {
             area->loadNodesFile();
@@ -168,12 +174,22 @@ void CategoryUnion::errorInfo(int type, const char *err_str)
 
 void CategoryUnion::onLoadOver(VectorTable<MusicCateUnion *> &vec)
 {
-    if (mCateType == MAIN_CATE)
+    switch (mCateType)
     {
+    case MAIN_CATE:
         genCatesByCateMain(((kl::CategoryAll *)m_pCate)->nodes(), vec);
-    } else
-    {
+        break;
+    case SUB_CATE:
         genCatesByCateSub(((kl::CategorySublist *) m_pCate)->nodes(), vec);
+        break;
+    case BDC_CATE:
+        genCatesByCateBDC(((kl::CategoryBroadcast *) m_pCate)->nodes(), vec);
+        break;
+    case BDC_AREA_CATE:
+        genCatesByBDCArea(((kl::BroadcastAreaList *) m_pCate)->nodes(), vec);
+        break;
+    default:
+        break;
     }
 }
 

@@ -52,14 +52,6 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
 //                    Layout.fillWidth: true
 //                    Layout.fillHeight: true
-                    Button
-                    {
-                        visible: stack.isShowReturn
-                        text: qsTr("返回")
-                        onClicked: {
-                            stack.qmlPop();
-                        }
-                    }
 
                     Button
                     {

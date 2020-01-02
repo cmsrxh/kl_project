@@ -27,6 +27,18 @@ public:
 
     void genResult(const char *data, unsigned long size);
 
+    int getHaveNext() const
+    {
+        return haveNext;
+    }
+
+    int getPage() const
+    {
+        return page;
+    }
+
+    bool loadNextPage();
+
 private:
     ByteString type;
     ByteString classfyid;

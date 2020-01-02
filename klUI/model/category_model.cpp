@@ -14,6 +14,30 @@ CategoryModel::CategoryModel()
     roles[CATEGORY_NAME] = "ctgname";
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
+
+#if 0
+    MusicCateUnion *cate = new MusicCateUnion;
+
+    cate->name = "ABC";
+
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+    mVec.push_back(cate);
+
+#endif
 }
 
 int CategoryModel::rowCount(const QModelIndex &) const
@@ -53,24 +77,49 @@ ByteString CategoryModel::getCID(int index)
     }
 }
 
+int CategoryModel::bdcTabIndex() const
+{
+    return KLDataProc::instance()->getBDCFirstTabIndex();
+}
+
+int CategoryModel::bdcAreaIndex() const
+{
+    return KLDataProc::instance()->getBDCFirstAreaIndex();
+}
+
 void CategoryModel::onLoadOver(long ptr)
 {
     assert(ptr == (long)m_pCateUnion);
+    qDebug() << "Category load over.";
 
     m_pCateUnion->onLoadOver(mVec);
 
-    resetAll();
+
+    beginResetModel();
+    endResetModel();
 }
 
 void CategoryModel::qmlCateTabClick(int index)
 {
     qDebug() << "CateTabClick index =" << index;
-    KLDataProc::instance()->cateTabClick(index);
+    KLDataProc::instance()->albumFirstClick(index);
 }
 
 int CategoryModel::qmlGetTabIndex()
 {
-    return KLDataProc::instance()->getCateTabIndex();
+    return KLDataProc::instance()->getAlbumFirstIndex();
+}
+
+void CategoryModel::qmlBDCCateTabClick(int index)
+{
+    qDebug() << index;
+    KLDataProc::instance()->bdcFirstCateTabClick(index);
+}
+
+void CategoryModel::qmlBDCAreaTabClick(int index)
+{
+    qDebug() << index;
+    KLDataProc::instance()->bdcFirstAreaTabClick(index);
 }
 
 QHash<int, QByteArray> CategoryModel::roleNames() const

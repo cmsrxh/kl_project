@@ -152,3 +152,19 @@ void kl::BroadcastItemList::genResult(const char *data, unsigned long size)
     cJSON_Delete(root);
 
 }
+
+bool kl::BroadcastItemList::loadNextPage()
+{
+    if (haveNext)
+    {
+        needPage.clear();
+        needPage = ByteString::allocLong(nextPage);
+
+        obtain();
+        return true;
+    } else
+    {
+        GEN_Printf(LOG_DEBUG, "Nothing next page.");
+        return false;
+    }
+}

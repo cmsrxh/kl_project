@@ -6,11 +6,19 @@
 #include <QtQml>
 
 class CateItemUnion;
+/**
+ * @brief The CateItemModel class
+ * @details 二级标签
+ */
 class CateItemModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool haveNext READ haveNext)
+    // album index
+    Q_PROPERTY(int currenIndex READ currenIndex NOTIFY currenIndexChanged)
+
+    // broadcast index
+    Q_PROPERTY(int currenBDCIndex READ currenBDCIndex NOTIFY currenBDCIndexChanged)
 public:    
     CateItemModel();
 
@@ -21,6 +29,10 @@ public:
     void resetAll();
 
     bool haveNext() const;
+
+    int  currenIndex() const;
+
+    int  currenBDCIndex() const;
 
     void setCateItemUnion(CateItemUnion *pUnion);
 
@@ -35,12 +47,22 @@ public Q_SLOTS:
 
     void qmlCtgNextPage();
 
+    // album info item click
     void qmlClickCategory(int index);
 
+    // broadcast info item click
+    void qmlClickBDCItem(int index, bool isInArea);
+
+    // broadcast info item click for collect or not
+    void qmlClickBDCItemCollect(int index, bool isCollect);
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
     void loadError(int type, const QString &info);
+
+    // property
+    void currenIndexChanged(int currentIndex);
+    void currenBDCIndexChanged(int currenBDCIndex);
 
 protected:
     QHash<int, QByteArray> roleNames() const;

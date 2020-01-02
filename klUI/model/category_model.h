@@ -6,10 +6,18 @@
 #include <QtQml>
 
 class CategoryUnion;
+/**
+ * @brief The CategoryModel class
+ * @details 一级标签
+ */
 class CategoryModel : public QAbstractListModel
 {
     Q_OBJECT
+    // broadcast ctg index
+    Q_PROPERTY(int bdcTabIndex READ bdcTabIndex NOTIFY bdcTabIndexChanged)
 
+    // broadcast area index
+    Q_PROPERTY(int bdcAreaIndex READ bdcAreaIndex NOTIFY bdcAreaIndexChanged)
 public:
     CategoryModel();
 
@@ -36,17 +44,35 @@ public:
 
     ByteString getCID(int index);
 
+    // property
+    int bdcTabIndex() const;
+
+    int bdcAreaIndex() const;
+
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
-    // 标签ID
+    // album 标签ID click
     void qmlCateTabClick(int index);
 
+    // album ctg index
     int  qmlGetTabIndex();
+
+    // broadcast 标签ID click
+    void qmlBDCCateTabClick(int index);
+
+    // broadcast area 标签ID click
+    void qmlBDCAreaTabClick(int index);
+
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
     void loadError(int type, const QString &info);
+
+    //
+    void bdcTabIndexChanged(int bdcTabIndex);
+
+    void bdcAreaIndexChanged(int bdcAreaIndex);
 
 protected:
     QHash<int, QByteArray> roleNames() const;

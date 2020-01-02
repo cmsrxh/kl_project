@@ -6,6 +6,10 @@
 #include <QtQml>
 
 class ChipItemUnion;
+/**
+ * @brief The ChipItemModel class
+ * @details 三级标签
+ */
 class ChipItemModel : public QAbstractListModel
 {
     Q_OBJECT

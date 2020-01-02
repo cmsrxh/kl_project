@@ -20,7 +20,7 @@ Rectangle
     Item
     {
         id: playingIcon
-        width:0; height: 40
+        width:0; height: 48
         anchors.verticalCenter: parent.verticalCenter
         Image
         {
@@ -34,17 +34,15 @@ Rectangle
     states : State{
         name: "pySt"
         PropertyChanges { target: playingImg; width: Image.width }
-        PropertyChanges { target: playingIcon; width: 60 }
+        PropertyChanges { target: playingIcon; width: 48 }
     }
 
     Text
     {
         id: chTimeText
-        x: 30
-        width: parent.width - parent.height; height: parent.height / 2
-//        anchors.left: stateLoader.right
+        width: parent.width - parent.height
+        height: parent.height / 2
         anchors.left: playingIcon.right
-
         anchors.leftMargin: 20
         anchors.verticalCenter: parent.verticalCenter
         elide: Text.ElideRight

@@ -7,12 +7,13 @@
 class ViewSwitchStack : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString source
-               READ source
-               WRITE setSource
-               NOTIFY sourceChanged)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
-    Q_PROPERTY(bool isShowReturn READ isShowReturn WRITE setIsShowReturn NOTIFY isShowReturnChanged)
+//    Q_PROPERTY(bool isShowReturn READ isShowReturn WRITE setIsShowReturn NOTIFY isShowReturnChanged)
+
+    Q_PROPERTY(QString albumSource READ albumSource WRITE setAlbumSource NOTIFY albumSourceChanged)
+
+    Q_PROPERTY(QString bdcSource READ bdcSource WRITE setBdcSource NOTIFY bdcSourceChanged)
 public:
     ViewSwitchStack();
 
@@ -24,6 +25,12 @@ public:
 
     bool isShowReturn() const;
     void setIsShowReturn(bool isShowReturn);
+
+    QString albumSource() const;
+    void setAlbumSource(const QString &albumSource);
+
+    QString bdcSource() const;
+    void setBdcSource(const QString &bdcSource);
 
 public slots:
     void setSource(const QString& source);
@@ -39,8 +46,14 @@ public slots:
 signals:
     void sourceChanged(const QString& source);
     void isShowReturnChanged(bool isShowReturn);
+
+    void albumSourceChanged(const QString &albumSource);
+
+    void bdcSourceChanged(const QString &bdcSource);
 private:
     QString              mCurrentSource;
+    QString              mAlbumSource;
+    QString              mBdcSource;
     bool                 mIsShowReturn;
     VectorTable<QString> mStack;
 };

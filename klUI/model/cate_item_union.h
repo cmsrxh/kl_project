@@ -16,7 +16,7 @@ public:
         CATE_ITEM_TYPE_RADIO,
         CATE_ITEM_BDCAST,
     };
-    CateItemUnion(int cid, CateItemModel *parent);
+    CateItemUnion(int cid_type, CateItemModel *parent);
 
     void loadCateItem(int cid_or_type = -1,
                       int bsorttype_or_classfyid = 1, int area_code = 0);
@@ -36,7 +36,7 @@ public:
     int  page();
     bool haveNext();
 private:
-    int                                 mCateItemType;
+    const int                           mCateItemType;
     UICategoryItemList                 *m_pCateItem;
     CateItemModel                      *m_pParentModel;
 

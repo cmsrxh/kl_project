@@ -7,8 +7,8 @@ Item {
     Text
     {
         y: 5
-        anchors.right: parent.right
-        anchors.rightMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 30
 
         verticalAlignment: Qt.AlignVCenter
         horizontalAlignment: Qt.AlignRight
@@ -17,14 +17,14 @@ Item {
         font.pixelSize: 20
     }
 
-//    Rectangle
-//    {
-//        id: sortTitle
-//        width: 80; height: 40
-//        anchors.right: parent.right
-//        anchors.rightMargin: 20
-//        radius: 20
-//        color: "#212121"
+    Rectangle
+    {
+        id: sortTitle
+        width: 80; height: 40
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        radius: 20
+        color: "#212121"
 //        Image
 //        {
 //            id: sortImage
@@ -35,29 +35,26 @@ Item {
 //            height: Image.height
 //            source: ""
 //        }
-//        Text
-//        {
-//            id: sortText
+        Text
+        {
+            id: sortText
+            anchors.fill: parent
+            verticalAlignment: Qt.AlignVCenter
+            horizontalAlignment: Qt.AlignHCenter
+            text: qsTr("返回")
+            color: "white"
+            font.pixelSize:24
+        }
 
-//            anchors.left:sortImage.right
-//            anchors.leftMargin: 5
-//            anchors.verticalCenter: parent.verticalCenter
-//            verticalAlignment: Qt.AlignVCenter
-//            horizontalAlignment: Qt.AlignLeft
-//            text: 1 ?  qsTr("正序") : qsTr("反序")
-//            color: "white"
-//            font.pixelSize:12
-//        }
-
-//        MouseArea
-//        {
-//            anchors.fill: parent
-//            // onClicked: KaoLa.Controller.qmlAlbumAudioSort();
-//            onPressed: sortTitle.color = "gray"
-//            onReleased: sortTitle.color = "#212121"
-//            onCanceled: sortTitle.color = "#212121"
-//        }
-//    }
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: stack.qmlPop();
+            onPressed: sortTitle.color = "gray"
+            onReleased: sortTitle.color = "#212121"
+            onCanceled: sortTitle.color = "#212121"
+        }
+    }
 
     Rectangle
     {

@@ -8,6 +8,7 @@
 
 #define CATE_ITEM_NAME     Qt::UserRole
 #define CATE_ITEM_IMG_URL (Qt::UserRole+1)
+#define CATE_ITEM_COLLECT (Qt::UserRole+2)
 
 CateItemModel::CateItemModel()
     : QAbstractListModel()    
@@ -15,6 +16,7 @@ CateItemModel::CateItemModel()
 {
     roles[CATE_ITEM_NAME]    = "cateItemName";
     roles[CATE_ITEM_IMG_URL] = "imageUri";
+    roles[CATE_ITEM_COLLECT] = "collect";
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
 }
@@ -37,6 +39,9 @@ QVariant CateItemModel::data(const QModelIndex &index, int role) const
     } else if(CATE_ITEM_IMG_URL == role)
     {
         return mVec[index.row()]->img.string();
+    } else if (CATE_ITEM_COLLECT == role)
+    {
+        return true;
     }
 
     return QVariant();
@@ -79,7 +84,19 @@ void CateItemModel::qmlClickCategory(int index)
 {
     qDebug() << "Click Category List Item index =" << index;
 
-    KLDataProc::instance()->cateItemClick(index);
+    KLDataProc::instance()->albumSecondClick(index);
+}
+
+void CateItemModel::qmlClickBDCItem(int index, bool isInArea)
+{
+    qDebug() << index << isInArea;
+    KLDataProc::instance()->bdcSecondItemClick(index, isInArea);
+}
+
+void CateItemModel::qmlClickBDCItemCollect(int index, bool isCollect)
+{
+    qDebug() << index << isCollect;
+    KLDataProc::instance()->bdcSecondItemCollectClick(index, isCollect);
 }
 
 QHash<int, QByteArray> CateItemModel::roleNames() const
@@ -90,6 +107,16 @@ QHash<int, QByteArray> CateItemModel::roleNames() const
 bool CateItemModel::haveNext() const
 {
     return m_pUnion->haveNext();
+}
+
+int CateItemModel::currenIndex() const
+{
+    return KLDataProc::instance()->getAlbumSecondIndex();
+}
+
+int CateItemModel::currenBDCIndex() const
+{
+    return KLDataProc::instance()->getBDCSecondIndex();
 }
 
 void CateItemModel::setCateItemUnion(CateItemUnion *pUnion)

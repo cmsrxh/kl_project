@@ -7,7 +7,7 @@
 #include "chip_item_play_manage.h"
 
 ChipItemUnion::ChipItemUnion(int type)
-    : mLoadAction(true), mChipType(0)
+    : mLoadAction(0), mChipType(0)
     , m_pChip(nullptr)
 {
     if (0 == type)
@@ -26,7 +26,7 @@ ChipItemUnion::ChipItemUnion(int type)
     }
 }
 
-void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, bool loadAction)
+void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAction)
 {
     mLoadAction = loadAction;
 
@@ -156,7 +156,7 @@ int ChipItemUnion::itemCount()
     return count;
 }
 
-bool ChipItemUnion::loadNextPage(bool loadAction)
+bool ChipItemUnion::loadNextPage(int loadAction)
 {
     mLoadAction = loadAction;
     switch (mChipType)
@@ -231,6 +231,8 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
     }
     return false;
 }
+
+
 
 void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)
 {

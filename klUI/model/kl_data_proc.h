@@ -36,6 +36,7 @@ public:
             , cate_item_index(-1)
             , chip_item_index(-1)
             , current_play_list(nullptr)
+            , bdc {-1, -1, -1}
         {}
         void setMainTabIndex(int index)
         {
@@ -75,6 +76,12 @@ public:
         int cate_item_index;
         int chip_item_index;
         ChipItemUnion *current_play_list;
+
+        struct {
+            int bdc_cate_tab_index;
+            int bdc_area_index;
+            int bdc_item_index;
+        } bdc;
     };
 
     struct AlbunView
@@ -97,10 +104,14 @@ public:
         return &i;
     }
 
-    void init(CategoryModel *cate,
-              CateItemModel *cateItem,
-              ChipItemModel *chip,
-              ChipItemModel *player);
+    void initAlbum(CategoryModel *cate,
+                   CateItemModel *cateItem,
+                   ChipItemModel *chip,
+                   ChipItemModel *player);
+
+    void initBroadcast(CategoryModel *bdcTab,
+                       CategoryModel *bdcArea,
+                       CateItemModel *bdcItem);
 
     /**
      * @brief mainTabClick
@@ -108,32 +119,44 @@ public:
      * @details 主页“精品、我的” 标签点击ID
      */
     void mainTabClick(int index);
+
     /**
-     * @brief cateTabClick
+     * @brief albumFirstClick
      * @param index
      * @details 主页上“推荐、音乐” 等标签栏的点击ID
      */
-    void cateTabClick(int index);
+    void albumFirstClick(int index);
 
     /**
-     * @brief cateItemClick
+     * @brief albumSecondClick
      * @param index
      * @details 主页上“推荐、音乐” 等标签对应的列表某项点击
      */
-    void cateItemClick(int index);
+    void albumSecondClick(int index);
+
     /**
-     * @brief chipItemChick
+     * @brief chipAudioThirdChick
      * @param index
      * @details  例如“推荐 --> 专辑项” 点击，获得的audio碎片列表ID点击
      */
-    void chipItemChick(int index);
+    void chipAudioThirdChick(int index);
+
     /**
-     * @brief chipPlayItemClick
+     * @brief chipPlayThirdClick
      * @param index
      * @details 当前主页上，正在播放的节目列表ID点击，有可能跟audio碎片相等
      */
-    void chipPlayItemClick(int index);
+    void chipPlayThirdClick(int index);
 
+    void bdcFirstCateTabClick(int index);
+
+    void bdcFirstAreaTabClick(int index);
+
+    void bdcSecondItemClick(int index, bool isInArea);
+
+    void bdcSecondItemCollectClick(int index, bool isCollect);
+
+    void bdcThirdProgramLoadOver();
     /**
      * @brief showPlayingInfo
      * @details 在主页信息显示栏，显示当前播放信息，只有在开始播放的时候才播放
@@ -147,39 +170,78 @@ public:
     void enterAlbumView();
 
     /**
-     * @brief getCateTabIndex
+     * @brief getAlbumFirstIndex
      * @return 音乐tab列表上的标签
      */
-    int  getCateTabIndex();
+    int  getAlbumFirstIndex();
 
     /**
-     * @brief getCurChipIndex
+     * @brief getChipAudioThirdIndex
      * @return 专辑audio列表需要获取的ID
      */
-    int  getCurChipIndex();
+    int  getChipAudioThirdIndex();
+
     /**
-     * @brief getCurPlayIndex
+     * @brief getPlayThirdIndex
      * @return 播放列表需要获取的id
      */
-    int  getCurPlayIndex();
+    int  getPlayThirdIndex();
+
+    /**
+     * @brief getAlbumSecondIndex
+     * @return 返回当前album二级列表的index
+     */
+    int  getAlbumSecondIndex();
+
+    /**
+     * @brief getBDCSecondIndex
+     * @return 返回当前电台的二级标签ID
+     */
+    int  getBDCSecondIndex();
+
+    /**
+     * @brief getBDCFirstTabIndex
+     * @return 返回当前电台的一级标签ID
+     */
+    int  getBDCFirstTabIndex();
+
+    /**
+     * @brief getBDCFirstAreaIndex
+     * @return 返回当前电台的一级地区列表标签ID
+     */
+    int  getBDCFirstAreaIndex();
 
     void playNext();
     void playPrev();
+
+    bool isBroadcastPlay();
 private:
     KLDataProc();
+    void enterBroadcastView();
+
     ChipPlayManage   *m_pPlayManage;
 
-    CategoryUnion    *mMainCate;
+    // album
+    CategoryUnion    *m_pCateData;
     CategoryModel    *m_pCate;
     CateItemModel    *m_pCateItem;
     ChipItemModel    *m_pChipItem;
+
+    // player
     ChipItemModel    *m_pChipItemPlay;
 
-    SwitchPath        mSwitchAudio;
-    SwitchPath        mSwitchRadio;
+    // broadcast
+    CategoryUnion    *m_pBDCTabData;
+    CategoryUnion    *m_pBDCAreaData;
+    CategoryModel    *m_pBDCTab;
+    CategoryModel    *m_pBDCArea;
+    CateItemModel    *m_pBDCItem;
+
+    SwitchPath        mSwitch;
     SwitchPath        mPlayPath;
 
-    MapTable<int, CateItemUnion*>        mCidMap;
+    MapTable<int, CateItemUnion*>   mCidMap;
+    MapTable<int, CateItemUnion*>   mBDCMap;
     MapTable<ByteString, AlbunView> mChipMap;
 };
 

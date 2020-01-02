@@ -24,6 +24,14 @@ public:
 
     bool pushNew(QString const &url);
 
+    // qrc:/CateItemListView.qml
+    // qrc:/bdc/KlInlineBroadcast.qml
+    void viewAlbumBDCSwitch(QString const &url);
+
+    // qrc:/bdc/KlInlineChannelView.qml
+    // qrc:/bdc/KlInlineAreaView.qml
+    void viewBDCItemAreaSwicth(QString const &url);
+
     void setSourceUrl(const char *url);
     bool canSeek() const;
     void setCanSeek(bool canSeek);
@@ -66,10 +74,18 @@ private:
     bool              mCanSeek;
     ViewSwitchStack  *m_pViewStack;
 
+    // album
     CategoryModel    *m_pCate;
     CateItemModel    *m_pCateItem;
     ChipItemModel    *m_pChipItem;
+
+    // player
     ChipItemModel    *m_pChipItemPlay;
+
+    // broadcast
+    CategoryModel    *m_pBDCTab;
+    CategoryModel    *m_pBDCArea;
+    CateItemModel    *m_pBDCItem;
 };
 
 #endif // KL_UI_PROC_H

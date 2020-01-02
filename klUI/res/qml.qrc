@@ -11,5 +11,11 @@
         <file>MediaSlider.qml</file>
         <file>CurrentPlay.qml</file>
         <file>CurrentDelegate.qml</file>
+        <file>bdc/KlInlineAreaView.qml</file>
+        <file>bdc/KlInlineBroadcast.qml</file>
+        <file>bdc/KlInlineChannelView.qml</file>
+        <file>bdc/KlInlineLeftView.qml</file>
+        <file>bdc/KlLine.qml</file>
+        <file>CateItemListView.qml</file>
     </qresource>
 </RCC>

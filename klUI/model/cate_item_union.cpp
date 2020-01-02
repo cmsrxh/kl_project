@@ -7,25 +7,11 @@
 #include "cate_item_model.h"
 #include "cate_item_union.h"
 
-CateItemUnion::CateItemUnion(int cid, CateItemModel *parent)
-    : mCateItemType(0)
+CateItemUnion::CateItemUnion(int cid_type, CateItemModel *parent)
+    : mCateItemType(cid_type)
     , m_pCateItem(nullptr)
     , m_pParentModel(parent)
-{
-    GEN_Printf(LOG_DEBUG, "New a Cate Item: %d", cid);
-    if (-1 == cid) //operate list
-    {
-        mCateItemType = CATE_ITEM_OPERATE;
-    } else if (-2 == cid) //type radio list
-    {
-        mCateItemType = CATE_ITEM_TYPE_RADIO;
-    } else if (-3 == cid)
-    {
-        mCateItemType = CATE_ITEM_BDCAST;
-    } else  //album list
-    {
-        mCateItemType = CATE_ITEM_ALBUM;
-    }
+{    
 }
 
 void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, int area_code)
@@ -208,7 +194,7 @@ bool CateItemUnion::haveNext()
         ret = ((kl::OperateList *)m_pCateItem)->getHaveNext();
         break;
     case CATE_ITEM_BDCAST:
-        ret = ((kl::BroadcastItemList *)m_pCateItem)->getPage();
+        ret = ((kl::BroadcastItemList *)m_pCateItem)->getHaveNext();
         break;
     case CATE_ITEM_TYPE_RADIO:
     default:
