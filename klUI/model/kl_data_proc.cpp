@@ -419,6 +419,7 @@ void KLDataProc::bdcThirdProgramLoadOver()
 
     if (mPlayPath.chip_item_index >= 0 && vec.size() > 0)
     {
+        GEN_Printf(LOG_DEBUG, "Play: %d-%d, url: %s", mPlayPath.chip_item_index, vec.size(), vec[mPlayPath.chip_item_index]->playUrl.string());
         gInstance->setSourceUrl(vec[mPlayPath.chip_item_index]->playUrl.string());
     } else
     {

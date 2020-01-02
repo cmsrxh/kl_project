@@ -65,11 +65,14 @@ Q_SIGNALS:
     void canSeekChanged();
 
     // qml
-    void durationChanged(int duration);
+    void durationChanged(int duration, QString const &durStr);
+    void positionChanged(QString const &curPos);
     void playingInfo(QString const &name, QString const &desc);
     void albumInfoName(QString const &name);
     void albumInfoDesc(QString const &imgUrl, QString const &desc, const QString &hostName);
 private:
+    QString numToTimeStr(int num);
+
     int               mPlayState;  //空闲=0, 播放=1, 暂停=2, 停止=3
     bool              mCanSeek;
     ViewSwitchStack  *m_pViewStack;

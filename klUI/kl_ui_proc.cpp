@@ -21,7 +21,7 @@ KLUIProc::KLUIProc()
 }
 
 void KLUIProc::init(QQmlContext *ctx)
-{
+{    
     m_pCate         = new CategoryModel;
     m_pCateItem     = new CateItemModel;
     m_pChipItem     = new ChipItemModel(false);
@@ -97,7 +97,11 @@ void KLUIProc::qmlSeekTo(long msec, int mode)
 
 int KLUIProc::qmlGetCurrentPosition()
 {
-    return MediaServiceIFace::instance()->getCurrentPosition();
+    int cur = MediaServiceIFace::instance()->getCurrentPosition();
+
+    Q_EMIT positionChanged(numToTimeStr(cur));
+
+    return cur;
 }
 
 int KLUIProc::qmlGetDuration()
@@ -148,7 +152,7 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         setPlayState(2);
         break;
     case MEDIA_NOTIFY_TIME:
-        Q_EMIT durationChanged(ext1);
+        Q_EMIT durationChanged(ext1, numToTimeStr(ext1));
         break;
     case MEDIA_SUBTITLE_DATA:
         break;
@@ -156,6 +160,44 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         qDebug() << "msg=" << msg << ext1 << ext2 << str;
         break;
     }
+}
+
+QString KLUIProc::numToTimeStr(int num)
+{
+    QString str(16);
+
+    ushort sec = num % 60;
+    num /= 60;
+    ushort min = num % 60;
+    num /= 60;
+    ushort hour = num % 24;
+
+    str[3] = '0' + min / 10;
+    str[4] = '0' + min % 10;
+
+    if (hour)
+    {
+        str[0] = '0' + hour / 10;
+        str[1] = '0' + hour % 10;
+        str[2] = ':';
+
+        str[3] = '0' + min / 10;
+        str[4] = '0' + min % 10;
+
+        str[5] = ':';
+        str[6] = '0' + sec / 10;
+        str[7] = '0' + sec % 10;
+    } else
+    {
+        str[0] = '0' + min / 10;
+        str[1] = '0' + min % 10;
+        str[2] = ':';
+
+        str[3] = '0' + sec / 10;
+        str[4] = '0' + sec % 10;
+    }
+
+    return str;
 }
 
 bool KLUIProc::canSeek() const

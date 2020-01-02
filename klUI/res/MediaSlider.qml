@@ -15,12 +15,12 @@ Item{
     Connections
     {
         target: KL.Controller
-        onDurationChanged:
-        {
-            if(slider.maxValue != duration)
-            {
-                slider.maxValue = duration
-            }
+        onDurationChanged: {
+            slider.maxValue = duration;
+            rightTime.text  = durStr;
+        }        
+        onPositionChanged: {
+             leftTime.text  = curPos
         }
     }
 
@@ -116,8 +116,7 @@ Item{
         anchors.left: parent.left
         anchors.leftMargin: 10
 
-        text: Qt.formatTime(new Date(0, 0, 0, 0, parseInt(slider.currentValue/60), slider.currentValue%60)
-                            , qsTr("hh:mm:ss"))
+        text: "00:00:00"
         color: "white"
         font.pixelSize: slider.fontSize
         //elide: Text.ElideLeft
@@ -133,8 +132,7 @@ Item{
         anchors.right: parent.right
         anchors.rightMargin: 10
 
-        text: Qt.formatTime(new Date(0, 0, 0, 0, parseInt(slider.maxValue/60), slider.maxValue%60)
-                            , qsTr("hh:mm:ss"))
+        text: "00:00:00"
         color: "white"
         font.pixelSize: slider.fontSize
         //elide: Text.ElideLeft
