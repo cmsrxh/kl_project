@@ -1,6 +1,7 @@
 #include "model/category_model.h"
 #include "model/cate_item_model.h"
 #include "model/chip_item_model.h"
+#include "model/collect_model.h"
 #include "iface/media_service_i_face.h"
 #include "iface/media_notify.h"
 #include "model/kl_data_proc.h"
@@ -15,6 +16,7 @@ KLUIProc::KLUIProc()
     : QObject()
     , mPlayState(0)
     , mCanSeek(true)
+    , mDuringBase(0), mPositionBase(0)
     , m_pViewStack(new ViewSwitchStack)
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
@@ -35,6 +37,8 @@ void KLUIProc::init(QQmlContext *ctx)
 
     KLDataProc::instance()->initBroadcast(m_pBDCTab, m_pBDCArea, m_pBDCItem);
 
+    m_pCollect      = new CollectModel;
+
     // album
     ctx->setContextProperty("cateItemModel", m_pCateItem);
     ctx->setContextProperty("cateModel", m_pCate);
@@ -52,6 +56,11 @@ void KLUIProc::init(QQmlContext *ctx)
     //detail
     ctx->setContextProperty("detailObject", DetailQobject::instance());
 
+    //collect
+    ctx->setContextProperty("collectList", m_pCollect);
+
+
+    // view switch
     ctx->setContextProperty("stack", m_pViewStack);    
 }
 
@@ -99,14 +108,14 @@ int KLUIProc::qmlGetCurrentPosition()
 {
     int cur = MediaServiceIFace::instance()->getCurrentPosition();
 
-    Q_EMIT positionChanged(numToTimeStr(cur));
+    Q_EMIT positionChanged(numToTimeStr(cur + mPositionBase));
 
     return cur;
 }
 
 int KLUIProc::qmlGetDuration()
 {
-    return MediaServiceIFace::instance()->getDuration();
+    return mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
 }
 
 void KLUIProc::qmlPlayPrev()
@@ -141,6 +150,7 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
     case MEDIA_PREPARED:
         qmlStart();
         KLDataProc::instance()->showPlayingInfo();
+        // qDebug() << "Time Base: " << mPositionBase << mDuringBase;
         break;
     case MEDIA_STARTED:
         setPlayState(1);
@@ -152,8 +162,17 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         setPlayState(2);
         break;
     case MEDIA_NOTIFY_TIME:
-        Q_EMIT durationChanged(ext1, numToTimeStr(ext1));
-        break;
+    {
+        int durStr = ext1;
+        if (mDuringBase)
+        {
+            ext1   = mDuringBase - mPositionBase;
+            durStr = mDuringBase;
+        }
+        // qDebug() << "Time Base: " << mPositionBase << mDuringBase << ext1;
+        Q_EMIT durationChanged(ext1, numToTimeStr(durStr));
+        break;    
+    }
     case MEDIA_SUBTITLE_DATA:
         break;
     default:
@@ -166,36 +185,22 @@ QString KLUIProc::numToTimeStr(int num)
 {
     QString str(16);
 
-    ushort sec = num % 60;
+    ushort sec  = num % 60;
     num /= 60;
-    ushort min = num % 60;
+    ushort min  = num % 60;
     num /= 60;
     ushort hour = num % 24;
+
+    str[0] = '0' + hour / 10;
+    str[1] = '0' + hour % 10;
+    str[2] = ':';
 
     str[3] = '0' + min / 10;
     str[4] = '0' + min % 10;
 
-    if (hour)
-    {
-        str[0] = '0' + hour / 10;
-        str[1] = '0' + hour % 10;
-        str[2] = ':';
-
-        str[3] = '0' + min / 10;
-        str[4] = '0' + min % 10;
-
-        str[5] = ':';
-        str[6] = '0' + sec / 10;
-        str[7] = '0' + sec % 10;
-    } else
-    {
-        str[0] = '0' + min / 10;
-        str[1] = '0' + min % 10;
-        str[2] = ':';
-
-        str[3] = '0' + sec / 10;
-        str[4] = '0' + sec % 10;
-    }
+    str[5] = ':';
+    str[6] = '0' + sec / 10;
+    str[7] = '0' + sec % 10;
 
     return str;
 }
@@ -212,6 +217,12 @@ void KLUIProc::setCanSeek(bool canSeek)
         mCanSeek = canSeek;
         Q_EMIT canSeekChanged();
     }
+}
+
+void KLUIProc::setSliderBase(int cur, int dur)
+{
+    mPositionBase = cur;
+    mDuringBase   = dur;
 }
 
 int KLUIProc::playState() const

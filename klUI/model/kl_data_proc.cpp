@@ -1,3 +1,4 @@
+#include <events/common_log.h>
 #include "cate_item_union.h"
 #include "cate_item_model.h"
 #include "category_union.h"
@@ -401,13 +402,13 @@ void KLDataProc::bdcSecondItemCollectClick(int index, bool isCollect)
     GEN_Printf(LOG_DEBUG, "index=%d collect.", index, isCollect);
 }
 
-void KLDataProc::bdcThirdProgramLoadOver()
+void KLDataProc::bdcProgramListAction()
 {
     GEN_Printf(LOG_DEBUG, "broadcast load over, play index=%d", mSwitch.bdc.bdc_item_index);
 
     Q_EMIT m_pBDCItem->currenBDCIndexChanged(mSwitch.bdc.bdc_item_index);
 
-    VectorTable<MusicCateItemUnion *> &vec = m_pBDCItem->vec();
+    VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
 
     if (ChipItemUnion::CHIP_ITEM_RADIO == mPlayPath.current_play_list->getChipType())
     {
@@ -433,6 +434,7 @@ void KLDataProc::bdcThirdProgramLoadOver()
  */
 void KLDataProc::showPlayingInfo()
 {
+    int cur = 0, dur = 0;
     int index = mPlayPath.chip_item_index;
 
     if (m_pChipItemPlay->checkUnion(mPlayPath.current_play_list))
@@ -450,6 +452,10 @@ void KLDataProc::showPlayingInfo()
         GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d, Can't show detail info.", index, vec.size());
         return;
     }
+
+    m_pChipItemPlay->getSliderBase(cur, dur, index);
+
+    gInstance->setSliderBase(cur, dur);
 
     Q_EMIT m_pChipItemPlay->playingIndexChanged(index);
 
@@ -478,8 +484,10 @@ int KLDataProc::getAlbumSecondIndex()
 int KLDataProc::getBDCSecondIndex()
 {
     if ((mSwitch.current_play_list == mPlayPath.current_play_list)
-             && (MEDIA_TYPE_BROADCAST == mPlayPath.media_type) )
+            && (mSwitch.bdc.bdc_cate_tab_index == mPlayPath.bdc.bdc_cate_tab_index)
+            && (MEDIA_TYPE_BROADCAST == mPlayPath.media_type) )
     {
+        // GEN_Printf(LOG_WARN, "second section: %d", mPlayPath.bdc.bdc_item_index);
         return mPlayPath.bdc.bdc_item_index;
     } else
     {
@@ -569,9 +577,4 @@ void KLDataProc::playPrev()
     {
         GEN_Printf(LOG_WARN, "Play Prev index: %d was out of range.", index);
     }
-}
-
-bool KLDataProc::isBroadcastPlay()
-{
-    return ChipItemUnion::CHIP_ITEM_BDC_PROGRAM == mPlayPath.current_play_list->getChipType();
 }

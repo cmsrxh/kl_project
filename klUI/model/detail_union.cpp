@@ -17,9 +17,18 @@ DetailUnion::DetailUnion(int type)
     if (0 == type)
     {
         mDetailType = DETAIL_TYPE_ALBUM;
+    } else if (1 == type)
+    {
+        mDetailType = DETAIL_TYPE_AUDIO_CHIP;
     } else if (3 == type)
     {
         mDetailType = DETAIL_TYPE_RADIO_CHIP;
+    } else if (11 == type)
+    {
+        mDetailType = DETAIL_TYPE_BDC_PROGRAM_CHIP;
+    } else if (10 == type)
+    {
+        mDetailType = DETAIL_TYPE_BROADCAST;
     } else
     {
         GEN_Printf(LOG_ERROR, "Media Type = %d is not invalid.", type);

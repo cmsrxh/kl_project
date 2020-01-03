@@ -61,6 +61,7 @@ Item{
             border.right: 1
             height: parent.height
             width: {
+                // console.log(slider.currentValue, slider.maxValue, slider.maxValue - slider.currentValue, slot.width, slider.currentValue * slot.width / slider.maxValue)
                 if (slider.currentValue <= slider.maxValue && slider.maxValue > 0 && slot.width > 0)
                 {
                     return slider.currentValue * slot.width / slider.maxValue

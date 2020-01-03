@@ -232,8 +232,6 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
     return false;
 }
 
-
-
 void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)
 {
     int count = vec.size();
@@ -292,6 +290,8 @@ void ChipItemUnion::genCatesByBDCProgramItem(ListTable<kl::BDCastProgramItem> &n
         tmp->image   = it->broadcastImg;
         tmp->playUrl = it->playUrl;
         tmp->desc    = it->desc;
+        tmp->startTime  = it->startTime;
+        tmp->finishTime = it->finishTime;
 
         vec.push_back(tmp);
     }

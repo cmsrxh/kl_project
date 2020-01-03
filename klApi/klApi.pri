@@ -35,7 +35,8 @@ HEADERS += \
     $$APISRC/kl_url/kl_chip_radio_list.h \
     $$APISRC/kl_url/kl_chip_radio_detail.h \
     $$APISRC/kl_url/kl_chip_audio_detail.h \
-    $$APISRC/kl_url/kl_chip_audio_list.h
+    $$APISRC/kl_url/kl_chip_audio_list.h \
+    $$PWD/kl_collect_manage.h
 
 SOURCES += \
     $$APISRC/net_util/curl_load_proc.cpp \
@@ -64,4 +65,5 @@ SOURCES += \
     $$APISRC/kl_url/kl_chip_radio_list.cpp \
     $$APISRC/kl_url/kl_chip_radio_detail.cpp \
     $$APISRC/kl_url/kl_chip_audio_detail.cpp \
-    $$APISRC/kl_url/kl_chip_audio_list.cpp
+    $$APISRC/kl_url/kl_chip_audio_list.cpp \
+    $$PWD/kl_collect_manage.cpp

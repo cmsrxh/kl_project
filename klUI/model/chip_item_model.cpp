@@ -1,6 +1,7 @@
 #include "chip_item_model.h"
 #include "chip_item_union.h"
 #include "kl_data_proc.h"
+#include <time.h>
 #include <QDebug>
 
 #define CHIP_ITEM_NAME     Qt::UserRole
@@ -69,7 +70,7 @@ void ChipItemModel::setChipItemUnion(ChipItemUnion *pUnion)
 
 void ChipItemModel::clear()
 {
-    GEN_Printf(LOG_INFO, "vector clean");
+    qDebug() << "vector clean";
     mVec.clearPtr();
 
     beginResetModel();
@@ -80,7 +81,7 @@ void ChipItemModel::onLoadOver(long ptr)
 {
     int start = mVec.size();
 
-    assert(ptr == (long)m_pUnion);
+    Q_ASSERT(ptr == (long)m_pUnion);
 
     m_pUnion->onLoadOver(this);
 
@@ -143,6 +144,27 @@ int ChipItemModel::itemCount() const
 
 void ChipItemModel::clean()
 {
-    GEN_Printf(LOG_INFO, "vector clean");
+    qDebug() << "vector clean";
     mVec.clearPtr();
+}
+
+void ChipItemModel::getSliderBase(int &cur, int &dur, int index)
+{
+    MusicChipItemUnion *item = mVec[index];
+
+    if (item->startTime.empty()
+            || item->finishTime.empty())
+    {
+        return;
+    }
+
+    uint64_t start  = strtoull(item->startTime.string(), NULL, 10);
+    uint64_t finish = strtoull(item->finishTime.string(), NULL, 10);
+
+    cur  = (start  / 1000) % (24 * 60 * 60);
+    dur  = (finish / 1000) % (24 * 60 * 60);
+
+//    struct tm result;
+//    time_t timep;
+//    struct tm *localtime_r(const time_t *timep, struct tm *result);
 }

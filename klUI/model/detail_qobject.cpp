@@ -17,7 +17,7 @@ void DetailQobject::getCurrent()
 
 void DetailQobject::onLoadOver(long ptr)
 {
-    assert((long)m_pUnion == ptr);
+    Q_ASSERT((long)m_pUnion == ptr);
 
     m_pUnion->getDetail(mDetail);
 

@@ -17,5 +17,9 @@
         <file>bdc/KlInlineLeftView.qml</file>
         <file>bdc/KlLine.qml</file>
         <file>CateItemListView.qml</file>
+        <file>self/KlDlgOptionView.qml</file>
+        <file>self/KlCollectView.qml</file>
+        <file>ThreeStateBtn.qml</file>
+        <file>KlLine.qml</file>
     </qresource>
 </RCC>

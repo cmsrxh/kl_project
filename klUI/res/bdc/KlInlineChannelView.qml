@@ -12,7 +12,7 @@ Item {
         clip: true;
         model: bdcItem
         delegate: chDelegate
-        currentIndex: bdcItem.currenBDCIndex
+        // currentIndex: bdcItem.currenBDCIndex
         spacing: 2
         boundsBehavior: Flickable.StopAtBounds
         cacheBuffer: 61
@@ -95,43 +95,19 @@ Item {
                         cxt.stroke();
                     }
                 }
-
-                Item {
-                    id: it
+                ThreeStateBtn
+                {
                     width: parent.height
                     height: parent.height
                     anchors.centerIn: parent
+                    initSt: "qrc:/image/collect.png"
+                    pressSt: "qrc:/image/collect_clk.png"
+                    lastSt: "qrc:/image/collect_hl.png"
+                    enable: collect
 
-                    property bool enable: collect
-                    property bool pressed: false
-
-                    Image {
-                        id: icon
-                        width: Image.width
-                        height: Image.height
-                        anchors.centerIn: parent
-                        source:  it.enable ? "qrc:/image/collect_hl.png"
-                                           : "qrc:/image/collect.png"
-                    }
-                    Image {
-                        id: icon2
-                        width: Image.width
-                        height: Image.height
-                        anchors.centerIn: parent
-                        source:  it.pressed ? "qrc:/image/collect_clk.png"
-                                            : ""
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onPressed: {
-                            it.pressed = true
-                        }
-                        onCanceled: it.pressed = false
-                        onClicked: bdcItem.qmlClickBDCItemCollect(index, !it.enable)
-                        onReleased: {
-                            it.pressed = false
-                        }
+                    onClicked:
+                    {
+                        bdcItem.qmlClickBDCItemCollect(index, enable)
                     }
                 }
             }

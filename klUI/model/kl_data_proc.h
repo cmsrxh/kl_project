@@ -156,7 +156,7 @@ public:
 
     void bdcSecondItemCollectClick(int index, bool isCollect);
 
-    void bdcThirdProgramLoadOver();
+    void bdcProgramListAction();
     /**
      * @brief showPlayingInfo
      * @details 在主页信息显示栏，显示当前播放信息，只有在开始播放的时候才播放
@@ -214,7 +214,6 @@ public:
     void playNext();
     void playPrev();
 
-    bool isBroadcastPlay();
 private:
     KLDataProc();
     void enterBroadcastView();

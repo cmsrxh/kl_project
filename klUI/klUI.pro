@@ -2,6 +2,8 @@ TEMPLATE = app
 
 QT += qml quick
 CONFIG += c++11
+CONFIG += debug
+CONFIG += qml_debug
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -34,7 +36,8 @@ HEADERS += application.h \
     model/chip_item_union.h \
     model/detail_union.h \
     model/detail_qobject.h \
-    model/chip_item_play_manage.h
+    model/chip_item_play_manage.h \
+    model/collect_model.h
 
 SOURCES += application.cpp main.cpp \
     kl_ui_proc.cpp \
@@ -48,7 +51,8 @@ SOURCES += application.cpp main.cpp \
     model/chip_item_union.cpp \
     model/detail_union.cpp \
     model/detail_qobject.cpp \
-    model/chip_item_play_manage.cpp
+    model/chip_item_play_manage.cpp \
+    model/collect_model.cpp
 
 RESOURCES += res/qml.qrc \
     res/image.qrc

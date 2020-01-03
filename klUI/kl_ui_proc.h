@@ -7,6 +7,7 @@ class CategoryModel;
 class CateItemModel;
 class ChipItemModel;
 class QQmlContext;
+class CollectModel;
 class ViewSwitchStack;
 class KLUIProc : public QObject
 {
@@ -35,6 +36,8 @@ public:
     void setSourceUrl(const char *url);
     bool canSeek() const;
     void setCanSeek(bool canSeek);
+
+    void setSliderBase(int cur, int dur);
 
 public Q_SLOTS:
     void qmlStart();
@@ -75,6 +78,9 @@ private:
 
     int               mPlayState;  //空闲=0, 播放=1, 暂停=2, 停止=3
     bool              mCanSeek;
+    //  两变量用来处理广播时，时间进度问题
+    int               mDuringBase;
+    int               mPositionBase;
     ViewSwitchStack  *m_pViewStack;
 
     // album
@@ -89,6 +95,9 @@ private:
     CategoryModel    *m_pBDCTab;
     CategoryModel    *m_pBDCArea;
     CateItemModel    *m_pBDCItem;
+
+    //collect
+    CollectModel      *m_pCollect;
 };
 
 #endif // KL_UI_PROC_H

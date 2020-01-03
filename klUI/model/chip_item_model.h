@@ -61,6 +61,8 @@ public:
         return m_pUnion != uni;
     }
 
+    void getSliderBase(int &cur, int &dur, int index);
+
 public Q_SLOTS:
     void onLoadOver(long ptr);
 

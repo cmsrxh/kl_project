@@ -8,8 +8,9 @@ class ChipItemModel;
  * @brief The ChipPlayManage class
  * @details 单实例模式
  */
-class ChipPlayManage
+class ChipPlayManage : public QObject
 {
+    Q_OBJECT
 public:
     ChipPlayManage();
 
@@ -20,6 +21,12 @@ public:
 
     void loadError(int loadAction, int type, QString const &err_str);
     void dataLoadOver(long ptr, int loadAction);
+
+public Q_SLOTS:
+    void onBDCProgramListAction();
+
+Q_SIGNALS:
+    void programListOver();
 
 private:
     ChipItemModel *m_pChipShow;

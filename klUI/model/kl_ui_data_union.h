@@ -28,6 +28,8 @@ struct MusicChipItemUnion
     ByteString image;
     ByteString playUrl;
     ByteString desc;
+    ByteString startTime;
+    ByteString finishTime;
 };
 
 struct MusicDetail
@@ -38,6 +40,13 @@ struct MusicDetail
     ByteString image;
     ByteString hostName;
     ListTable<ByteString> *keywords;
+};
+
+struct CollectNode
+{
+    int type;       // DetailUnion::DETAIL_TYPE_*
+    ByteString id;
+    ByteString name;
 };
 
 typedef  void UICategory;

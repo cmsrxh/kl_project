@@ -9,6 +9,8 @@ ChipPlayManage *gPlayInstance;
 ChipPlayManage::ChipPlayManage()
 {
     gPlayInstance = this;
+
+    connect(this, SIGNAL(programListOver()), this, SLOT(onBDCProgramListAction()), Qt::QueuedConnection);
 }
 
 void ChipPlayManage::setChipShow(ChipItemModel *chipShow)
@@ -50,7 +52,11 @@ void ChipPlayManage::dataLoadOver(long ptr, int loadAction)
     } else if (ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW == loadAction)
     {
         Q_EMIT m_pPlayModel->dataLoadOver(ptr);
-
-        KLDataProc::instance()->bdcThirdProgramLoadOver();
+        Q_EMIT programListOver();
     }
+}
+
+void ChipPlayManage::onBDCProgramListAction()
+{
+    KLDataProc::instance()->bdcProgramListAction();
 }

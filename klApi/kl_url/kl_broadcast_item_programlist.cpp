@@ -51,12 +51,13 @@ NetUrl &kl::BroadcastItemProgramlist::genQueryUrl()
 void kl::BroadcastItemProgramlist::profile()
 {
     ListTable<BDCastProgramItem>::iterator it = mNodes.begin();
+    int count = 0;
 
-    for (; it != mNodes.end(); ++it)
+    for (; it != mNodes.end(); ++it, ++count)
     {
-        GEN_Printf(LOG_DUMP, "%s=%s - %s", it->title.string(),
-                   it->programId.string(), it->playUrl.string());
+        GEN_Printf(LOG_DUMP, "%s=%s", it->title.string(), it->programId.string());
     }
+    GEN_Printf(LOG_DEBUG, "Load broadcast program size: %d", count);
 }
 
 void kl::BroadcastItemProgramlist::genResult(const char *data, unsigned long size)
