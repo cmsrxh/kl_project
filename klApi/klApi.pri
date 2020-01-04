@@ -36,7 +36,9 @@ HEADERS += \
     $$APISRC/kl_url/kl_chip_radio_detail.h \
     $$APISRC/kl_url/kl_chip_audio_detail.h \
     $$APISRC/kl_url/kl_chip_audio_list.h \
-    $$PWD/kl_collect_manage.h
+    $$PWD/kl_collect_manage.h \
+    $$PWD/kl_url/kl_res_voice_search_all.h \
+    $$PWD/kl_url/kl_res_suggestion_word.h
 
 SOURCES += \
     $$APISRC/net_util/curl_load_proc.cpp \
@@ -66,4 +68,6 @@ SOURCES += \
     $$APISRC/kl_url/kl_chip_radio_detail.cpp \
     $$APISRC/kl_url/kl_chip_audio_detail.cpp \
     $$APISRC/kl_url/kl_chip_audio_list.cpp \
-    $$PWD/kl_collect_manage.cpp
+    $$PWD/kl_collect_manage.cpp \
+    $$PWD/kl_url/kl_res_voice_search_all.cpp \
+    $$PWD/kl_url/kl_res_suggestion_word.cpp

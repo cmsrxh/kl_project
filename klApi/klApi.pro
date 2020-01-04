@@ -52,7 +52,9 @@ HEADERS += app_common.h application.h \
     kl_url/kl_chip_radio_list.h \
     kl_url/kl_chip_radio_detail.h \
     kl_url/kl_chip_audio_detail.h \
-    kl_url/kl_chip_audio_list.h
+    kl_url/kl_chip_audio_list.h \
+    kl_url/kl_res_suggestion_word.h \
+    kl_url/kl_res_voice_search_all.h
 
 
 SOURCES += application.cpp main.cpp \ 
@@ -82,4 +84,6 @@ SOURCES += application.cpp main.cpp \
     kl_url/kl_chip_radio_list.cpp \
     kl_url/kl_chip_radio_detail.cpp \
     kl_url/kl_chip_audio_detail.cpp \
-    kl_url/kl_chip_audio_list.cpp
+    kl_url/kl_chip_audio_list.cpp \
+    kl_url/kl_res_suggestion_word.cpp \
+    kl_url/kl_res_voice_search_all.cpp

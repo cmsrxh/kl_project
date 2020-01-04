@@ -20,6 +20,8 @@
 #include "kl_url/kl_chip_radio_list.h"
 #include "kl_url/kl_album_detail.h"
 #include "kl_url/kl_album_list.h"
+#include "kl_url/kl_res_suggestion_word.h"
+#include "kl_url/kl_res_voice_search_all.h"
 #include "util/config_setting.h"
 #include "application.h"
 
@@ -33,6 +35,7 @@ void Application::initialize()
 //    HttpUtil().urlEncoding("陈猛", result);
 //    GEN_Printf(LOG_INFO, "string: %s", result.string());
 
+#if 0
     NetUrl url("www.baidu.com");
 
     url.append("a", "b");
@@ -45,17 +48,25 @@ void Application::initialize()
     GEN_Printf(LOG_DEBUG, "%s", url.genUrl().string());
     exit(1);
 
+#endif
+#if 0
+        ByteString queuy = ByteString::allocString("%7B%22category%22%3A%22%22%2C%22albumName%22%3A%22%22%2C%22artist%22%3A%22%22%2C%22audioName%22%3A%22%22%2C%22field%22%3A2%2C%22tag%22%3A1%2C%22text%22%3A%22%E9%9F%B3%E4%B9%90%22%2C%22keyword%22%3A%22%E9%9F%B3%E4%B9%90%22%7D");
+        HttpUtil::urlDecoding(queuy);
+
+        GEN_Printf(LOG_DEBUG, "%s", queuy);
+        queuy.clear();
+#endif
 
     if(!LocalConfig::instance()->init())
     {
-//        static  kl::InitManage init;
+        static  kl::InitManage init;
 
 //        GEN_Printf(LOG_DEBUG, "deviceID: %s", LocalConfig::instance()->deviceID().string());
 //        GEN_Printf(LOG_DEBUG, "appID: %s", LocalConfig::instance()->appID().string());
 //        GEN_Printf(LOG_DEBUG, "secretKey: %s", LocalConfig::instance()->secretKey().string());
 //        GEN_Printf(LOG_DEBUG, "openID: %s", LocalConfig::instance()->openID().string());
 
-//        init.obtain();
+        init.obtain();
     } else
     {
 //        static kl::ActiveManage act;
@@ -107,6 +118,14 @@ void Application::initialize()
 
 //        static kl::ChipRadioList radioList("1200000000162");
 //        radioList.obtain();
+
+//        static kl::VoiceSearchAll search("张学友");
+
+//        search.obtain();
+
+        static kl::SuggestionWord suggest("chen");
+
+        suggest.obtain();
 
     }
 }

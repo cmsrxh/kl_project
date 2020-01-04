@@ -22,6 +22,8 @@
 #define SIGN_AlbumList                  "81230f5ae8db203704271b5c87cc6fbc"
 #define SIGN_ChipRadioList              "81230f5ae8db203704271b5c87cc6fbc"
 #define SIGN_ChipRadioDetail            "81230f5ae8db203704271b5c87cc6fbc"
+#define SIGN_VoiceSearchAll             "955d3a8e24056e71297c51bb5cf98381"
+#define SIGN_SuggestionWord             "81230f5ae8db203704271b5c87cc6fbc"
 
 namespace kl
 {
@@ -422,6 +424,62 @@ class RadioItem : public AudioItem
 public:
     RadioItem() {}
 };
+
+// VoiceSearchAll
+class SearchItem
+{
+public:
+    void clear()
+    {
+        id.clear();
+        name.clear();
+        img.clear();
+        type.clear();
+        albumName.clear();
+        source.clear();
+        duration.clear();
+        playUrl.clear();
+        sourceName.clear();
+        oldId.clear();
+        callback.clear();
+        listenNum.clear();
+        isShowRed.clear();
+        isRequest.clear();
+        originalDuration.clear();
+    }
+
+    ByteString id;
+    ByteString name;
+    ByteString img;
+    ByteString type; /* 0：专辑, 1：碎片, 3：智能电台, 11：传统电台 */
+    ByteString albumName;
+    ByteString source;
+    ByteString duration;
+    ByteString playUrl;
+    ByteString sourceName;
+    ByteString oldId;
+    ByteString callback;
+    ByteString listenNum;
+    ByteString isShowRed;
+    ByteString isRequest;
+    ByteString originalDuration;
+
+};
+
+// SuggestionWord
+class SuggestItem
+{
+public:
+    SuggestItem() {}
+
+    void clear()
+    {
+        result.clear();
+    }
+
+    ByteString result;
+};
+
 
 // 通知UI，数据加载解析的结果
 class UINotifyIface

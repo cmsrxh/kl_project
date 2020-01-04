@@ -11,16 +11,16 @@ public:
 
     static void clearBytes (const ByteString &it);
 
-    ByteString formatEmpty(const ByteString &query);
+    static ByteString formatEmpty(const ByteString &query);
 
-    void urlDecoding(ByteString &query, char percent = '%');
-    void urlEncoding(const ByteString &query, ByteString &result, char percent = '%');
+    static void urlDecoding(ByteString &query, char percent = '%');
+    static void urlEncoding(const ByteString &query, ByteString &result, char percent = '%');
 
-    void replace(ByteString &str, const char *src, const char *dest);
+    static void replace(ByteString &str, const char *src, const char *dest);
 
-    void remove(ByteString &str, const char ch);
+    static void remove(ByteString &str, const char ch);
 
-    void split(ByteString const &str, char rep, ListTable<ByteString> &root);
+    static void split(ByteString const &str, char rep, ListTable<ByteString> &root);
 };
 
 #endif // HTTP_UTIL_H
