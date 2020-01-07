@@ -98,6 +98,8 @@ private:
 
     //collect
     CollectModel      *m_pCollect;
+    CollectModel      *m_pDownload;
+    CollectModel      *m_pHistory;
 };
 
 #endif // KL_UI_PROC_H

@@ -58,7 +58,8 @@ ApplicationWindow {
         Loader{
             focus: true
             anchors.fill: parent
-            source: "qrc:/self/KlDlgOptionView.qml" // stack.source
+            //source: "qrc:/self/KlDlgOptionView.qml"
+            source: stack.source
         }
     }
 

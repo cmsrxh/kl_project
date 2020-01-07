@@ -1,14 +1,21 @@
 #ifndef KL_COLLECT_MANAGE_H
 #define KL_COLLECT_MANAGE_H
 
-#include "app_common.h"
-#include <util/byte_string.h>
+#include "kl_save_record.h"
 
 namespace kl {
-class CollectManage
+class CollectManage : public SaveRecord
 {
-public:
     CollectManage();
+    CollectManage(CollectManage &);
+    CollectManage &operator=(CollectManage &);
+public:
+    static CollectManage *instance()
+    {
+        static CollectManage i;
+        return &i;
+    }
+
 };
 }
 

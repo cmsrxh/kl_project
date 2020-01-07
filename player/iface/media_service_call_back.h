@@ -8,6 +8,10 @@ class MediaServiceCallback
 {
 public:
     MediaServiceCallback() {}
+
+    virtual void msgLoopExit() = 0;
+
+    virtual void mediaNotify(int msg, int ext1, int ext2, const char *str) = 0;
 };
 
 #endif // MEDIA_SERVICE_CALL_BACK_H

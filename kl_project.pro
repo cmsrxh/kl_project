@@ -5,4 +5,6 @@ TEMPLATE = subdirs
 
 SUBDIRS += klUI
 
+SUBDIRS += playerClient
 
+SUBDIRS += player

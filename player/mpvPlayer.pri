@@ -5,6 +5,8 @@
 HOME     = $$getenv("HOME")
 PLAYER   = ../player
 
+DEFINES     += USE_MPV_API_INTERFACE
+INCLUDEPATH += ../player
 INCLUDEPATH += $$HOME/tmp/install/mpv/include
 
 QMAKE_LFLAGS   += -Wl,-rpath,$$HOME/waf/mpv-1.0/build

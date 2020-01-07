@@ -1,32 +1,18 @@
 #include <locale.h>
 #include <stdarg.h>
 #include "events/common_log.h"
+
+#ifdef USE_MPV_API_INTERFACE
 #include "fsm/sf_state_mache.h"
 #include "mpv_player_proc.h"
 #include "iface/media_notify.h"
-
+#endif
 #include "app_common.h"
 #include "config_local_info.h"
-#include "net_util/load_item.h"
-#include "net_util/http_util.h"
 #include "kl_url/kl_active_manage.h"
 #include "kl_url/kl_init_manage.h"
-#include "kl_url/kl_broadcast_area_list.h"
-#include "kl_url/kl_category_broadcast.h"
-#include "kl_url/kl_category_sub_list.h"
-#include "kl_url/kl_broadcast_item_list.h"
-#include "kl_url/kl_broadcast_item_detail.h"
-#include "kl_url/kl_broadcast_item_programlist.h"
-#include "kl_url/kl_category_all.h"
-#include "kl_url/kl_operate_list.h"
-#include "kl_url/kl_type_radio_list.h"
-#include "kl_url/kl_chip_audio_detail.h"
-#include "kl_url/kl_chip_audio_list.h"
-#include "kl_url/kl_chip_radio_detail.h"
-#include "kl_url/kl_chip_radio_list.h"
-#include "kl_url/kl_album_detail.h"
-#include "kl_url/kl_album_list.h"
 #include "util/config_setting.h"
+#include "model/kl_data_proc.h"
 #include "application.h"
 
 Application::Application()
@@ -44,8 +30,13 @@ void Application::initialize()
         m_pKLInit->obtain();
     } else
     {
+#ifdef USE_MPV_API_INTERFACE
         stateMache->initialize();
+#endif
     }
+
+    // 启动收数据线程，并连接播放服务端socket
+    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }
@@ -63,10 +54,12 @@ void Application::runLoop()
         switch (evt->sig)
         {
         case SIG_HAVE_OPEN_ID:
-            klInitGetOpenId();        
+            klInitGetOpenId();
+#ifdef USE_MPV_API_INTERFACE
             stateMache->initialize();
+#endif
             break;
-
+#ifdef USE_MPV_API_INTERFACE
         case SIG_ON_MPV_EVENT:
             MPVPlayerProc::instance()->onMpvEvents();
             break;
@@ -82,7 +75,10 @@ void Application::runLoop()
         case SIG_STATE_EVENT_PROC:
             stateMache->procEvt(evt);
             break;
-
+#endif
+        case SIG_SOCKET_CLIENT_MSG_EXIT:
+            KLDataProc::instance()->initMedia();
+            break;
         case SIG_KL_INIT_ERROR:
             klInitActiveManage((GeneralQEvt *)evt);
             break;

@@ -3,7 +3,7 @@
 #include "model/chip_item_model.h"
 #include "model/collect_model.h"
 #include "iface/media_service_i_face.h"
-#include "iface/media_notify.h"
+#include "iface/media_iface_common.h"
 #include "model/kl_data_proc.h"
 #include "model/detail_qobject.h"
 #include "qml_view_switch_stack.h"
@@ -38,6 +38,8 @@ void KLUIProc::init(QQmlContext *ctx)
     KLDataProc::instance()->initBroadcast(m_pBDCTab, m_pBDCArea, m_pBDCItem);
 
     m_pCollect      = new CollectModel;
+    m_pDownload     = new CollectModel;
+    m_pHistory      = new CollectModel;
 
     // album
     ctx->setContextProperty("cateItemModel", m_pCateItem);
@@ -58,7 +60,8 @@ void KLUIProc::init(QQmlContext *ctx)
 
     //collect
     ctx->setContextProperty("collectList", m_pCollect);
-
+    ctx->setContextProperty("loadList", m_pDownload);
+    ctx->setContextProperty("historyList", m_pHistory);
 
     // view switch
     ctx->setContextProperty("stack", m_pViewStack);    
@@ -132,6 +135,14 @@ void KLUIProc::qmlMainTabClick(int index)
 {
     qDebug() << "main tab index=" << index;
     KLDataProc::instance()->mainTabClick(index);
+
+    if (1 == index)
+    {
+        m_pViewStack->setSource("qrc:/self/KlDlgOptionView.qml");
+    } else
+    {
+        m_pViewStack->setSource("qrc:/CategoryView.qml");
+    }
 }
 
 void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
@@ -257,9 +268,4 @@ void KLUIProc::viewBDCItemAreaSwicth(const QString &url)
 void KLUIProc::setSourceUrl(const char *url)
 {
     MediaServiceIFace::instance()->setFile(url);
-}
-
-void MediaNotify::notify(int msg, int ext1, int ext2, const char *str)
-{
-    Q_EMIT gInstance->recvNotify(msg, ext1, ext2, str);
 }

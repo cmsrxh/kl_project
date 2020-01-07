@@ -21,5 +21,9 @@
         <file>self/KlCollectView.qml</file>
         <file>ThreeStateBtn.qml</file>
         <file>KlLine.qml</file>
+        <file>self/KlLoadView.qml</file>
+        <file>self/KlHistoryRecord.qml</file>
+        <file>self/KlVioceGuide.qml</file>
+        <file>self/KlSettingView.qml</file>
     </qresource>
 </RCC>

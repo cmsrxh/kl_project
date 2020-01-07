@@ -10,12 +10,33 @@
 #include "kl_data_proc.h"
 #include "chip_item_play_manage.h"
 #include "kl_ui_proc.h"
+#include "iface/media_service_i_face.h"
+#include "iface/media_iface_common.h"
+#include "iface/media_service_call_back.h"
+#include "application.h"
 
 extern KLUIProc *gInstance;
 
+class MpvMsgPriser : public MediaServiceCallback
+{
+public:
+    void msgLoopExit()
+    {
+        GEN_Printf(LOG_ERROR, "msg loop exit, need restart");
+        sleep(2);
+        Application::instance()->postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    }
+
+    void mediaNotify(int msg, int ext1, int ext2, const char *str)
+    {
+        //GEN_Printf(LOG_DUMP, "msg: %d (%d, %d), %s", msg, ext1, ext2, str);
+        Q_EMIT gInstance->recvNotify(msg, ext1, ext2, QString::fromUtf8(str));
+    }
+};
+
 KLDataProc::KLDataProc()
     : m_pPlayManage(new ChipPlayManage)
-{
+{    
 }
 
 void KLDataProc::enterBroadcastView()
@@ -31,6 +52,12 @@ void KLDataProc::enterBroadcastView()
     {
         bdcFirstCateTabClick(0);
     }
+}
+
+void KLDataProc::initMedia()
+{
+    static MpvMsgPriser i;
+    MediaServiceIFace::instance()->initClientIface(&i);
 }
 
 void KLDataProc::initAlbum(CategoryModel *cate, CateItemModel *cateItem, ChipItemModel *chip, ChipItemModel *player)
@@ -400,6 +427,23 @@ void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
 void KLDataProc::bdcSecondItemCollectClick(int index, bool isCollect)
 {
     GEN_Printf(LOG_DEBUG, "index=%d collect.", index, isCollect);
+
+    VectorTable<MusicCateItemUnion *> &vec = m_pBDCItem->vec();
+    if (index < 0 || index >= vec.size())
+    {
+        GEN_Printf(LOG_WARN, "Collect Index=%d is out of range.", index, isCollect);
+        return;
+    }
+
+    kl::RecordItem *tmp = new kl::RecordItem;
+
+    tmp->type       = DetailUnion::DETAIL_TYPE_BROADCAST;
+    tmp->id         = ByteString::allocString(vec[index]->id);
+//    tmp->parentId   = ByteString::allocString(vec[index]->);
+    tmp->name       = ByteString::allocString(vec[index]->name);
+//    tmp->parentName = ByteString::allocString(vec[index]->);
+    tmp->image      = ByteString::allocString(vec[index]->img);
+    tmp->playUrl    = ByteString::allocString(vec[index]->playUrl);
 }
 
 void KLDataProc::bdcProgramListAction()

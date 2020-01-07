@@ -1,21 +1,16 @@
-#ifndef KL_SAVE_OBJECT_H
-#define KL_SAVE_OBJECT_H
+#ifndef SAVE_MANAGE_OBJECT_H
+#define SAVE_MANAGE_OBJECT_H
 
-#include "kl_object.h"
-#include "kl_common.h"
 #include "util/list_table.h"
 
-namespace kl
-{
 template <typename save_node>
-class SaveObject : public KLObject
+class SaveFileObject
 {
 public:
-    SaveObject(const ByteString &baseUrl, int methodType)
-        : KLObject(baseUrl, methodType)
-        , mSaveFile(nullptr)
+    SaveFileObject()
+        : mSaveFile(nullptr)
     {}
-    ~SaveObject()
+    ~SaveFileObject()
     {
         clearData();
     }
@@ -27,32 +22,6 @@ public:
         {
             it->clear();
             mNodes.remove(it);
-        }
-    }
-
-    void loadData (uint8_t *data, unsigned long size)
-    {
-        data[size] = '\0';
-        // GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
-
-        genResult((char *)data, size);
-
-        if (mSaveFile)
-        {
-            int fd = open(mSaveFile, O_CREAT | O_WRONLY, 0664);
-            if (fd)
-            {
-                int ret = write(fd, data, size);
-                if (ret != (int)size)
-                {
-                    GEN_Printf(LOG_WARN, "write failed, [%d, %lu]", ret, size);
-                }
-
-                close(fd);
-            } else
-            {
-                GEN_Printf(LOG_ERROR, "%s open failed, %s", mSaveFile, strerror(errno));
-            }
         }
     }
 
@@ -91,6 +60,40 @@ public:
         }
     }
 
+    bool saveNodesFile()
+    {
+        if (mSaveFile)
+        {
+            int fd = open(mSaveFile, O_WRONLY);
+            if (fd > 0)
+            {
+                char *data = nullptr;
+                unsigned long len = 0;
+
+                if (genSaveString(data, len))
+                {
+                    int ret = write(fd, data, len);
+                    if (ret != len)
+                    {
+                        GEN_Printf(LOG_ERROR, "[%d == %d] write failed, %s", ret, len, strerror(errno));
+                    }
+
+                }
+
+                close(fd);
+                if (data)
+                {
+                    delete [] data;
+                }
+            } else
+            {
+                GEN_Printf(LOG_ERROR, "open write failed, %s", strerror(errno));
+            }
+            return true;
+        }
+        return false;
+    }
+
     ListTable<save_node> &nodes()
     {
         return mNodes;
@@ -101,16 +104,26 @@ public:
         return mNodes.empty();
     }
 
+    /**
+     * @brief genResult
+     * @details 解析json格式的数据，数据来源于本地文件
+     */
     virtual void genResult(const char */*data*/, unsigned long /*size*/) {}
+
+    /**
+     * @brief genSaveString
+     * @return 成功生成有效数据，就返回真
+     * @details 把当前nodes生成json格式的字串然后保存起来
+     */
+    virtual bool genSaveString(char *& /*data*/, unsigned long &/*len*/) { return false; }
 
     void setSaveFile(const char *saveFile)
     {
         mSaveFile = saveFile;
     }
 protected:
-    const char *mSaveFile;
+    const char          *mSaveFile;
     ListTable<save_node> mNodes;
 };
-}
 
-#endif // KL_SAVE_OBJECT_H
+#endif // SAVE_MANAGE_OBJECT_H

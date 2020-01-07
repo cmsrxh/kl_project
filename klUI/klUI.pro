@@ -12,8 +12,6 @@ UI_DIR = build
 HOME     = $$getenv("HOME")
 PLATFORM = pc
 INCLUDEPATH += .
-INCLUDEPATH += ../player
-INCLUDEPATH += ../klApi
 INCLUDEPATH += $$HOME/framework/$$PLATFORM/include
 
 QMAKE_CXXFLAGS += -g -std=c++11
@@ -80,4 +78,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 include(../klApi/klApi.pri)
-include(../player/mpvPlayer.pri)
+#include(../player/mpvPlayer.pri)
+include(../playerClient/playerClient.pri)

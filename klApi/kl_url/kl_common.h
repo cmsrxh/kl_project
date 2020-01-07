@@ -480,6 +480,28 @@ public:
     ByteString result;
 };
 
+// RecordManage, CollectManage
+class RecordItem
+{
+public:
+    void clear()
+    {
+        id.clear();
+        parentId.clear();
+        name.clear();
+        parentName.clear();
+        image.clear();
+        playUrl.clear();
+    }
+
+    int type;       // DetailUnion::DETAIL_TYPE_*
+    ByteString id;
+    ByteString parentId;
+    ByteString name;
+    ByteString parentName;
+    ByteString image;
+    ByteString playUrl;
+};
 
 // 通知UI，数据加载解析的结果
 class UINotifyIface

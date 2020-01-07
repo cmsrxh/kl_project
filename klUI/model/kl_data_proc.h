@@ -104,6 +104,8 @@ public:
         return &i;
     }
 
+    void initMedia();
+
     void initAlbum(CategoryModel *cate,
                    CateItemModel *cateItem,
                    ChipItemModel *chip,

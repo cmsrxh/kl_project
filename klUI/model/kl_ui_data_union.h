@@ -14,6 +14,11 @@ struct MusicCateUnion
 
 struct MusicCateItemUnion
 {
+    MusicCateItemUnion()
+        : isCollect(false)
+    {}
+
+    bool isCollect;
     ByteString id;
     ByteString name;
     ByteString img;
@@ -42,11 +47,10 @@ struct MusicDetail
     ListTable<ByteString> *keywords;
 };
 
-struct CollectNode
+class CollectNode : public kl::RecordItem
 {
-    int type;       // DetailUnion::DETAIL_TYPE_*
-    ByteString id;
-    ByteString name;
+public:
+
 };
 
 typedef  void UICategory;

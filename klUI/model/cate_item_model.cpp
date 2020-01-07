@@ -41,7 +41,7 @@ QVariant CateItemModel::data(const QModelIndex &index, int role) const
         return mVec[index.row()]->img.string();
     } else if (CATE_ITEM_COLLECT == role)
     {
-        return true;
+        return mVec[index.row()]->isCollect;
     }
 
     return QVariant();

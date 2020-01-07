@@ -3,28 +3,6 @@
 
 #include "media_iface_common.h"
 
-enum {
-    MEDIA_NOP = 0, // interface test message
-    MEDIA_PREPARED = 1,
-    MEDIA_PLAYBACK_COMPLETE = 2,
-    MEDIA_BUFFERING_UPDATE = 3,
-    MEDIA_SEEK_COMPLETE = 4,
-    MEDIA_SET_VIDEO_SIZE = 5,
-    MEDIA_STARTED = 6,
-    MEDIA_PAUSED = 7,
-    MEDIA_STOPPED = 8,
-    MEDIA_SKIPPED = 9,
-    MEDIA_NOTIFY_TIME = 98,
-    MEDIA_TIMED_TEXT = 99,
-    MEDIA_ERROR = 100,
-    MEDIA_INFO = 200,
-    MEDIA_SUBTITLE_DATA = 201,
-    MEDIA_META_DATA = 202,
-    MEDIA_DRM_INFO = 210,
-    MEDIA_TIME_DISCONTINUITY = 211,
-    MEDIA_AUDIO_ROUTING_CHANGED = 10000,
-};
-
 class MediaServiceCallback;
 class MediaNotify
 {
