@@ -17,6 +17,7 @@ public:
         CATE_ITEM_BDCAST,
     };
     CateItemUnion(int cid_type, CateItemModel *parent);
+    virtual ~CateItemUnion();
 
     void loadCateItem(int cid_or_type = -1,
                       int bsorttype_or_classfyid = 1, int area_code = 0);

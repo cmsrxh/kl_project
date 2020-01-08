@@ -13,6 +13,30 @@ CategoryUnion::CategoryUnion(int cate_type, CategoryModel *parent)
 {
 }
 
+CategoryUnion::~CategoryUnion()
+{
+    if (!m_pCate) return;
+
+    switch (mCateType)
+    {
+    case MAIN_CATE:
+        delete ((kl::CategoryAll *)m_pCate);
+        break;
+    case SUB_CATE:
+        delete ((kl::CategorySublist *) m_pCate);
+        break;
+    case BDC_CATE:
+        delete ((kl::CategoryBroadcast *)m_pCate);
+        break;
+    case BDC_AREA_CATE:
+        delete ((kl::BroadcastAreaList *)m_pCate);
+        break;
+    default:
+        assert(0);
+        break;
+    }
+}
+
 void CategoryUnion::loadCategory(int cate_type, int cid)
 {
     assert(mCateType == cate_type);

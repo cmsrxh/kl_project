@@ -492,15 +492,30 @@ public:
         parentName.clear();
         image.clear();
         playUrl.clear();
+        localUrl.clear();
+    }
+    void copy(RecordItem *item)
+    {
+        item->isLocal    = isLocal;
+        item->type       = type;
+        item->id         = ByteString::allocString(id);
+        item->parentId   = ByteString::allocString(parentId);
+        item->name       = ByteString::allocString(name);
+        item->parentName = ByteString::allocString(parentName);
+        item->image      = ByteString::allocString(image);
+        item->playUrl    = ByteString::allocString(playUrl);
+        item->localUrl   = ByteString::allocString(localUrl);
     }
 
-    int type;       // DetailUnion::DETAIL_TYPE_*
+    int        isLocal; // 表明当前媒体时候在本地
+    int        type;    // PLAY_CHIP_TYPE*
     ByteString id;
     ByteString parentId;
     ByteString name;
     ByteString parentName;
     ByteString image;
     ByteString playUrl;
+    ByteString localUrl;
 };
 
 // 通知UI，数据加载解析的结果

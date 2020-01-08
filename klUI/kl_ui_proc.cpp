@@ -4,6 +4,7 @@
 #include "model/collect_model.h"
 #include "iface/media_service_i_face.h"
 #include "iface/media_iface_common.h"
+#include "model/kl_local_data_proc.h"
 #include "model/kl_data_proc.h"
 #include "model/detail_qobject.h"
 #include "qml_view_switch_stack.h"
@@ -20,6 +21,22 @@ KLUIProc::KLUIProc()
     , m_pViewStack(new ViewSwitchStack)
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
+}
+
+KLUIProc::~KLUIProc()
+{
+    delete m_pCate;
+    delete m_pCateItem;
+    delete m_pChipItem;
+    delete m_pChipItemPlay;
+
+    delete m_pBDCTab;
+    delete m_pBDCArea;
+    delete m_pBDCItem;
+
+    delete m_pCollect;
+    delete m_pDownload;
+    delete m_pHistory;
 }
 
 void KLUIProc::init(QQmlContext *ctx)
@@ -41,6 +58,8 @@ void KLUIProc::init(QQmlContext *ctx)
     m_pDownload     = new CollectModel;
     m_pHistory      = new CollectModel;
 
+    LocalDataProc::instance()->initLocal(m_pCollect, m_pDownload, m_pHistory);
+
     // album
     ctx->setContextProperty("cateItemModel", m_pCateItem);
     ctx->setContextProperty("cateModel", m_pCate);
@@ -53,7 +72,6 @@ void KLUIProc::init(QQmlContext *ctx)
     ctx->setContextProperty("bdcTab", m_pBDCTab);
     ctx->setContextProperty("bdcArea", m_pBDCArea);
     ctx->setContextProperty("bdcItem", m_pBDCItem);
-
 
     //detail
     ctx->setContextProperty("detailObject", DetailQobject::instance());

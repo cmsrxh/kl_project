@@ -15,6 +15,7 @@ class DetailQobject : public QObject
     Q_PROPERTY(QString albumInfoImage READ albumInfoImage NOTIFY albumInfoImageChanged)
 
     Q_PROPERTY(QString albumInfoHostName READ albumInfoHostName NOTIFY albumInfoHostNameChanged)
+
 public:
     ~DetailQobject();
     static DetailQobject *instance()
@@ -34,13 +35,13 @@ public:
         mDetail.name = name;
     }
 
-public Q_SLOTS:
-    void onLoadOver(long ptr);
-
     QString albumInfoName();
     QString albumInfoImage();
     QString albumInfoHostName();
     QStringList keyWords();
+
+public Q_SLOTS:
+    void onLoadOver(long ptr); 
 
 Q_SIGNALS:
     void dataLoadOver(long ptr);
@@ -52,6 +53,7 @@ Q_SIGNALS:
     void albumInfoNameChanged();
     void albumInfoImageChanged();
     void albumInfoHostNameChanged();
+
 private:
     DetailQobject();
 

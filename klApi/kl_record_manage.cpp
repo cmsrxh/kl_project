@@ -9,3 +9,42 @@ kl::RecordManage::RecordManage()
 
     loadNodesFile();
 }
+
+void kl::RecordManage::addHistoryItem(kl::RecordItem *item)
+{
+    int op = LOCAL_RECORD_OP_STATUS_HISTORY_APPEND;
+
+    ListTable<RecordItem>::iterator it = mNodes.begin();
+
+    GEN_Printf(LOG_DEBUG, "history update: %s", item->name.string());
+
+    for (; it != mNodes.end(); ++it)
+    {
+        if (it->id == item->id
+                && it->parentId == item->parentId)
+        {
+            break;
+        }
+    }
+    // 当前项已经在历史记录中，移动到最前面, 同时通知UI
+    if (it != mNodes.end())
+    {
+        it->clear();
+        mNodes.remove(it);
+
+        op = LOCAL_RECORD_OP_STATUS_HISTORY_CHANGE;
+    }
+
+    // 当前项是新增项, 同时通知UI
+    mNodes.push_front(*item);
+    execStatus(op);
+    delete item;
+}
+
+void kl::RecordManage::historyClear()
+{
+    clearData();
+    execStatus(LOCAL_RECORD_OP_STATUS_HISTORY_CLEARALL);
+}
+
+

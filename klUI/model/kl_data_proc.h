@@ -2,8 +2,7 @@
 #define KL_DATA_PROC_H
 
 #include "util/map_table.h"
-#include "util/byte_string.h"
-#include <QString>
+#include "kl_ui_data_union.h"
 
 class CategoryUnion;
 class CateItemUnion;
@@ -104,7 +103,9 @@ public:
         return &i;
     }
 
-    void initMedia();
+    ~KLDataProc();
+
+    bool initMedia();
 
     void initAlbum(CategoryModel *cate,
                    CateItemModel *cateItem,
@@ -139,7 +140,7 @@ public:
     /**
      * @brief chipAudioThirdChick
      * @param index
-     * @details  例如“推荐 --> 专辑项” 点击，获得的audio碎片列表ID点击
+     * @details  例如“推荐 --> 专辑项”，获得的audio碎片列表ID点击
      */
     void chipAudioThirdChick(int index);
 
@@ -216,10 +217,29 @@ public:
     void playNext();
     void playPrev();
 
+    /**
+     * @brief currentIsCollect
+     * @brief notifyCurIsCollect
+     * @brief isCollect
+     * @details 处理界面当前播放项是否已经被收藏了
+     */
+    void currentIsCollect();
+    void notifyCurIsCollect(bool isCollect);
+    void notifyBDCCollectChange(int index, bool isCollect);
+    bool isCollect() const
+    {
+        return mCurrentIsCollect;
+    }
+
+    CollectNode &getCurrentPlayInfo()
+    {
+        return mPlayInfo;
+    }
 private:
     KLDataProc();
     void enterBroadcastView();
 
+    bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
 
     // album
@@ -240,10 +260,14 @@ private:
 
     SwitchPath        mSwitch;
     SwitchPath        mPlayPath;
+    CollectNode       mPlayInfo;
 
     MapTable<int, CateItemUnion*>   mCidMap;
     MapTable<int, CateItemUnion*>   mBDCMap;
     MapTable<ByteString, AlbunView> mChipMap;
+
+    void setPlayInfo(MusicChipItemUnion &chip);
+
 };
 
 #endif // KL_DATA_PROC_H

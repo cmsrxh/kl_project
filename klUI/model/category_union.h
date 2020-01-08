@@ -14,6 +14,7 @@ public:
         BDC_AREA_CATE
     };
     CategoryUnion(int cate_type, CategoryModel *parent);
+    virtual ~CategoryUnion();
 
     void loadCategory(int cate_type, int cid);
 

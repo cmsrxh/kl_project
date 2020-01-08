@@ -4,6 +4,17 @@
 #include "kl_url/kl_common.h"
 #include <util/vector_table.h>
 
+enum
+{
+    PLAY_CHIP_TYPE_ALBUM     = 1,    // 专辑二级标签item
+    PLAY_CHIP_TYPE_BROADCAST    ,    // 电台二级标签item
+    PLAY_CHIP_TYPE_TYPE_RADIO   ,    // 智能电台二级标签item
+
+    PLAY_CHIP_TYPE_AUDIO_CHIP   ,    // 专辑音乐节目碎片三级标签item
+    PLAY_CHIP_TYPE_RADIO_CHIP   ,    // 智能电台节目碎片三级标签item
+    PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP, // 电台节目碎片三级标签item
+};
+
 struct MusicCateUnion
 {
     ByteString cid;
@@ -22,14 +33,20 @@ struct MusicCateItemUnion
     ByteString id;
     ByteString name;
     ByteString img;
-    ByteString type; // 资源类型 (0:专辑|3:电台|11:传统广播)
+    //ByteString type; // 资源类型 (0:专辑|3:电台|11:传统广播) 分别对应
+    int type; // PLAY_CHIP_TYPE_ALBUM ....
     ByteString playUrl;
 };
 
 struct MusicChipItemUnion
 {
+    int type;
+    ByteString parentId;
     ByteString chipId;
+
+    ByteString parentName;
     ByteString name;
+
     ByteString image;
     ByteString playUrl;
     ByteString desc;

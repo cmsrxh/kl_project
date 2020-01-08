@@ -42,6 +42,9 @@ public:
     {
         return mVec;
     }
+
+    void isCollectItemContentChange(int i, bool en);
+
 public Q_SLOTS:
     void onLoadOver(long ptr);
 

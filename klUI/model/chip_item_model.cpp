@@ -126,6 +126,12 @@ void ChipItemModel::playItemClick(int index)
     KLDataProc::instance()->chipPlayThirdClick(index);
 }
 
+void ChipItemModel::qmlCurrentCollectClick()
+{
+    qDebug() << "Collect Current or not.";
+    KLDataProc::instance()->currentIsCollect();
+}
+
 QHash<int, QByteArray> ChipItemModel::roleNames() const
 {
     return roles;
@@ -167,4 +173,9 @@ void ChipItemModel::getSliderBase(int &cur, int &dur, int index)
 //    struct tm result;
 //    time_t timep;
 //    struct tm *localtime_r(const time_t *timep, struct tm *result);
+}
+
+bool ChipItemModel::isCollect()
+{
+    return KLDataProc::instance()->isCollect();
 }

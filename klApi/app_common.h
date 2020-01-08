@@ -11,17 +11,23 @@ enum {
     SIG_SURFACE_DESTROYED,
 
     SIG_MVP_NEED_RECREARE,
-    SIG_SET_SOURCE_PREPARE,    /* 设置播放源信息完成 */
+    SIG_SET_SOURCE_PREPARE,     /* 设置播放源信息完成 */
 
     SIG_ON_MPV_EVENT,
 
-    SIG_STATE_EVENT_PROC,   // 状态机处理
+    SIG_STATE_EVENT_PROC,       // 状态机处理
 
     //考拉播放器信息
-    SIG_HAVE_OPEN_ID,       // 表示设备已经，激活成功，并获得了一个openid，只有这样考拉才能使用
-    SIG_KL_INIT_ERROR,      // kaola设备激活或者初始化失败处理信息
+    SIG_HAVE_OPEN_ID,           // 表示设备已经，激活成功，并获得了一个openid，只有这样考拉才能使用
+    SIG_KL_INIT_ERROR,          // kaola设备激活或者初始化失败处理信息
 
-    SIG_SOCKET_CLIENT_MSG_EXIT,//启动收数据线程，并连接播放服务端socket
+    SIG_SOCKET_CLIENT_MSG_EXIT, // 启动收数据线程，并连接播放服务端socket
+
+    SIG_KL_CURRENT_IS_COLLECT,  // 核对当前播放项，是否收藏了，异步遍历，防止收藏列表过多，遍历时拖慢主线程
+    SIG_KL_CURRENT_OP_COLLECT,  // 核对当前播放项，是否收藏了，如果当前项在收藏列表就取消收藏，反之添加, 并通知界面
+    SIG_KL_BDC_OP_COLLECT,      // 当前电台列表项收藏与否
+    SIG_KL_RECORD_CURRENT_PLAY, // 记录当前播放项，并把它放入历史记录
+    SIG_KL_HISTORY_CLEAR_APP,   // 清空 历史记录 所有项
 };
 
 
@@ -38,6 +44,7 @@ enum {
 #define NET_KL_CATE_ALL_LIST_FILE       "/tmp/kl.category.all.list.info"
 #define LOCAL_KL_SAVE_COLLECT_FILE      "/tmp/kl.local.collect.info"
 #define LOCAL_KL_SAVE_RECORD_FILE       "/tmp/kl.local.record.info"
+#define LOCAL_KL_DOWNLOAD_FILE          "/tmp/kl.local.download.info"
 
 
 

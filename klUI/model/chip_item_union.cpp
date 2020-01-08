@@ -10,19 +10,38 @@ ChipItemUnion::ChipItemUnion(int type)
     : mLoadAction(0), mChipType(0)
     , m_pChip(nullptr)
 {
-    if (0 == type)
+    if (PLAY_CHIP_TYPE_ALBUM == type)
     {
-        mChipType = CHIP_ITEM_AUDIO;
-    } else if (3 == type)
+        mChipType = PLAY_CHIP_TYPE_AUDIO_CHIP;
+    } else if (PLAY_CHIP_TYPE_TYPE_RADIO == type)
     {
-        mChipType = CHIP_ITEM_RADIO;
-    } else if (11 == type)
+        mChipType = PLAY_CHIP_TYPE_RADIO_CHIP;
+    } else if (PLAY_CHIP_TYPE_BROADCAST == type)
     {
-        mChipType = CHIP_ITEM_BDC_PROGRAM;
+        mChipType = PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP;
     } else
     {
         GEN_Printf(LOG_ERROR, "Media Type = %d is not invalid.", type);
         assert(0);
+    }
+}
+
+ChipItemUnion::~ChipItemUnion()
+{
+    if (!m_pChip) return;
+    switch (mChipType)
+    {
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
+        delete ((kl::ChipAudioList *)m_pChip);
+        break;
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
+        delete ((kl::ChipRadioList *)m_pChip);
+        break;
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
+        delete ((kl::BroadcastItemProgramlist *)m_pChip);
+        break;
+    default:
+        break;
     }
 }
 
@@ -32,7 +51,7 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
 
     switch (mChipType)
     {
-    case CHIP_ITEM_AUDIO:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
     {
         kl::ChipAudioList *audioList;
         if (m_pChip)
@@ -47,7 +66,7 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
         audioList->obtain();
         break;
     }
-    case CHIP_ITEM_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         kl::ChipRadioList *radioList;
         if (m_pChip)
@@ -63,7 +82,7 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
         radioList->obtain();
         break;
     }
-    case CHIP_ITEM_BDC_PROGRAM:
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
     {
         kl::BroadcastItemProgramlist *bdcProgram;
         if (m_pChip)
@@ -89,13 +108,13 @@ void ChipItemUnion::dataPrepare()
     bool isEmpty = true;
     switch (mChipType)
     {
-    case CHIP_ITEM_AUDIO:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
         isEmpty = ((kl::ChipAudioList *)m_pChip)->nodes().empty();
         break;
-    case CHIP_ITEM_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
         isEmpty = ((kl::ChipRadioList *)m_pChip)->nodes().empty();
         break;
-    case CHIP_ITEM_BDC_PROGRAM:
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
         isEmpty = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes().empty();
         break;
     default:
@@ -121,13 +140,13 @@ void ChipItemUnion::onLoadOver(ChipItemModel *parent)
 {
     switch (mChipType)
     {
-    case CHIP_ITEM_AUDIO:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
         genCatesByAudioItem(((kl::ChipAudioList *)m_pChip)->nodes(), parent->vec());
         break;
-    case CHIP_ITEM_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
         genCatesByRadioItem(((kl::ChipRadioList *)m_pChip)->nodes(), parent->vec());
         break;
-    case CHIP_ITEM_BDC_PROGRAM:
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
         genCatesByBDCProgramItem(((kl::BroadcastItemProgramlist *)m_pChip)->nodes(), parent->vec());
         break;
     default:
@@ -140,13 +159,13 @@ int ChipItemUnion::itemCount()
     int count = 0;
     switch (mChipType)
     {
-    case CHIP_ITEM_AUDIO:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
         count = ((kl::ChipAudioList *)m_pChip)->getCount();
         break;
-    case CHIP_ITEM_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
         count = ((kl::ChipRadioList *)m_pChip)->nodes().size();
         break;
-    case CHIP_ITEM_BDC_PROGRAM:
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
         count = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes().size();
         break;
     default:
@@ -161,11 +180,11 @@ bool ChipItemUnion::loadNextPage(int loadAction)
     mLoadAction = loadAction;
     switch (mChipType)
     {
-    case CHIP_ITEM_AUDIO:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
         return ((kl::ChipAudioList *)m_pChip)->loadNextPage();
-    case CHIP_ITEM_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
         return ((kl::ChipRadioList *)m_pChip)->loadNextPage();
-    case CHIP_ITEM_BDC_PROGRAM:
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
     default:
         break;
     }
@@ -178,7 +197,7 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
 
     switch (mChipType)
     {
-    case CHIP_ITEM_AUDIO:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
     {
         GEN_Printf(LOG_DEBUG, "Get Info by index=%d, %p", index, this);
         ListTable<kl::AudioItem> &nodes = ((kl::ChipAudioList *)m_pChip)->nodes();
@@ -186,44 +205,52 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
         for ( ; it != nodes.end() && index; ++it, --index);
         if (it != nodes.end())
         {
-            info.chipId  = it->audioId;
-            info.name    = it->audioName;
-            info.image   = it->audioPic;
-            info.playUrl = it->mp3PlayUrl64;
-            info.desc    = it->audioDes;
+            info.type       = PLAY_CHIP_TYPE_AUDIO_CHIP;
+            info.parentId   = it->albumId;
+            info.chipId     = it->audioId;
+            info.parentName = it->albumName;
+            info.name       = it->audioName;
+            info.image      = it->audioPic;
+            info.playUrl    = it->mp3PlayUrl64;
+            info.desc       = it->audioDes;
             return true;
         }
         GEN_Printf(LOG_DEBUG, "Get Info by index=%d", index);
         return false;
     }
-    case CHIP_ITEM_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         ListTable<kl::RadioItem> &nodes = ((kl::ChipRadioList *)m_pChip)->nodes();
         ListTable<kl::RadioItem>::iterator it = nodes.begin();
         for ( ; it != nodes.end() && index; ++it, --index);
         if (it != nodes.end())
         {
-            info.chipId  = it->audioId;
-            info.name    = it->audioName;
-            info.image   = it->audioPic;
-            info.playUrl = it->mp3PlayUrl64;
-            info.desc    = it->audioDes;
+            info.type       = PLAY_CHIP_TYPE_RADIO_CHIP;
+            info.parentId   = it->albumId;
+            info.chipId     = it->audioId;
+            info.parentName = it->albumName;
+            info.image      = it->audioPic;
+            info.playUrl    = it->mp3PlayUrl64;
+            info.desc       = it->audioDes;
             return true;
         }
         return false;
     }
-    case CHIP_ITEM_BDC_PROGRAM:
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
     {
         ListTable<kl::BDCastProgramItem> &nodes = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes();
         ListTable<kl::BDCastProgramItem>::iterator it = nodes.begin();
         for ( ; it != nodes.end() && index; ++it, --index);
         if (it != nodes.end())
         {
-            info.chipId  = it->programId;
-            info.name    = it->title;
-            info.image   = it->broadcastImg;
-            info.playUrl = it->playUrl;
-            info.desc    = it->desc;
+            info.type       = PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP;
+            info.parentId   = it->broadcastId;
+            info.chipId     = it->programId;
+            info.parentName = it->broadcastName;
+            info.name       = it->title;
+            info.image      = it->broadcastImg;
+            info.playUrl    = it->playUrl;
+            info.desc       = it->desc;
             return true;
         }
         return false;
@@ -243,11 +270,14 @@ void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorT
     {
         MusicChipItemUnion *tmp = new MusicChipItemUnion;
 
-        tmp->chipId  = it->audioId;
-        tmp->name    = it->audioName;
-        tmp->image   = it->audioPic;
-        tmp->playUrl = it->mp3PlayUrl64;
-        tmp->desc    = it->audioDes;
+        tmp->type       = PLAY_CHIP_TYPE_RADIO_CHIP;
+        tmp->parentId   = it->albumId;
+        tmp->chipId     = it->audioId;
+        tmp->parentName = it->albumName;
+        tmp->name       = it->audioName;
+        tmp->image      = it->audioPic;
+        tmp->playUrl    = it->mp3PlayUrl64;
+        tmp->desc       = it->audioDes;
 
         vec.push_back(tmp);
     }
@@ -263,11 +293,14 @@ void ChipItemUnion::genCatesByAudioItem(ListTable<kl::AudioItem> &nodes, VectorT
     {
         MusicChipItemUnion *tmp = new MusicChipItemUnion;
 
-        tmp->chipId  = it->audioId;
-        tmp->name    = it->audioName;
-        tmp->image   = it->audioPic;
-        tmp->playUrl = it->mp3PlayUrl64;
-        tmp->desc    = it->audioDes;
+        tmp->type       = PLAY_CHIP_TYPE_AUDIO_CHIP;
+        tmp->parentId   = it->albumId;
+        tmp->chipId     = it->audioId;
+        tmp->parentName = it->albumName;
+        tmp->name       = it->audioName;
+        tmp->image      = it->audioPic;
+        tmp->playUrl    = it->mp3PlayUrl64;
+        tmp->desc       = it->audioDes;
 
         // GEN_Printf(LOG_DEBUG, "[%d] %p, %s, %d", 0, tmp->name.string(), tmp->name.string(), tmp->name.size());
 
@@ -285,11 +318,14 @@ void ChipItemUnion::genCatesByBDCProgramItem(ListTable<kl::BDCastProgramItem> &n
     {
         MusicChipItemUnion *tmp = new MusicChipItemUnion;
 
-        tmp->chipId  = it->programId;
-        tmp->name    = it->title;
-        tmp->image   = it->broadcastImg;
-        tmp->playUrl = it->playUrl;
-        tmp->desc    = it->desc;
+        tmp->type       = PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP;
+        tmp->parentId   = it->broadcastId;
+        tmp->chipId     = it->programId;
+        tmp->parentName = it->broadcastName;
+        tmp->name       = it->title;
+        tmp->image      = it->broadcastImg;
+        tmp->playUrl    = it->playUrl;
+        tmp->desc       = it->desc;
         tmp->startTime  = it->startTime;
         tmp->finishTime = it->finishTime;
 

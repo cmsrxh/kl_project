@@ -8,11 +8,13 @@
 class CollectModel : public QAbstractListModel
 {
     Q_OBJECT
-
+    // 表示当前播放的index
     Q_PROPERTY(int collectId READ collectId WRITE setCollectId NOTIFY collectIdChanged)
 
+    // 收听历史总数
     Q_PROPERTY(int items READ items NOTIFY itemsChanged)
 
+    // 下载音频的内存
     Q_PROPERTY(QString loadInfo READ loadInfo NOTIFY loadInfoChanged)
 public:
     explicit CollectModel();
@@ -31,15 +33,18 @@ public:
         return mVec.size();
     }
 
-    QString loadInfo()
+    QString loadInfo();
+
+    ListTable<kl::RecordItem>::vector &vec()
     {
-        return tr("共0.00M/3.12G");
+        return mVec;
     }
 
+    void itemsContentChange(int i);
 signals:
     void collectIdChanged(int collectId);
 
-    void itemsChanged(int items);
+    void itemsChanged();
 
     void loadInfoChanged(QString const *loadInfo);
 public slots:
@@ -58,7 +63,8 @@ protected:
 private:
     int                         mCollectId;
     QHash<int, QByteArray>      roles;
-    VectorTable<CollectNode *>  mVec;
+
+    ListTable<kl::RecordItem>::vector mVec;
 };
 
 #endif // COLLECT_MODEL_H

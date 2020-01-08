@@ -1,5 +1,6 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 1.0
+import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import Hongjing.HMI.KL 1.0 as KL
@@ -144,6 +145,41 @@ Item {
                         wrapMode: Text.Wrap
                         clip: true
                         //elide: Text.ElideRight
+                    }
+                }
+            }
+
+            Button {
+                width: 30
+                height: 30
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.top: parent.top
+                anchors.topMargin: 15
+
+                text: qsTr("收藏")
+                onClicked: playList.qmlCurrentCollectClick()
+
+                style: ButtonStyle {
+                    background: Item {
+                        width: control.width
+                        height: control.height
+                        Rectangle {
+                            color: "#444"
+                            implicitWidth: control.width
+                            implicitHeight: 8
+                            anchors.bottom: parent.bottom
+                            radius: 4
+                        }
+                        Rectangle {
+                            implicitWidth: control.width
+                            implicitHeight: control.height - 2
+                            radius: 4
+                            gradient: Gradient {
+                                GradientStop { position: 0 ; color: control.pressed ? "#888" : "#eee" }
+                                GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#888" }
+                            }
+                        }
                     }
                 }
             }

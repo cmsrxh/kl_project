@@ -17,6 +17,11 @@ public:
     bool genSaveString(char *& data, unsigned long &len);
 
     void profile();
+
+    void checkCurrentItem(RecordItem *item);
+
+    void opCurrentItem(RecordItem *item);
+
 private:
 
 };

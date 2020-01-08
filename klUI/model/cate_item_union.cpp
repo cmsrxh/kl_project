@@ -4,6 +4,7 @@
 #include "kl_url/kl_operate_list.h"
 #include "kl_url/kl_broadcast_item_list.h"
 #include "kl_url/kl_chip_radio_list.h"
+#include "kl_local_data_proc.h"
 #include "cate_item_model.h"
 #include "cate_item_union.h"
 
@@ -12,6 +13,21 @@ CateItemUnion::CateItemUnion(int cid_type, CateItemModel *parent)
     , m_pCateItem(nullptr)
     , m_pParentModel(parent)
 {    
+}
+
+CateItemUnion::~CateItemUnion()
+{
+    if (!m_pCateItem) return;
+    switch (mCateItemType) {
+    case CATE_ITEM_ALBUM: delete ((kl::AlbumList *)m_pCateItem);
+        break;
+    case CATE_ITEM_OPERATE: delete ((kl::OperateList *)m_pCateItem);
+        break;
+    case CATE_ITEM_TYPE_RADIO: delete ((kl::TypeRadioList *)m_pCateItem);
+        break;
+    case CATE_ITEM_BDCAST: delete ((kl::BroadcastItemList *)m_pCateItem);
+        break;
+    }
 }
 
 void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, int area_code)
@@ -215,7 +231,7 @@ void CateItemUnion::genCateItemByAlbumItem(ListTable<kl::AlbumItem> &nodes, Vect
         tmp->id   = it->id;
         tmp->name = it->name;
         tmp->img  = it->img;
-        tmp->type = ByteString("0", 1);
+        tmp->type = PLAY_CHIP_TYPE_ALBUM;
 
         vec.push_back(tmp);
     }
@@ -228,12 +244,16 @@ void CateItemUnion::genCateItemByOperate(ListTable<kl::Operate> &nodes, VectorTa
     for ( ; it != nodes.end() && count; ++it, --count);
     for ( ; it != nodes.end(); ++it)
     {
+        int type = atoi(it->rtype.string());
+
+        assert(0 == type || 3 == type);
+
         MusicCateItemUnion *tmp = new MusicCateItemUnion;
 
         tmp->id   = it->rid;
         tmp->name = it->rname;
         tmp->img  = it->image;
-        tmp->type = it->rtype;
+        tmp->type =  (0 == type) ? PLAY_CHIP_TYPE_ALBUM : PLAY_CHIP_TYPE_TYPE_RADIO;
 
         vec.push_back(tmp);
     }
@@ -248,10 +268,11 @@ void CateItemUnion::genCateItemByTypeRadio(ListTable<kl::TypeRadio> &nodes, Vect
     {
         MusicCateItemUnion *tmp = new MusicCateItemUnion;
 
-        tmp->id   = it->id;
-        tmp->name = it->name;
-        tmp->img  = it->img;
-        tmp->type = ByteString("3", 1);
+        tmp->isCollect  = LocalDataProc::instance()->checkBDCItemIsCollect(PLAY_CHIP_TYPE_TYPE_RADIO, it->id);
+        tmp->id         = it->id;
+        tmp->name       = it->name;
+        tmp->img        = it->img;
+        tmp->type       = PLAY_CHIP_TYPE_TYPE_RADIO;
 
         vec.push_back(tmp);
     }
@@ -266,11 +287,12 @@ void CateItemUnion::genCateItemByBDCast(ListTable<kl::BDCastItem> &nodes, Vector
     {
         MusicCateItemUnion *tmp = new MusicCateItemUnion;
 
-        tmp->id      = it->broadcastId;
-        tmp->name    = it->name;
-        tmp->img     = it->image;
-        tmp->type    = ByteString("11", 2);
-        tmp->playUrl = it->playUrl;
+        tmp->isCollect  = LocalDataProc::instance()->checkBDCItemIsCollect(PLAY_CHIP_TYPE_BROADCAST, it->broadcastId);
+        tmp->id         = it->broadcastId;
+        tmp->name       = it->name;
+        tmp->img        = it->image;
+        tmp->type       = PLAY_CHIP_TYPE_BROADCAST;
+        tmp->playUrl    = it->playUrl;
         vec.push_back(tmp);
     }
 }

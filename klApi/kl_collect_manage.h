@@ -16,6 +16,7 @@ public:
         return &i;
     }
 
+    void opBDCItem(RecordItem *item, long ptr);
 };
 }
 

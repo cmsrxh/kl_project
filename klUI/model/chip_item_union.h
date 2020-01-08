@@ -10,18 +10,13 @@ class ChipItemUnion : public kl::UINotifyIface
 {
 public:
     enum {
-        CHIP_ITEM_AUDIO = 1,
-        CHIP_ITEM_RADIO,
-        CHIP_ITEM_BDC_PROGRAM
-    };
-
-    enum {
         LOAD_OVER_ALBUM_NORMAL_SHOW,        // 正常加载数据，并显示出来，应用于专辑相关的界面
         LOAD_OVER_ALBUM_IN_PLAYVIEW,        // 正常加载的数据，显示在节目列表界面中，用于专辑当前正在播放的列表,发生在当前播放列表已经放完需要后台加载。
         LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW,   // 显示广播节目，在节目列表界面上, 然后要自动播放最新的电台节目
     };
     // 资源类型 (0:专辑|3:电台:11:传统电台)
     ChipItemUnion(int type);
+    virtual ~ChipItemUnion();
 
     /**
      * @brief loadChipList

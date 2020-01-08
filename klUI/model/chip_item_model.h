@@ -17,6 +17,9 @@ class ChipItemModel : public QAbstractListModel
     Q_PROPERTY(int playingIndex READ playingIndex NOTIFY playingIndexChanged)
 
     Q_PROPERTY(int itemCount READ itemCount NOTIFY itemCountChanged)
+
+    Q_PROPERTY(bool isCollect READ isCollect NOTIFY isCollectChanged)
+
 public:
     ChipItemModel(bool isPlayModel);
 
@@ -61,8 +64,16 @@ public:
         return m_pUnion != uni;
     }
 
+    /**
+     * @brief getSliderBase
+     * @param cur [out] 开始时间
+     * @param dur [out] 结束时间
+     * @param index [in]
+     * @details 电台播放的时候获取当前播放节目的时间进度信息
+     */
     void getSliderBase(int &cur, int &dur, int index);
 
+    bool isCollect();
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
@@ -74,6 +85,7 @@ public Q_SLOTS:
 
     void playItemClick(int index);
 
+    void qmlCurrentCollectClick();
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
@@ -84,6 +96,8 @@ Q_SIGNALS:
 
     void itemCountChanged();
 
+    // collect current
+    void isCollectChanged(bool isCollect);
 protected:
     QHash<int, QByteArray> roleNames() const;
 

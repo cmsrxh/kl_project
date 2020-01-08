@@ -132,3 +132,12 @@ void CateItemModel::clear()
     endResetModel();
 }
 
+void CateItemModel::isCollectItemContentChange(int i, bool en)
+{
+    if (i >= 0 && i < mVec.size())
+    {
+        mVec[i]->isCollect = en;
+        Q_EMIT dataChanged(this->index(i), this->index(i));
+    }
+}
+

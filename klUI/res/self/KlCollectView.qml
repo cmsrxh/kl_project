@@ -44,19 +44,43 @@ Item {
             {
                 width: cltView.width; height: 100
                 color: (collectList.collectId === index) ? "#433A2D" : "#373737"
-
-                Text
-                {
-                    id: compText
-                    width: parent.width - 2 * parent.height
-                    height: parent.height
+                ImageFrame {
+                    id: comImage
+                    width: parent.height - 10
+                    height: parent.height - 10
                     anchors.left: parent.left
                     anchors.leftMargin: 30
-                    verticalAlignment: Qt.AlignVCenter
-                    horizontalAlignment: Qt.AlignLeft
-                    text: collectName
-                    color: "white"
-                    font.pixelSize: 24
+                    anchors.verticalCenter: parent.verticalCenter
+                    imageUri: pictureUrl
+                }
+                Column{
+                    width: parent.width - 2 * parent.height
+                    //height: parent.height
+                    anchors.left: comImage.right
+                    anchors.leftMargin: 30
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 10
+
+                    Text
+                    {
+                        id: compTitle
+
+                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignLeft
+                        text: collectTitle
+                        color: "white"
+                        font.pixelSize: 24
+                    }
+                    Text
+                    {
+                        id: compText
+
+                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignLeft
+                        text: collectName
+                        color: "red"
+                        font.pixelSize: 18
+                    }
                 }
 
                 ThreeStateBtn

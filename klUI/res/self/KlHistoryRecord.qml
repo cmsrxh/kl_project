@@ -82,8 +82,7 @@ Item {
             {
                 width: cltView.width; height: 100
                 color: (historyList.collectId === index) ? "#433A2D" : "#373737"
-                ImageFrame
-                {
+                ImageFrame {
                     id: comImage
                     width: parent.height - 10
                     height: parent.height - 10
@@ -93,7 +92,7 @@ Item {
                     imageUri: pictureUrl
                 }
 
-                Column{
+                Column {
                     width: parent.width - 2 * parent.height
                     //height: parent.height
                     anchors.left: comImage.right
@@ -101,8 +100,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 10
 
-                    Text
-                    {
+                    Text {
                         id: compTitle
 
                         verticalAlignment: Qt.AlignVCenter
@@ -111,8 +109,7 @@ Item {
                         color: "white"
                         font.pixelSize: 24
                     }
-                    Text
-                    {
+                    Text {
                         id: compText
 
                         verticalAlignment: Qt.AlignVCenter
@@ -123,15 +120,13 @@ Item {
                     }
                 }
 
-                KlLine
-                {
+                KlLine {
                     anchors.bottom: parent.bottom
                     width: parent.width
                     height: 2
                     fillColor: "gray"
                 }
-                MouseArea
-                {
+                MouseArea {
                     width: parent.width - parent.height //- parent.height
                     height: parent.height
                     onClicked:

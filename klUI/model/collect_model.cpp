@@ -1,4 +1,5 @@
 #include "kl_data_proc.h"
+#include "kl_local_data_proc.h"
 #include "collect_model.h"
 #include <QDebug>
 
@@ -15,7 +16,7 @@ CollectModel::CollectModel()
     roles[COLLECT_ITEM_IMAGE_URL] = "pictureUrl";
     roles[COLLECT_ITEM_TITLE]     = "collectTitle";
 
-#if 1
+#if 0
     CollectNode *tmp = new CollectNode;
 
     tmp->name = "ABC";
@@ -49,13 +50,13 @@ QVariant CollectModel::data(const QModelIndex &index, int role) const
     switch (role)
     {
     case COLLECT_ITEM_NAME:
-        return QStringFromByteString(mVec[index.row()]->name);
+        return QStringFromByteString(mVec[index.row()].name);
     case COLLECT_ITEM_ISCOLLECT:
         return true;
     case COLLECT_ITEM_IMAGE_URL:
-        return QStringFromByteString(mVec[index.row()]->image);
+        return QStringFromByteString(mVec[index.row()].image);
     case COLLECT_ITEM_TITLE:
-        return QStringFromByteString(mVec[index.row()]->parentName);
+        return QStringFromByteString(mVec[index.row()].parentName);
     default:
         break;
     }
@@ -76,7 +77,7 @@ QHash<int, QByteArray> CollectModel::roleNames() const
 
 int CollectModel::collectId() const
 {
-    return mCollectId;
+    return LocalDataProc::instance()->getLocalPlayIndex(const_cast<CollectModel *> (this));
 }
 
 void CollectModel::setCollectId(int collectId)
@@ -85,29 +86,42 @@ void CollectModel::setCollectId(int collectId)
     Q_EMIT collectIdChanged(collectId);
 }
 
+QString CollectModel::loadInfo()
+{
+    return tr("共0.00M/3.12G");
+}
+
+void CollectModel::itemsContentChange(int i)
+{
+    Q_EMIT dataChanged(this->index(i), this->index(i));
+}
+
 void CollectModel::qmlCollectThirdLevelClick(int index)
 {
     qDebug() << index;
-
-    setCollectId(index);
+    LocalDataProc::instance()->collectItemPlay(index);
 }
 
 void CollectModel::qmlCollectThirdLevelEnableClick(int index, bool enable)
 {
     qDebug() << index << enable;
+    LocalDataProc::instance()->collectItemEnable(index);
 }
 
 void CollectModel::qmlDownloadThreadLevelClick(int index)
 {
     qDebug() << index;
+    LocalDataProc::instance()->downLoadItemPlay(index);
 }
 
 void CollectModel::qmlHistoryRecordClick(int index)
 {
     qDebug() << index;
+    LocalDataProc::instance()->historyItemPlay(index);
 }
 
 void CollectModel::qmlHistoryItemsClear()
 {
     qDebug() << "clear";
+    LocalDataProc::instance()->historyClearAll();
 }

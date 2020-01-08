@@ -17,6 +17,7 @@ class KLUIProc : public QObject
     Q_PROPERTY(bool canSeek READ canSeek WRITE setCanSeek NOTIFY canSeekChanged)
 public:
     KLUIProc();
+    ~KLUIProc();
 
     void init(QQmlContext *);
 

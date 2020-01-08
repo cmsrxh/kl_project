@@ -10,6 +10,7 @@
 #include "kl_data_proc.h"
 #include "chip_item_play_manage.h"
 #include "kl_ui_proc.h"
+#include "kl_local_data_proc.h"
 #include "iface/media_service_i_face.h"
 #include "iface/media_iface_common.h"
 #include "iface/media_service_call_back.h"
@@ -35,7 +36,8 @@ public:
 };
 
 KLDataProc::KLDataProc()
-    : m_pPlayManage(new ChipPlayManage)
+    : mCurrentIsCollect(false)
+    , m_pPlayManage(new ChipPlayManage)
 {    
 }
 
@@ -54,10 +56,58 @@ void KLDataProc::enterBroadcastView()
     }
 }
 
-void KLDataProc::initMedia()
+void KLDataProc::setPlayInfo(MusicChipItemUnion &chip)
+{
+    mPlayInfo.isLocal   = 0;
+    mPlayInfo.type      = chip.type;
+    mPlayInfo.id        = chip.chipId;
+    mPlayInfo.parentId  = chip.parentId;
+    mPlayInfo.name      = chip.name;
+    mPlayInfo.parentName= chip.parentName;
+    mPlayInfo.image     = chip.image;
+    mPlayInfo.playUrl   = chip.playUrl;
+    // mPlayInfo.localUrl  = ByteString();
+
+    LocalDataProc::instance()->checkCurIsCollect(&mPlayInfo);
+}
+
+KLDataProc::~KLDataProc()
+{
+    MapTable<int, CateItemUnion*>::iterator it = mCidMap.begin();
+    for (; it != mCidMap.begin(); ++it)
+    {
+        delete it->value;
+    }
+
+    MapTable<int, CateItemUnion*>::iterator it2 = mBDCMap.begin();
+    for (; it2 != mBDCMap.begin(); ++it2)
+    {
+        delete it2->value;
+    }
+
+    MapTable<ByteString, AlbunView>::iterator it3 = mChipMap.begin();
+    for (; it3 != mChipMap.begin(); ++it3)
+    {
+        if (it3->value.chip_item)
+        {
+            delete it3->value.chip_item;
+        }
+        if (it3->value.datail_item)
+        {
+            delete it3->value.datail_item;
+        }
+    }
+
+    delete m_pCateData;
+    delete m_pBDCTabData;
+    delete m_pBDCAreaData;
+    delete m_pPlayManage;
+}
+
+bool KLDataProc::initMedia()
 {
     static MpvMsgPriser i;
-    MediaServiceIFace::instance()->initClientIface(&i);
+    return MediaServiceIFace::instance()->initClientIface(&i);
 }
 
 void KLDataProc::initAlbum(CategoryModel *cate, CateItemModel *cateItem, ChipItemModel *chip, ChipItemModel *player)
@@ -141,7 +191,7 @@ void KLDataProc::albumFirstClick(int index)
         if (mSwitch.media_type != MEDIA_TYPE_ALBUMINFO)
         {
             mSwitch.media_type = MEDIA_TYPE_ALBUMINFO;
-            gInstance->viewAlbumBDCSwitch("CateItemListView.qml");
+            gInstance->viewAlbumBDCSwitch("qrc:/CateItemListView.qml");
         }
 
         mSwitch.setCateTabIndex(index);
@@ -159,7 +209,7 @@ void KLDataProc::albumSecondClick(int index)
     }
 
     ByteString id = vec[index]->id;
-    int type = atoi(vec[index]->type.string());
+    int type = vec[index]->type;
 
     GEN_Printf(LOG_DEBUG, "Load Type: %d, id=%s", type, id.string());
     mSwitch.setCateItemIndex(index);
@@ -213,6 +263,9 @@ void KLDataProc::chipAudioThirdChick(int index)
         mSwitch.setChipItemIndex(index);
 
         // start play music
+        setPlayInfo(*(vec[index]));
+//        GEN_Printf(LOG_DEBUG, "++++++++++++++++++++++++++++++++++++++++");
+//        LocalDataProc::instance()->recordCurrentPlayItem(&mPlayInfo);
         gInstance->setSourceUrl(vec[index]->playUrl.string());
         // 把原来的标签切换，赋值给当前
         mPlayPath = mSwitch;
@@ -236,6 +289,7 @@ void KLDataProc::chipPlayThirdClick(int index)
     {
         mPlayPath.setChipItemIndex(index);
         // start play music
+        setPlayInfo(*(vec[index]));
         gInstance->setSourceUrl(vec[index]->playUrl.string());
     } else
     {
@@ -393,7 +447,7 @@ void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
         }
 
         ByteString id = vec[index]->id;
-        int type = atoi(vec[index]->type.string());
+        int type = vec[index]->type;
 
         m_pChipItemPlay->clear();
         AlbunView &tmp = mChipMap[id];
@@ -435,15 +489,18 @@ void KLDataProc::bdcSecondItemCollectClick(int index, bool isCollect)
         return;
     }
 
-    kl::RecordItem *tmp = new kl::RecordItem;
+    CollectNode *tmp = new CollectNode;
 
-    tmp->type       = DetailUnion::DETAIL_TYPE_BROADCAST;
-    tmp->id         = ByteString::allocString(vec[index]->id);
-//    tmp->parentId   = ByteString::allocString(vec[index]->);
-    tmp->name       = ByteString::allocString(vec[index]->name);
-//    tmp->parentName = ByteString::allocString(vec[index]->);
+    tmp->isLocal    = 0;
+    tmp->type       = vec[index]->type;
+    tmp->id         = ByteString();
+    tmp->parentId   = ByteString::allocString(vec[index]->id);
+    tmp->name       = ByteString();
+    tmp->parentName = ByteString::allocString(vec[index]->name);
     tmp->image      = ByteString::allocString(vec[index]->img);
     tmp->playUrl    = ByteString::allocString(vec[index]->playUrl);
+
+    LocalDataProc::instance()->bdcTypeRadioCollect(index, tmp);
 }
 
 void KLDataProc::bdcProgramListAction()
@@ -454,7 +511,7 @@ void KLDataProc::bdcProgramListAction()
 
     VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
 
-    if (ChipItemUnion::CHIP_ITEM_RADIO == mPlayPath.current_play_list->getChipType())
+    if (PLAY_CHIP_TYPE_RADIO_CHIP == mPlayPath.current_play_list->getChipType())
     {
         mPlayPath.chip_item_index = 0;
     } else
@@ -465,6 +522,7 @@ void KLDataProc::bdcProgramListAction()
     if (mPlayPath.chip_item_index >= 0 && vec.size() > 0)
     {
         GEN_Printf(LOG_DEBUG, "Play: %d-%d, url: %s", mPlayPath.chip_item_index, vec.size(), vec[mPlayPath.chip_item_index]->playUrl.string());
+        setPlayInfo(*(vec[mPlayPath.chip_item_index]));
         gInstance->setSourceUrl(vec[mPlayPath.chip_item_index]->playUrl.string());
     } else
     {
@@ -511,6 +569,8 @@ void KLDataProc::showPlayingInfo()
 
     Q_EMIT gInstance->playingInfo(QStringFromByteString(vec[index]->name),
                                   QStringFromByteString(vec[index]->desc));
+
+    LocalDataProc::instance()->recordCurrentPlayItem(&mPlayInfo);
 
     GEN_Printf(LOG_DEBUG, "Show Over, %d", vec.size());
 }
@@ -587,6 +647,7 @@ void KLDataProc::playNext()
     {
         // start play music
         mPlayPath.setChipItemIndex(index);
+        setPlayInfo(info);
         gInstance->setSourceUrl(info.playUrl.string());
     } else
     {
@@ -616,9 +677,30 @@ void KLDataProc::playPrev()
     {
         // start play music
         mPlayPath.setChipItemIndex(index);
+        setPlayInfo(info);
         gInstance->setSourceUrl(info.playUrl.string());
     } else
     {
         GEN_Printf(LOG_WARN, "Play Prev index: %d was out of range.", index);
     }
 }
+
+void KLDataProc::currentIsCollect()
+{
+    if (mPlayPath.current_play_list)
+    {
+        LocalDataProc::instance()->opCurCollect(&mPlayInfo);
+    }
+}
+
+void KLDataProc::notifyCurIsCollect(bool isCollect)
+{
+    mCurrentIsCollect = isCollect;
+    Q_EMIT m_pChipItemPlay->isCollectChanged(isCollect);
+}
+
+void KLDataProc::notifyBDCCollectChange(int index, bool isCollect)
+{
+    m_pBDCItem->isCollectItemContentChange(index, isCollect);
+}
+

@@ -29,6 +29,7 @@ void kl::SaveRecord::genResult(const char *data, unsigned long size)
             JSON_VALUETRING_SWAP_BYTESTRING(item, parentName, tmp.parentName);
             JSON_VALUETRING_SWAP_BYTESTRING(item, image, tmp.image);
             JSON_VALUETRING_SWAP_BYTESTRING(item, playUrl, tmp.playUrl);
+            JSON_VALUETRING_SWAP_BYTESTRING(item, localUrl, tmp.localUrl);
 
             mNodes.push_back(tmp);
         }
@@ -71,6 +72,8 @@ bool kl::SaveRecord::genSaveString(char *&data, unsigned long &len)
                  cJSON_AddItemToObject(item, "parentName",cJSON_CreateString(it->parentName.string()));
                  cJSON_AddItemToObject(item, "image",     cJSON_CreateString(it->image.string()));
                  cJSON_AddItemToObject(item, "playUrl",   cJSON_CreateString(it->playUrl.string()));
+                 cJSON_AddItemToObject(item, "localUrl",  cJSON_CreateString(it->localUrl.string()));
+
              }
              data = cJSON_PrintUnformatted(root);
              len  = strlen(data);
@@ -87,6 +90,75 @@ void kl::SaveRecord::profile()
 
     for (; it != mNodes.end(); ++it)
     {
-        GEN_Printf(LOG_DUMP, "%s=%s", it->name.string(), it->id.string());
+        GEN_Printf(LOG_DUMP, "type=%d, %s=%s", it->type, it->name.string(), it->id.string());
+    }
+}
+
+/**
+ * @brief kl::SaveRecord::checkCurrentItem
+ * @param item [in]  item需要clear 和释放
+ * @details 核对当前播放项，是否收藏了，异步遍历，防止收藏列表过多，遍历时拖慢主线程
+ */
+void kl::SaveRecord::checkCurrentItem(kl::RecordItem *item)
+{
+    ListTable<RecordItem>::iterator it = mNodes.begin();
+
+    for (; it != mNodes.end(); ++it)
+    {
+        if (it->id == item->id
+                && it->parentId == item->parentId)
+        {
+            break;
+        }
+    }
+
+    if (it != mNodes.end())
+    {
+        execStatus(LOCAL_RECORD_OP_STATUS_CHECK_IN_LIST);
+    } else
+    {
+        execStatus(LOCAL_RECORD_OP_STATUS_CHECK_NOT_IN_LIST);
+    }
+
+    item->clear();
+    delete item;
+}
+
+/**
+ * @brief kl::SaveRecord::opCurrentItem
+ * @param item [in] item需要clear 和释放
+ * @details 核对当前播放项，是否收藏了，如果当前项在收藏列表就取消收藏，反之添加, 并通知界面
+ */
+void kl::SaveRecord::opCurrentItem(kl::RecordItem *item)
+{
+    ListTable<RecordItem>::iterator it = mNodes.begin();
+
+    for (; it != mNodes.end(); ++it)
+    {
+        if (it->id == item->id
+                && it->parentId == item->parentId)
+        {
+            break;
+        }
+    }
+    // 找到了需要删除， 同时通知UI
+    if (it != mNodes.end())
+    {
+
+        it->clear();
+        mNodes.remove(it);
+
+        item->clear();
+
+        execStatus(LOCAL_RECORD_OP_STATUS_REMOVE_IN_LIST);
+
+        delete item;
+    }
+    // 未找到需要添加到列表中， 同时通知UI
+    else
+    {
+        mNodes.push_front(*item);
+        execStatus(LOCAL_RECORD_OP_STATUS_ADD_IN_LIST);
+        delete item;
     }
 }

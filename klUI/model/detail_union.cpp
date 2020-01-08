@@ -13,26 +13,28 @@ extern KLUIProc *gInstance;
 DetailUnion::DetailUnion(int type)
     : mDetailType(type)
     , m_pDetail(NULL)
+{    
+}
+
+DetailUnion::~DetailUnion()
 {
-    if (0 == type)
+    if (!m_pDetail) return;
+    switch (mDetailType)
     {
-        mDetailType = DETAIL_TYPE_ALBUM;
-    } else if (1 == type)
-    {
-        mDetailType = DETAIL_TYPE_AUDIO_CHIP;
-    } else if (3 == type)
-    {
-        mDetailType = DETAIL_TYPE_RADIO_CHIP;
-    } else if (11 == type)
-    {
-        mDetailType = DETAIL_TYPE_BDC_PROGRAM_CHIP;
-    } else if (10 == type)
-    {
-        mDetailType = DETAIL_TYPE_BROADCAST;
-    } else
-    {
-        GEN_Printf(LOG_ERROR, "Media Type = %d is not invalid.", type);
-        assert(0);
+    case PLAY_CHIP_TYPE_ALBUM:
+        delete ((kl::AlbumDetail *)m_pDetail);
+        break;
+    case PLAY_CHIP_TYPE_BROADCAST:
+        delete ((kl::BroadcastItemDetail *)m_pDetail);
+        break;
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
+        delete ((kl::ChipAudioDetail *)m_pDetail);
+        break;
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
+        delete ((kl::ChipRadioDetail *)m_pDetail);
+        break;
+    default:
+        break;
     }
 }
 
@@ -40,7 +42,7 @@ void DetailUnion::loadDetail(const ByteString &id)
 {
     switch (mDetailType)
     {
-    case DETAIL_TYPE_ALBUM:
+    case PLAY_CHIP_TYPE_ALBUM:
     {
         kl::AlbumDetail *album;
         if (m_pDetail)
@@ -55,13 +57,13 @@ void DetailUnion::loadDetail(const ByteString &id)
         album->obtain();
         break;
     }
-    case DETAIL_TYPE_BROADCAST:
+    case PLAY_CHIP_TYPE_BROADCAST:
     {
         ((kl::BroadcastItemDetail *)m_pDetail);
         GEN_Printf(LOG_WARN, "Not come true");
         break;
     }
-    case DETAIL_TYPE_AUDIO_CHIP:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
     {
         kl::ChipAudioDetail *audio;
         if (m_pDetail)
@@ -77,7 +79,7 @@ void DetailUnion::loadDetail(const ByteString &id)
         audio->obtain();
         break;
     }
-    case DETAIL_TYPE_RADIO_CHIP:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         kl::ChipRadioDetail *radio;
         if (m_pDetail)
@@ -115,7 +117,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
     GEN_Printf(LOG_DEBUG, "Get Detail info: %d", mDetailType);
     switch (mDetailType)
     {
-    case DETAIL_TYPE_ALBUM:
+    case PLAY_CHIP_TYPE_ALBUM:
     {
         kl::AlbDetail &item = ((kl::AlbumDetail *)m_pDetail)->item();
 
@@ -127,7 +129,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
         detail.keywords = &item.keyWords;
         break;
     }
-    case DETAIL_TYPE_BROADCAST:
+    case PLAY_CHIP_TYPE_BROADCAST:
     {
         kl::BDCastDetail &item = ((kl::BroadcastItemDetail *)m_pDetail)->item();
 
@@ -139,7 +141,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
 //        detail.keywords = item.keyWords;
         break;
     }
-    case DETAIL_TYPE_AUDIO_CHIP:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
     {
         kl::AudioItem &item = ((kl::ChipAudioDetail *)m_pDetail)->item();
 
@@ -151,7 +153,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
 //        detail.keywords = item.keyWords;
         break;
     }
-    case DETAIL_TYPE_RADIO_CHIP:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         kl::RadioDetail &item = ((kl::ChipRadioDetail *)m_pDetail)->item();
         detail.id = item.id;
@@ -170,16 +172,16 @@ void DetailUnion::getDetail(MusicDetail &detail)
 /*
     switch (mDetailType)
     {
-    case DETAIL_TYPE_ALBUM:
+    case PLAY_CHIP_TYPE_ALBUM:
         ((kl::AlbumDetail *)m_pDetail);
         break;
-    case DETAIL_TYPE_BROADCAST:
+    case PLAY_CHIP_TYPE_BROADCAST:
         ((kl::BroadcastItemDetail *)m_pDetail);
         break;
-    case DETAIL_TYPE_AUDIO_CHIP:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
         ((kl::ChipAudioDetail *)m_pDetail);
         break;
-    case DETAIL_TYPE_RADIO_CHIP:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
         ((kl::ChipRadioDetail *)m_pDetail);
         break;
     default:

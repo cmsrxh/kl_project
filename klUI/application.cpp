@@ -1,7 +1,7 @@
 #include <locale.h>
 #include <stdarg.h>
 #include "events/common_log.h"
-
+#include "events/app_timer.h"
 #ifdef USE_MPV_API_INTERFACE
 #include "fsm/sf_state_mache.h"
 #include "mpv_player_proc.h"
@@ -13,12 +13,20 @@
 #include "kl_url/kl_init_manage.h"
 #include "util/config_setting.h"
 #include "model/kl_data_proc.h"
+#include "kl_collect_manage.h"
+#include "kl_download_manage.h"
+#include "kl_record_manage.h"
 #include "application.h"
 
 Application::Application()
     : m_pKLInit(NULL), m_pKLActive(NULL)
+    , m_pIpcSockLanuch(new ATimer)
 {
     setlocale(LC_NUMERIC, "C");
+
+    m_pIpcSockLanuch->setRepeat(false);
+    m_pIpcSockLanuch->setHandler(Application::ipcSockLanuchTimer, nullptr);
+
 }
 
 void Application::initialize()
@@ -36,7 +44,7 @@ void Application::initialize()
     }
 
     // 启动收数据线程，并连接播放服务端socket
-    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+//    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }
@@ -77,11 +85,35 @@ void Application::runLoop()
             break;
 #endif
         case SIG_SOCKET_CLIENT_MSG_EXIT:
-            KLDataProc::instance()->initMedia();
+            if (false == KLDataProc::instance()->initMedia())
+            {
+                m_pIpcSockLanuch->restart(3000);
+            }
             break;
         case SIG_KL_INIT_ERROR:
             klInitActiveManage((GeneralQEvt *)evt);
             break;
+
+        case SIG_KL_CURRENT_IS_COLLECT:
+            kl::CollectManage::instance()->checkCurrentItem((kl::RecordItem *)(((GeneralQEvt *)evt)->wParam));
+            break;
+
+        case SIG_KL_CURRENT_OP_COLLECT:
+            kl::CollectManage::instance()->opCurrentItem((kl::RecordItem *)(((GeneralQEvt *)evt)->wParam));
+            break;
+
+        case SIG_KL_BDC_OP_COLLECT:
+            kl::CollectManage::instance()->opBDCItem((kl::RecordItem *)(((GeneralQEvt *)evt)->wParam), ((GeneralQEvt *)evt)->lParam);
+            break;
+
+        case SIG_KL_RECORD_CURRENT_PLAY:
+            kl::RecordManage::instance()->addHistoryItem((kl::RecordItem *)(((GeneralQEvt *)evt)->wParam));
+            break;
+
+        case SIG_KL_HISTORY_CLEAR_APP:
+            kl::RecordManage::instance()->historyClear();
+            break;
+
         case SIG_USER_UNUSED:
         default:
             GEN_Printf(LOG_WARN, "[%d] is UNKOWN.", evt->sig);
@@ -95,7 +127,7 @@ void Application::runLoop()
     exit(EXIT_SUCCESS);
 }
 
-void Application::postKlEvent(int cmd, int ext1, int ext2, const char *str)
+bool Application::postKlEvent(int cmd, long ext1, long ext2, const char *str)
 {
     GeneralQEvt *e = (GeneralQEvt *)newEvt(cmd, sizeof(GeneralQEvt));
 
@@ -104,10 +136,11 @@ void Application::postKlEvent(int cmd, int ext1, int ext2, const char *str)
         e->wParam = ext1;
         e->lParam = ext2;
         e->pHander = (void *)str;
-        post(e);
+        return post(e);
     } else
     {
         GEN_Printf(LOG_ERROR, "Post Kl Cmd failed.");
+        return false;
     }
 }
 
@@ -141,6 +174,11 @@ void Application::klInitGetOpenId()
     {
         (*it)->obtain();
     }
+}
+
+void Application::ipcSockLanuchTimer(ATimer *, void *)
+{
+    Application::instance()->postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 }
 
 

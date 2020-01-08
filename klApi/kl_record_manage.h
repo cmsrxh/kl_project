@@ -17,6 +17,9 @@ public:
         return &i;
     }
 
+    void addHistoryItem(RecordItem *item);
+
+    void historyClear();
 };
 }
 
