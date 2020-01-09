@@ -15,6 +15,8 @@ public:
         static DownloadManage i;
         return &i;
     }
+
+    void saveItem(RecordItem *item);
 };
 }
 

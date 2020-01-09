@@ -20,17 +20,16 @@ public:
     void setPlayModel(ChipItemModel *playModel);
 
     void loadError(int loadAction, int type, QString const &err_str);
-    void dataLoadOver(long ptr, int loadAction);
 
 public Q_SLOTS:
-    void onBDCProgramListAction();
+    void onDataLoadOver(long ptr, int loadAction);
 
 Q_SIGNALS:
-    void programListOver();
+    void dataLoadOver(long ptr, int loadAction);
 
 private:
     ChipItemModel *m_pChipShow;
-    ChipItemModel *m_pPlayModel;
+    ChipItemModel *m_pPlayModel;    
 };
 
 extern ChipPlayManage *gPlayInstance;

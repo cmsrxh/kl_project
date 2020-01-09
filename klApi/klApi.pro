@@ -5,6 +5,7 @@
 TEMPLATE = app
 TARGET   = kl
 CONFIG   -= qt
+OBJECTS_DIR = build
 
 HOME     = $$getenv("HOME")
 PLATFORM = pc
@@ -54,7 +55,15 @@ HEADERS += app_common.h application.h \
     kl_url/kl_chip_audio_detail.h \
     kl_url/kl_chip_audio_list.h \
     kl_url/kl_res_suggestion_word.h \
-    kl_url/kl_res_voice_search_all.h
+    kl_url/kl_res_voice_search_all.h \
+    kl_music_load.h \
+    music_load_manage.h \
+    test_album_load.h \
+    save_manage_object.h \
+    kl_save_record.h \
+    kl_record_manage.h \
+    kl_download_manage.h \
+    kl_collect_manage.h
 
 
 SOURCES += application.cpp main.cpp \ 
@@ -86,4 +95,11 @@ SOURCES += application.cpp main.cpp \
     kl_url/kl_chip_audio_detail.cpp \
     kl_url/kl_chip_audio_list.cpp \
     kl_url/kl_res_suggestion_word.cpp \
-    kl_url/kl_res_voice_search_all.cpp
+    kl_url/kl_res_voice_search_all.cpp \
+    kl_music_load.cpp \
+    music_load_manage.cpp \
+    test_album_load.cpp \
+    kl_save_record.cpp \
+    kl_record_manage.cpp \
+    kl_download_manage.cpp \
+    kl_collect_manage.cpp

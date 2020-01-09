@@ -12,6 +12,7 @@ class CateItemModel;
 class ChipItemModel;
 class DetailUnion;
 class ChipPlayManage;
+class CollectModel;
 class KLDataProc
 {
 public:
@@ -81,6 +82,10 @@ public:
             int bdc_area_index;
             int bdc_item_index;
         } bdc;
+        struct {
+            int table_type;
+            int table_list_main_index;
+        } local;
     };
 
     struct AlbunView
@@ -235,12 +240,33 @@ public:
     {
         return mPlayInfo;
     }
+
+    /**
+     * @brief localItemTypeRadioPlay
+     * @brief localItemBroadcastPlay
+     * @brief localItemAlbumPlay
+     * @param parentId [in] 输入二级标签ID, 如专辑ID
+     * @param id [in] 输入三级标签ID, 如专辑碎片ID
+     * @details 根据本地信息（收藏 历史记录 或者下载记录），进行播放处理
+     */
+    void localItemTypeRadioPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
+    void localItemBroadcastPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
+    void localItemAlbumPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
+    void localItemDownLoadPlay(int local_type, int main_index);
+
+    /**
+     * @brief playDefaultItem
+     * @details 加载列表完成播放默认的曲目
+     */
+    void playDefaultItem();
 private:
     KLDataProc();
     void enterBroadcastView();
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
+    //download
+    ChipItemUnion    *m_pHistoryChip;
 
     // album
     CategoryUnion    *m_pCateData;

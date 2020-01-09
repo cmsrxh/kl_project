@@ -17,7 +17,11 @@ void DetailQobject::getCurrent()
 
 void DetailQobject::onLoadOver(long ptr)
 {
-    Q_ASSERT((long)m_pUnion == ptr);
+    if ((long)m_pUnion != ptr)
+    {
+        qWarning() << "Current is not need.";
+        return;
+    }
 
     m_pUnion->getDetail(mDetail);
 

@@ -11,6 +11,7 @@
 #include "chip_item_play_manage.h"
 #include "kl_ui_proc.h"
 #include "kl_local_data_proc.h"
+#include "kl_download_manage.h"
 #include "iface/media_service_i_face.h"
 #include "iface/media_iface_common.h"
 #include "iface/media_service_call_back.h"
@@ -38,6 +39,7 @@ public:
 KLDataProc::KLDataProc()
     : mCurrentIsCollect(false)
     , m_pPlayManage(new ChipPlayManage)
+    , m_pHistoryChip(new ChipItemUnion(PLAY_CHIP_TYPE_LOCAL_LOAD))
 {    
 }
 
@@ -66,7 +68,6 @@ void KLDataProc::setPlayInfo(MusicChipItemUnion &chip)
     mPlayInfo.parentName= chip.parentName;
     mPlayInfo.image     = chip.image;
     mPlayInfo.playUrl   = chip.playUrl;
-    // mPlayInfo.localUrl  = ByteString();
 
     LocalDataProc::instance()->checkCurIsCollect(&mPlayInfo);
 }
@@ -88,6 +89,8 @@ KLDataProc::~KLDataProc()
     MapTable<ByteString, AlbunView>::iterator it3 = mChipMap.begin();
     for (; it3 != mChipMap.begin(); ++it3)
     {
+        it3->key.clear();
+
         if (it3->value.chip_item)
         {
             delete it3->value.chip_item;
@@ -217,7 +220,7 @@ void KLDataProc::albumSecondClick(int index)
 
     DetailQobject::instance()->setDetailName(vec[index]->name);
 
-    AlbunView &tmp = mChipMap[id];
+    AlbunView &tmp = mChipMap[ByteString::allocString(id)];
     if (tmp.chip_item)
     {
         m_pChipItem->setChipItemUnion(tmp.chip_item);
@@ -449,10 +452,10 @@ void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
         ByteString id = vec[index]->id;
         int type = vec[index]->type;
 
-        m_pChipItemPlay->clear();
-        AlbunView &tmp = mChipMap[id];
+        AlbunView &tmp = mChipMap[ByteString::allocString(id)];
         if (tmp.chip_item)
         {
+            m_pChipItemPlay->clear();
             m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
             tmp.chip_item->onLoadOver(m_pChipItemPlay);
             m_pChipItemPlay->resetAll();
@@ -544,7 +547,7 @@ void KLDataProc::showPlayingInfo()
         m_pChipItemPlay->clean();
         m_pChipItemPlay->setChipItemUnion(mPlayPath.current_play_list);
         GEN_Printf(LOG_DEBUG, "On Load Data");
-        m_pChipItemPlay->onLoadOver((long)mPlayPath.current_play_list);
+        m_pChipItemPlay->chipLoadOver((long)mPlayPath.current_play_list);
     }
 
     VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
@@ -702,5 +705,146 @@ void KLDataProc::notifyCurIsCollect(bool isCollect)
 void KLDataProc::notifyBDCCollectChange(int index, bool isCollect)
 {
     m_pBDCItem->isCollectItemContentChange(index, isCollect);
+}
+
+void KLDataProc::localItemTypeRadioPlay(int local_type, int main_index, const ByteString &parentId, const ByteString &id)
+{
+    AlbunView &tmp = mChipMap[ByteString::allocString(parentId)];
+
+    m_pChipItemPlay->setDefaultId(id);
+    mSwitch.local.table_type = local_type;
+    mSwitch.local.table_list_main_index = main_index;
+
+    if (tmp.chip_item)
+    {
+        m_pChipItemPlay->clear();
+        m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
+        tmp.chip_item->onLoadOver(m_pChipItemPlay);
+        m_pChipItemPlay->resetAll();
+
+        mSwitch.setCurrentPlayList(tmp.chip_item);
+        mPlayPath = mSwitch;
+
+        playDefaultItem();
+    } else
+    {
+        tmp.chip_item = new ChipItemUnion(PLAY_CHIP_TYPE_TYPE_RADIO);
+        m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
+        tmp.chip_item->loadChipList(parentId, true, ChipItemUnion::LOAD_OVER_TYPE_RADIO__PLAY_CHOICE);
+
+        tmp.datail_item = NULL;
+        mSwitch.setCurrentPlayList(tmp.chip_item);
+        mPlayPath = mSwitch;
+    }
+}
+
+void KLDataProc::localItemBroadcastPlay(int local_type, int main_index, const ByteString &parentId, const ByteString &id)
+{
+    AlbunView &tmp = mChipMap[ByteString::allocString(parentId)];
+
+    m_pChipItemPlay->setDefaultId(id);
+    mSwitch.local.table_type = local_type;
+    mSwitch.local.table_list_main_index = main_index;
+
+    if (tmp.chip_item)
+    {
+        m_pChipItemPlay->clear();
+        m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
+        tmp.chip_item->onLoadOver(m_pChipItemPlay);
+        m_pChipItemPlay->resetAll();
+
+        mSwitch.setCurrentPlayList(tmp.chip_item);
+        mPlayPath = mSwitch;
+
+        playDefaultItem();
+    } else
+    {
+        tmp.chip_item = new ChipItemUnion(PLAY_CHIP_TYPE_BROADCAST);
+        m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
+        tmp.chip_item->loadChipList(parentId, true, ChipItemUnion::LOAD_OVER_BROADCAST__PLAY_CHOICE);
+
+        tmp.datail_item = NULL;
+        mSwitch.setCurrentPlayList(tmp.chip_item);
+        mPlayPath = mSwitch;
+    }
+}
+
+void KLDataProc::localItemAlbumPlay(int local_type, int main_index, const ByteString &parentId, const ByteString &id)
+{
+    AlbunView &tmp = mChipMap[ByteString::allocString(parentId)];
+
+    m_pChipItemPlay->setDefaultId(id);
+    mSwitch.local.table_type = local_type;
+    mSwitch.local.table_list_main_index = main_index;
+
+    if (tmp.chip_item)
+    {
+        m_pChipItemPlay->clear();
+        m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
+        tmp.chip_item->onLoadOver(m_pChipItemPlay);
+        m_pChipItemPlay->resetAll();
+        mSwitch.setCurrentPlayList(tmp.chip_item);
+        mPlayPath = mSwitch;
+
+        playDefaultItem();
+    } else
+    {
+        tmp.chip_item = new ChipItemUnion(PLAY_CHIP_TYPE_ALBUM);
+        m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
+        tmp.chip_item->loadChipList(parentId, true, ChipItemUnion::LOAD_OVER_ALBUM__PLAY_CHOICE);
+
+        tmp.datail_item = NULL;
+
+        mSwitch.setCurrentPlayList(tmp.chip_item);
+        mPlayPath = mSwitch;
+    }
+}
+
+void KLDataProc::localItemDownLoadPlay(int local_type, int main_index)
+{
+    mSwitch.local.table_type = local_type;
+    mSwitch.local.table_list_main_index = main_index;
+
+    m_pHistoryChip->setChipHandler(kl::DownloadManage::instance());
+    m_pChipItemPlay->clear();
+    mSwitch.setCurrentPlayList(m_pHistoryChip);
+
+    m_pChipItemPlay->resetAll();
+    mPlayPath = mSwitch;
+
+    VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
+    if (main_index >= 0 && main_index < vec.size())
+    {
+        mPlayPath.chip_item_index = main_index;
+        setPlayInfo(*(vec[main_index]));
+        gInstance->setSourceUrl(vec[main_index]->playUrl.string());
+    }
+}
+
+void KLDataProc::playDefaultItem()
+{
+    int i = 0;
+    VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
+
+    for (; i < vec.size(); ++i)
+    {
+        if (vec[i]->chipId == m_pChipItemPlay->getDefaultId())
+        {
+            break;
+        }
+    }
+
+    if (i == vec.size())
+    {
+        GEN_Printf(LOG_WARN, "Current Default item not in list.");
+        --i;
+    }
+
+    if (i >= 0 && i < vec.size())
+    {
+        mPlayPath.chip_item_index = i;
+        setPlayInfo(*(vec[i]));
+        gInstance->setSourceUrl(vec[i]->playUrl.string());
+    }
 }
 

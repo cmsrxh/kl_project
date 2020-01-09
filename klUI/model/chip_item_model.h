@@ -74,8 +74,24 @@ public:
     void getSliderBase(int &cur, int &dur, int index);
 
     bool isCollect();
+
+    ByteString getDefaultId() const
+    {
+        return mDefaultId;
+    }
+    void setDefaultId(const ByteString &defaultId)
+    {
+        mDefaultId.clear();
+        mDefaultId = ByteString::allocString(defaultId);
+    }
+    /**
+     * @brief chipLoadOver
+     * @param ptr [in] ChipItemUnion 实例指针
+     * @details 必须在主线程中调用，即在信号槽函数中调用
+     */
+    void chipLoadOver(long ptr);
+
 public Q_SLOTS:
-    void onLoadOver(long ptr);
 
     void chipItemClick(int index);
 
@@ -86,9 +102,7 @@ public Q_SLOTS:
     void playItemClick(int index);
 
     void qmlCurrentCollectClick();
-Q_SIGNALS:
-    void dataLoadOver(long ptr);
-
+Q_SIGNALS:    
     void loadError(int type, const QString &info);
 
     // property
@@ -104,6 +118,7 @@ protected:
 private:
     const bool                        mIsPlayModel;
     ChipItemUnion                    *m_pUnion;
+    ByteString                        mDefaultId;
     QHash<int, QByteArray>            roles;
     VectorTable<MusicChipItemUnion *> mVec;
 };

@@ -89,7 +89,11 @@ int CategoryModel::bdcAreaIndex() const
 
 void CategoryModel::onLoadOver(long ptr)
 {
-    assert(ptr == (long)m_pCateUnion);
+    if ((long)m_pCateUnion != ptr)
+    {
+        qWarning() << "Current is not need.";
+        return;
+    }
     qDebug() << "Category load over.";
 
     m_pCateUnion->onLoadOver(mVec);

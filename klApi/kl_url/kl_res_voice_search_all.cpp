@@ -41,13 +41,13 @@ http://open.kaolafm.com/v2/resource/voice/searchall?deviceid=69acf5ec77a42531d17
 
 */
 
-#define QUERY_BOX "{\"category\":\"\",\"albumName\":\"\",\"artist\":\"\",\"audioName\":\"\",\"field\":2,\"tag\":1,\"text\":\"%s\",\"keyword\":\"%s\"}"
+#define QUERY_BOX "{\"category\":\"\",\"albumName\":\"\",\"artist\":\"\",\"audioName\":\"\",\"field\":2,\"tag\":1,\"text\":\"\",\"keyword\":\"%s\"}"
 
 kl::VoiceSearchAll::VoiceSearchAll(const ByteString &query)
     : SaveObject<SearchItem> ("http://open.kaolafm.com/v2/resource/voice/searchall", NetUrl::NET_HTTP_METHOD_GET)
 {
     char buffer[sizeof(QUERY_BOX) + query.size() * 2];
-    int  len = sprintf(buffer, QUERY_BOX, query.string(), query.string());
+    int  len = sprintf(buffer, QUERY_BOX, query.string()/*, query.string()*/);
 
     ByteString box(buffer, len);
 
@@ -119,10 +119,10 @@ void kl::VoiceSearchAll::genResult(const char *data, unsigned long size)
         if (mNodes.empty())
         {
             GEN_Printf(LOG_WARN, "load voice search list is empty.");
-        } else
+        } /*else
         {
             profile();
-        }
+        }*/
     }else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", size, data);

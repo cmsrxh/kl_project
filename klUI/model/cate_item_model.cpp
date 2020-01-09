@@ -57,7 +57,11 @@ void CateItemModel::onLoadOver(long ptr)
 {   
     int start = mVec.size();
 
-    assert(ptr == (long)m_pUnion);
+    if ((long)m_pUnion != ptr)
+    {
+        qWarning() << "Current is not need.";
+        return;
+    }
 
     m_pUnion->onLoadOver(this);
 

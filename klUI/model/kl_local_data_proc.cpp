@@ -139,27 +139,88 @@ void LocalDataProc::recordCurrentPlayItem(CollectNode *info)
 
 void LocalDataProc::collectItemPlay(int index)
 {
+    ListTable<kl::RecordItem>::vector &vec = m_pCollect->vec();
 
+    if (index < 0 || index > vec.size())
+    {
+        GEN_Printf(LOG_WARN, "Collect List, index=%d, size=%d out of range", index, vec.size());
+        return;
+    }
+    ByteString secId   = vec[index].parentId;
+    ByteString thirdId = vec[index].id;
+
+    switch (vec[index].type)
+    {
+    case PLAY_CHIP_TYPE_ALBUM:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
+        KLDataProc::instance()->localItemAlbumPlay(0, index, secId, thirdId);
+        break;
+    case PLAY_CHIP_TYPE_TYPE_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
+        KLDataProc::instance()->localItemTypeRadioPlay(0, index, secId, thirdId);
+        break;
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
+    case PLAY_CHIP_TYPE_BROADCAST:
+        KLDataProc::instance()->localItemBroadcastPlay(0, index, secId, thirdId);
+        break;
+    default:
+        break;
+    }
 }
 
 void LocalDataProc::collectItemEnable(int index)
 {
-
+    GEN_Printf(LOG_INFO, "Func not used, index=%d", index);
 }
 
 void LocalDataProc::downLoadItemPlay(int index)
 {
+    ListTable<kl::RecordItem>::vector &vec = m_pCollect->vec();
 
+    if (index < 0 || index > vec.size())
+    {
+        GEN_Printf(LOG_WARN, "Collect List, index=%d, size=%d out of range", index, vec.size());
+        return;
+    }
+
+    KLDataProc::instance()->localItemDownLoadPlay(2, index);
 }
 
 void LocalDataProc::historyItemPlay(int index)
 {
+    ListTable<kl::RecordItem>::vector &vec = m_pCollect->vec();
 
+    if (index < 0 || index > vec.size())
+    {
+        GEN_Printf(LOG_WARN, "Collect List, index=%d, size=%d out of range", index, vec.size());
+        return;
+    }
+
+    ByteString secId   = vec[index].parentId;
+    ByteString thirdId = vec[index].id;
+
+    switch (vec[index].type)
+    {
+    case PLAY_CHIP_TYPE_ALBUM:
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
+        KLDataProc::instance()->localItemAlbumPlay(1, index, secId, thirdId);
+        break;
+    case PLAY_CHIP_TYPE_TYPE_RADIO:
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
+        KLDataProc::instance()->localItemTypeRadioPlay(1, index, secId, thirdId);
+        break;
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
+    case PLAY_CHIP_TYPE_BROADCAST:
+        KLDataProc::instance()->localItemBroadcastPlay(1, index, secId, thirdId);
+        break;
+    default:
+        break;
+    }
 }
 
 void LocalDataProc::historyClearAll()
 {
-
+    Application::instance()->postKlEvent(SIG_KL_HISTORY_CLEAR_APP);
 }
 
 void LocalDataProc::onCollect(int st, long ptr)

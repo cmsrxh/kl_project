@@ -11,8 +11,6 @@ ChipItemModel::ChipItemModel(bool isPlayModel)
 {
     roles[CHIP_ITEM_NAME]    = "chipItemName";
 
-    connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
-
 #if 0
     MusicChipItemUnion *uni = new MusicChipItemUnion;
 
@@ -77,11 +75,15 @@ void ChipItemModel::clear()
     endResetModel();
 }
 
-void ChipItemModel::onLoadOver(long ptr)
+void ChipItemModel::chipLoadOver(long ptr)
 {
     int start = mVec.size();
 
-    Q_ASSERT(ptr == (long)m_pUnion);
+    if ((long)m_pUnion != ptr)
+    {
+        qWarning() << "Current is not need.";
+        return;
+    }
 
     m_pUnion->onLoadOver(this);
 

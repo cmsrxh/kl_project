@@ -91,7 +91,7 @@ public:
     {
         if (mSaveFile)
         {
-            int fd = open(mSaveFile, O_WRONLY);
+            int fd = open(mSaveFile, O_WRONLY | O_CREAT, 0664);
             if (fd > 0)
             {
                 char *data = nullptr;
@@ -100,7 +100,7 @@ public:
                 if (genSaveString(data, len))
                 {
                     int ret = write(fd, data, len);
-                    if (ret != len)
+                    if ((unsigned long)ret != len)
                     {
                         GEN_Printf(LOG_ERROR, "[%d == %d] write failed, %s", ret, len, strerror(errno));
                     }
@@ -114,7 +114,7 @@ public:
                 }
             } else
             {
-                GEN_Printf(LOG_ERROR, "open write failed, %s", strerror(errno));
+                GEN_Printf(LOG_ERROR, "open %s write failed, %s", mSaveFile, strerror(errno));
             }
             return true;
         }

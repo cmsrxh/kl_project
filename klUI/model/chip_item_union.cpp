@@ -2,6 +2,7 @@
 #include "kl_url/kl_chip_audio_list.h"
 #include "kl_url/kl_chip_radio_list.h"
 #include "kl_url/kl_broadcast_item_programlist.h"
+#include "kl_download_manage.h"
 #include "chip_item_model.h"
 #include "chip_item_union.h"
 #include "chip_item_play_manage.h"
@@ -10,19 +11,23 @@ ChipItemUnion::ChipItemUnion(int type)
     : mLoadAction(0), mChipType(0)
     , m_pChip(nullptr)
 {
-    if (PLAY_CHIP_TYPE_ALBUM == type)
-    {
+    switch (type) {
+    case PLAY_CHIP_TYPE_ALBUM:
         mChipType = PLAY_CHIP_TYPE_AUDIO_CHIP;
-    } else if (PLAY_CHIP_TYPE_TYPE_RADIO == type)
-    {
+        break;
+    case PLAY_CHIP_TYPE_TYPE_RADIO:
         mChipType = PLAY_CHIP_TYPE_RADIO_CHIP;
-    } else if (PLAY_CHIP_TYPE_BROADCAST == type)
-    {
+        break;
+    case PLAY_CHIP_TYPE_BROADCAST:
         mChipType = PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP;
-    } else
-    {
+        break;
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+        mChipType = PLAY_CHIP_TYPE_LOCAL_LOAD;
+        break;
+    default:
         GEN_Printf(LOG_ERROR, "Media Type = %d is not invalid.", type);
         assert(0);
+        break;
     }
 }
 
@@ -98,6 +103,10 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
         bdcProgram->obtain();
         break;
     }
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+        GEN_Printf(LOG_WARN, "Not exist type");
+        assert(mChipType != PLAY_CHIP_TYPE_LOCAL_LOAD);
+        break;
     default:
         break;
     }
@@ -117,6 +126,10 @@ void ChipItemUnion::dataPrepare()
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
         isEmpty = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes().empty();
         break;
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+        GEN_Printf(LOG_WARN, "Not exist type");
+        assert(mChipType != PLAY_CHIP_TYPE_LOCAL_LOAD);
+        return;
     default:
         break;
     }
@@ -126,7 +139,7 @@ void ChipItemUnion::dataPrepare()
         gPlayInstance->loadError(mLoadAction, 0, "Chip Item List is empty.");
     } else
     {
-        gPlayInstance->dataLoadOver((long)this, mLoadAction);
+        Q_EMIT gPlayInstance->dataLoadOver((long)this, mLoadAction);
     }
 }
 
@@ -149,6 +162,9 @@ void ChipItemUnion::onLoadOver(ChipItemModel *parent)
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
         genCatesByBDCProgramItem(((kl::BroadcastItemProgramlist *)m_pChip)->nodes(), parent->vec());
         break;
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+        genCatesByLocalLoadItem(((kl::DownloadManage *)m_pChip)->nodes(), parent->vec());
+        break;
     default:
         break;
     }
@@ -168,6 +184,9 @@ int ChipItemUnion::itemCount()
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
         count = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes().size();
         break;
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+        count = ((kl::DownloadManage *)m_pChip)->nodes().size();
+        break;
     default:
         break;
     }
@@ -185,6 +204,7 @@ bool ChipItemUnion::loadNextPage(int loadAction)
     case PLAY_CHIP_TYPE_RADIO_CHIP:
         return ((kl::ChipRadioList *)m_pChip)->loadNextPage();
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
     default:
         break;
     }
@@ -251,6 +271,24 @@ bool ChipItemUnion::getUnionInfoByIndex(MusicChipItemUnion &info, int index)
             info.image      = it->broadcastImg;
             info.playUrl    = it->playUrl;
             info.desc       = it->desc;
+            return true;
+        }
+        return false;
+    }
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+    {
+        ListTable<kl::RecordItem> &nodes = ((kl::DownloadManage *)m_pChip)->nodes();
+        ListTable<kl::RecordItem>::iterator it = nodes.begin();
+        for ( ; it != nodes.end() && index; ++it, --index);
+        if (it != nodes.end())
+        {
+            info.type       = PLAY_CHIP_TYPE_LOCAL_LOAD;
+            info.parentId   = it->parentId;
+            info.chipId     = it->id;
+            info.parentName = it->parentName;
+            info.name       = it->name;
+            info.image      = it->image;
+            info.playUrl    = it->playUrl;
             return true;
         }
         return false;
@@ -328,6 +366,26 @@ void ChipItemUnion::genCatesByBDCProgramItem(ListTable<kl::BDCastProgramItem> &n
         tmp->desc       = it->desc;
         tmp->startTime  = it->startTime;
         tmp->finishTime = it->finishTime;
+
+        vec.push_back(tmp);
+    }
+}
+
+void ChipItemUnion::genCatesByLocalLoadItem(ListTable<kl::RecordItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)
+{
+    ListTable<kl::RecordItem>::iterator it = nodes.begin();
+
+    for ( ; it != nodes.end(); ++it)
+    {
+        MusicChipItemUnion *tmp = new MusicChipItemUnion;
+
+        tmp->type       = PLAY_CHIP_TYPE_LOCAL_LOAD;
+        tmp->parentId   = it->parentId;
+        tmp->chipId     = it->id;
+        tmp->parentName = it->parentName;
+        tmp->name       = it->name;
+        tmp->image      = it->image;
+        tmp->playUrl    = it->playUrl;
 
         vec.push_back(tmp);
     }

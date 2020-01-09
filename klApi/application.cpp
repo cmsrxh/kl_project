@@ -22,6 +22,7 @@
 #include "kl_url/kl_album_list.h"
 #include "kl_url/kl_res_suggestion_word.h"
 #include "kl_url/kl_res_voice_search_all.h"
+#include "test_album_load.h"
 #include "util/config_setting.h"
 #include "application.h"
 
@@ -123,10 +124,13 @@ void Application::initialize()
 
 //        search.obtain();
 
-        static kl::SuggestionWord suggest("chen");
+//        static kl::SuggestionWord suggest("chen");
 
-        suggest.obtain();
+//        suggest.obtain();
 
+        static TestAlbumLoad test;
+
+        test.obtain();
     }
 }
 
@@ -141,6 +145,15 @@ void Application::runLoop()
     {
         switch (evt->sig)
         {
+        case SIG_TEST_SEARCH_LOAD_OVER:
+            gTestLoad->loadAllAlbumInfo();
+            break;
+        case SIG_TEST_AUDIO_DETAIL_LOAD_OVER:
+            gTestLoad->totalLoadDeatailInfo();
+            break;
+        case SIG_TEST_AUDIO_DETAIL_LIST_LOAD_OVER:
+            gTestLoad->detailListLoadOver();
+            break;
         case SIG_HAVE_OPEN_ID:
             klInitGetOpenId();
             break;

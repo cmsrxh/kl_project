@@ -44,7 +44,7 @@ void Application::initialize()
     }
 
     // 启动收数据线程，并连接播放服务端socket
-//    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }

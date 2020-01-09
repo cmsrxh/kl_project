@@ -492,7 +492,7 @@ public:
         parentName.clear();
         image.clear();
         playUrl.clear();
-        localUrl.clear();
+        fileSize.clear();
     }
     void copy(RecordItem *item)
     {
@@ -504,7 +504,7 @@ public:
         item->parentName = ByteString::allocString(parentName);
         item->image      = ByteString::allocString(image);
         item->playUrl    = ByteString::allocString(playUrl);
-        item->localUrl   = ByteString::allocString(localUrl);
+        item->fileSize   = ByteString::allocString(fileSize);
     }
 
     int        isLocal; // 表明当前媒体时候在本地
@@ -515,7 +515,7 @@ public:
     ByteString parentName;
     ByteString image;
     ByteString playUrl;
-    ByteString localUrl;
+    ByteString fileSize;
 };
 
 // 通知UI，数据加载解析的结果

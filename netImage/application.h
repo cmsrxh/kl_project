@@ -20,35 +20,24 @@ class InitManage;
 class ActiveManage;
 class KLObject;
 }
-class Application : public SFLoop
-        #ifdef PLATFORM_HMI
-        , public SimpleThread
-        #endif
+
+class Application : public SFLoop, public SimpleThread
 {
 public:
-    enum {
-        SIG_TEST_SEARCH_LOAD_OVER = 2000,
-        SIG_TEST_AUDIO_DETAIL_LOAD_OVER,
-        SIG_TEST_AUDIO_DETAIL_LIST_LOAD_OVER,
-    };
-
     inline static Application *instance()
     {
         static Application i;
         return &i;
     }
+    void initialize();
 
-    void    initialize();
+    void runLoop() NO_RETUEN;
 
-    void    runLoop() NO_RETUEN;
-
-#ifdef PLATFORM_HMI
     void run()
     {
         runLoop();
     }
-#endif
-    void postKlEvent(int cmd, int ext1 = 0, int ext2 = 0, const char *str = 0);
+    bool postKlEvent(int cmd, long ext1 = 0, long ext2 = 0, const char *str = 0);
 
     void collectObject(kl::KLObject *obj)
     {
@@ -57,6 +46,9 @@ public:
 protected:
     void klInitActiveManage(GeneralQEvt *evt);
     void klInitGetOpenId();
+
+    //
+    static void ipcSockLanuchTimer(ATimer *that, void *ptr);
 private:
     Application();
     Application(Application &);
@@ -64,6 +56,7 @@ private:
 
     kl::InitManage              *m_pKLInit;
     kl::ActiveManage            *m_pKLActive;
+    ATimer                      *m_pIpcSockLanuch;
     /**
      * @details 记录当前，在设备没有OpenID的时候那些下载操作，
      * @warning 注意这些下载对象不能释放，否则这里记录的指针就是非法

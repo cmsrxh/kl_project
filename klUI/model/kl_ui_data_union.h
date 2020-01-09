@@ -13,6 +13,7 @@ enum
     PLAY_CHIP_TYPE_AUDIO_CHIP   ,    // 专辑音乐节目碎片三级标签item
     PLAY_CHIP_TYPE_RADIO_CHIP   ,    // 智能电台节目碎片三级标签item
     PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP, // 电台节目碎片三级标签item
+    PLAY_CHIP_TYPE_LOCAL_LOAD   ,    // 下载的音频碎片（专辑音乐碎片）
 };
 
 struct MusicCateUnion

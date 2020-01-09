@@ -29,7 +29,7 @@ void kl::SaveRecord::genResult(const char *data, unsigned long size)
             JSON_VALUETRING_SWAP_BYTESTRING(item, parentName, tmp.parentName);
             JSON_VALUETRING_SWAP_BYTESTRING(item, image, tmp.image);
             JSON_VALUETRING_SWAP_BYTESTRING(item, playUrl, tmp.playUrl);
-            JSON_VALUETRING_SWAP_BYTESTRING(item, localUrl, tmp.localUrl);
+            JSON_VALUETRING_SWAP_BYTESTRING(item, fileSize, tmp.fileSize);
 
             mNodes.push_back(tmp);
         }
@@ -51,6 +51,7 @@ void kl::SaveRecord::genResult(const char *data, unsigned long size)
 
 bool kl::SaveRecord::genSaveString(char *&data, unsigned long &len)
 {
+    GEN_Printf(LOG_DEBUG, "list count: %d", mNodes.size());
     cJSON *root = cJSON_CreateObject();
     if (root)
     {
@@ -61,6 +62,7 @@ bool kl::SaveRecord::genSaveString(char *&data, unsigned long &len)
              ListTable<RecordItem>::iterator it = mNodes.begin();
              for (; it != mNodes.end(); ++it)
              {
+                 GEN_Printf(LOG_DEBUG, "gen string: %s", it->id.string());
                  cJSON *item = cJSON_CreateObject();
 
                  cJSON_AddItemToArray(dataList, item);
@@ -72,14 +74,14 @@ bool kl::SaveRecord::genSaveString(char *&data, unsigned long &len)
                  cJSON_AddItemToObject(item, "parentName",cJSON_CreateString(it->parentName.string()));
                  cJSON_AddItemToObject(item, "image",     cJSON_CreateString(it->image.string()));
                  cJSON_AddItemToObject(item, "playUrl",   cJSON_CreateString(it->playUrl.string()));
-                 cJSON_AddItemToObject(item, "localUrl",  cJSON_CreateString(it->localUrl.string()));
-
+                 cJSON_AddItemToObject(item, "fileSize",  cJSON_CreateString(it->fileSize.string()));
              }
              data = cJSON_PrintUnformatted(root);
              len  = strlen(data);
         }
         cJSON_Delete(root);
     }
+    GEN_Printf(LOG_DEBUG, "gen cjson %d, %s", len, data);
 
     return (data && len) ? true : false;
 }
