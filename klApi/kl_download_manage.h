@@ -3,7 +3,9 @@
 
 #include "kl_save_record.h"
 
-namespace kl {
+namespace kl
+{
+class MusicLoad;
 class DownloadManage : public SaveRecord
 {
     DownloadManage();
@@ -17,6 +19,9 @@ public:
     }
 
     void saveItem(RecordItem *item);
+
+private:
+    ListTable<kl::MusicLoad *> mList;
 };
 }
 

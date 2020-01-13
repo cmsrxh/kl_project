@@ -22,8 +22,7 @@ LIBS += -levents_core -levents_log -levents_util -lpthread
 
 SOURCES += main.cpp \
     application.cpp \
-    image_load.cpp \
-    fileio.cpp
+    ../klUI/image_frame.cpp
 
 RESOURCES += qml.qrc
 
@@ -54,5 +53,4 @@ include(./klApi.pri)
 
 HEADERS += \
     application.h \
-    image_load.h \
-    fileio.h
+    ../klUI/image_frame.h

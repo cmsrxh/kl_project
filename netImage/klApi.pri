@@ -13,7 +13,8 @@ HEADERS += \
     $$APISRC/kl_url/kl_object.h \
     $$APISRC/kl_url/kl_image.h \
     $$APISRC/net_util/net_common.h \
-    $$APISRC/net_util/cJSON.h
+    $$APISRC/net_util/cJSON.h \
+    $$PWD/../klApi/image_cache_manage.h
 
 
 SOURCES += \
@@ -24,4 +25,5 @@ SOURCES += \
     $$APISRC/net_util/net_url.cpp \
     $$APISRC/kl_url/kl_object.cpp \
     $$APISRC/kl_url/kl_image.cpp \
-    $$APISRC/net_util/cJSON.cpp
+    $$APISRC/net_util/cJSON.cpp \
+    $$PWD/../klApi/image_cache_manage.cpp

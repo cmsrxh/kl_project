@@ -36,7 +36,8 @@ HEADERS += application.h \
     model/detail_qobject.h \
     model/chip_item_play_manage.h \
     model/collect_model.h \
-    model/kl_local_data_proc.h
+    model/kl_local_data_proc.h \
+    image_frame.h
 
 SOURCES += application.cpp main.cpp \
     kl_ui_proc.cpp \
@@ -52,7 +53,8 @@ SOURCES += application.cpp main.cpp \
     model/detail_qobject.cpp \
     model/chip_item_play_manage.cpp \
     model/collect_model.cpp \
-    model/kl_local_data_proc.cpp
+    model/kl_local_data_proc.cpp \
+    image_frame.cpp
 
 RESOURCES += res/qml.qrc \
     res/image.qrc

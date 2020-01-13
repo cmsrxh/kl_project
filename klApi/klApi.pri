@@ -43,7 +43,8 @@ HEADERS += \
     $$PWD/kl_record_manage.h \
     $$PWD/save_manage_object.h \
     $$PWD/kl_save_record.h \
-    $$PWD/kl_download_manage.h
+    $$PWD/kl_download_manage.h \
+    $$PWD/image_cache_manage.h
 
 SOURCES += \
     $$APISRC/net_util/curl_load_proc.cpp \
@@ -78,4 +79,5 @@ SOURCES += \
     $$PWD/kl_url/kl_res_suggestion_word.cpp \
     $$PWD/kl_record_manage.cpp \
     $$PWD/kl_save_record.cpp \
-    $$PWD/kl_download_manage.cpp
+    $$PWD/kl_download_manage.cpp \
+    $$PWD/image_cache_manage.cpp

@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
+import ImageFrameCpp 1.0
 
 Rectangle
 {
@@ -10,19 +11,28 @@ Rectangle
     border.color:  "#e1ff0000"
     border.width: 3
 
-    Image
+    ImageFrameCpp
     {
         id: fgImg
         x: parent.border.width
         y: parent.border.width
         width: parent.width - parent.border.width * 2
         height: parent.height - parent.border.width * 2
-        //sourceSize: Qt.size(parent.width - parent.border.width * 2, parent.height - parent.border.width * 2)
-        asynchronous: true
-        cache: true
-        fillMode: Image.PreserveAspectCrop
-        antialiasing: true
     }
+
+//    Image
+//    {
+//        id: fgImg
+//        x: parent.border.width
+//        y: parent.border.width
+//        width: parent.width - parent.border.width * 2
+//        height: parent.height - parent.border.width * 2
+//        //sourceSize: Qt.size(parent.width - parent.border.width * 2, parent.height - parent.border.width * 2)
+//        asynchronous: true
+//        cache: true
+//        fillMode: Image.PreserveAspectCrop
+//        antialiasing: true
+//    }
 
     //    LinearGradient
     //    {

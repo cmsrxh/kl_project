@@ -38,6 +38,16 @@ Window {
         anchors.topMargin: 40
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 90
+//        x: 23
+//        y: 23
+//        width: 160
+//        height: 160
 
+        source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: console.log("abcdefg")
+        }
     }
 }

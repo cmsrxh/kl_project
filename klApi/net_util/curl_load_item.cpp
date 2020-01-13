@@ -91,7 +91,6 @@ void CurlLoadItem::setBuffer()
         mMemory = (uint8_t *)malloc(1);
         if (!mMemory)
         {
-            GEN_Printf(LOG_ERROR, "no memery");
             throw std::runtime_error("no memery");
         }
     }

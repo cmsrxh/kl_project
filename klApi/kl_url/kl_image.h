@@ -6,12 +6,19 @@
 #include "net_util/net_url.h"
 #include "net_util/load_item.h"
 
+class ImageStatus
+{
+public:
+    virtual void dataPrepare() = 0;
+    virtual void errorInfo(int , const char *) {}
+};
+
 namespace kl
 {
 class KLImage : public LoadItem
 {
 public:
-    KLImage(const ByteString &imgUrl);
+    KLImage(const ByteString &imgUrl, const char *file);
     ~KLImage();
 
     void obtain();
@@ -21,8 +28,15 @@ public:
     void oneFrameObtainOver();
 
     void errorInfo(int type, const char *str);
+
+    void setUINotify(ImageStatus *value)
+    {
+        notify = value;
+    }
 private:
-    NetUrl    mUrl;
+    NetUrl       mUrl;
+    ImageStatus *notify;
+    int          mFile;
 };
 }
 #endif // KL_IMAGE_H

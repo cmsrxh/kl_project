@@ -1,6 +1,5 @@
 #include "application.h"
-#include "image_load.h"
-#include "fileio.h"
+#include "../klUI/image_frame.h"
 #include <events/common_log.h>
 #include <unistd.h>
 #include <QGuiApplication>
@@ -20,7 +19,7 @@ int main(int argc, char *argv[])
 
     Application::instance()->initialize();
 
-    qmlRegisterType<ImageFrame, 1>("ImageFrame", 1, 0, "ImageFrame");
+    qmlRegisterType<ImageFrameCpp, 1>("ImageFrame", 1, 0, "ImageFrame");
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
