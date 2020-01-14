@@ -11,7 +11,7 @@ INCLUDEPATH += ../player
 # QMAKE_LFLAGS   += -Wl,-rpath,$$HOME/framework/$$PLATFORM/lib
 
 LIBS += -L$$HOME/framework/$$PLATFORM/lib
-LIBS += -levents_ipc_client
+LIBS += -levents_ipc_client -levents_socket
 
 SOURCES += \
     ../player/iface/media_service_i_face.cpp

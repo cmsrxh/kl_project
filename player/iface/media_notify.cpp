@@ -94,16 +94,17 @@ static MediaPriser gPriserInstance;
 #endif
 
 MediaNotify::MediaNotify()
+    : m_pHandler(new ServiceIfaceBase(80080, 256))
 {
-
+#ifndef USE_MPV_API_INTERFACE
+    m_pHandler->setCmdPriser(&gPriserInstance);
+    m_pHandler->init();
+#endif
 }
 
 void MediaNotify::init_notify()
 {    
-#ifndef USE_MPV_API_INTERFACE
-    ServiceIfaceBase::instance()->setCmdPriser(&gPriserInstance);
-    ServiceIfaceBase::instance()->init(80080, 256);
-#endif
+
 }
 
 void MediaNotify::notifySeekEnd()
@@ -239,6 +240,6 @@ void MediaNotify::notify(int msg, int ext1, int ext2, const char *str)
     in.allocSetInt(ext2);
     in.allocSetString(str);
 
-    ServiceIfaceBase::instance()->msgNotify(&in);
+    m_pHandler->msgNotify(&in);
 }
 #endif

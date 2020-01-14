@@ -2,6 +2,7 @@
 #define MEDIA_IFACE_H
 
 class MediaServiceCallback;
+class ClientIfaceBase;
 class MediaServiceIFace
 {    
 public:
@@ -24,7 +25,11 @@ public:
     bool isPlaying();
     void seekTo(long msec, int mode);
     int  getCurrentPosition();
-    int  getDuration();    
+    int  getDuration();
+
+private:
+    MediaServiceIFace();
+    ClientIfaceBase *m_pHandler;
 };
 
 #endif // MEDIA_IFACE_H

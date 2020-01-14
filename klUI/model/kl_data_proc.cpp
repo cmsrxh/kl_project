@@ -16,6 +16,7 @@
 #include "iface/media_iface_common.h"
 #include "iface/media_service_call_back.h"
 #include "application.h"
+#include "../klIface/kl_service_notify.h"
 
 extern KLUIProc *gInstance;
 
@@ -105,6 +106,11 @@ KLDataProc::~KLDataProc()
     delete m_pBDCTabData;
     delete m_pBDCAreaData;
     delete m_pPlayManage;
+}
+
+void KLDataProc::initSockService()
+{
+    KLServiceNotify::instance();
 }
 
 bool KLDataProc::initMedia()

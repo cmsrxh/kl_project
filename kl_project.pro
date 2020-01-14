@@ -1,6 +1,6 @@
 TEMPLATE = subdirs 
 
-#SUBDIRS += klApi/klApi.pro
+SUBDIRS += klApi/klApi.pro
 
 SUBDIRS += klUI
 
@@ -8,4 +8,6 @@ SUBDIRS += klUI
 
 #SUBDIRS += player
 
-SUBDIRS += netImage
+#SUBDIRS += netImage
+
+SUBDIRS += klIface

@@ -84,3 +84,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 include(../klApi/klApi.pri)
 #include(../player/mpvPlayer.pri)
 include(../playerClient/playerClient.pri)
+include(../klIface/klServiceIface.pri)

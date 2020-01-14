@@ -21,8 +21,8 @@ public:
     ByteString loadImage(const ByteString &imgUrl, ImageStatus *notify);
 
 private:
-    //保存tmp中的图片数据<url, file>
-    HashContainer<ByteString, ByteString> mCaches;
+    // 保存tmp中的图片数据<url, file>
+    // HashContainer<ByteString, ByteString> mCaches;
     ListTable<ByteString>                 mList;
 
     ByteString imgUrlEncrypt(const ByteString &in);

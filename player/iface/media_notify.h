@@ -4,6 +4,7 @@
 #include "media_iface_common.h"
 
 class MediaServiceCallback;
+class ServiceIfaceBase;
 class MediaNotify
 {
 public:    
@@ -81,6 +82,7 @@ private:
 
     void notify(int msg, int ext1 = 0, int ext2 = 0, const char *str = nullptr);
 
+    ServiceIfaceBase *m_pHandler;
 };
 
 #endif // MEDIA_NOTIFY_H

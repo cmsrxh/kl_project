@@ -129,14 +129,16 @@ void HttpUtil::urlEncoding(const ByteString &query, ByteString &result, char per
     while (i < len)
     {
         c = inputPtr[i];
-        if (inputPtr[i] & 0x80)
-        {
-            data[outlen++] = percent;
-            data[outlen++] = pattern[c >> 4 & 0xF];
-            data[outlen++] = pattern[c  & 0xF];
-        } else
+        if ((c >= '0' && c <= '9')
+                || (c >= 'a' && c <= 'z')
+                || (c >= 'A' && c <= 'Z'))
         {
             data[outlen++] = c;
+        } else
+        {
+            data[outlen++] = percent;
+            data[outlen++] = pattern[(c >> 4) & 0xF];
+            data[outlen++] = pattern[c  & 0xF];
         }
         ++i;
     }

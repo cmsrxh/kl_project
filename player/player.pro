@@ -21,7 +21,7 @@ QMAKE_LFLAGS   += -Wl,-rpath,$$HOME/framework/$$PLATFORM/lib
 
 LIBS += -L$$HOME/waf/mpv-1.0/build
 LIBS += -L$$HOME/framework/$$PLATFORM/lib
-LIBS += -levents_ipc_service -levents_core -levents_log -levents_util -lpthread
+LIBS += -levents_ipc_service  -levents_socket -levents_core -levents_log -levents_util -lpthread
 LIBS += -lmpv
 
 

@@ -110,6 +110,8 @@ public:
 
     ~KLDataProc();
 
+    void initSockService();
+
     bool initMedia();
 
     void initAlbum(CategoryModel *cate,

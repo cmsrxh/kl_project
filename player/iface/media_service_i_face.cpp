@@ -122,9 +122,9 @@ public:
             char * str  = pack->dataGetString(un);
 
 
-            GEN_Printf(LOG_INFO, "%d", ext1);
-            GEN_Printf(LOG_INFO, "%d", ext2);
-            GEN_Printf(LOG_INFO, "%s", str);
+//            GEN_Printf(LOG_INFO, "%d", ext1);
+//            GEN_Printf(LOG_INFO, "%d", ext2);
+//            GEN_Printf(LOG_INFO, "%s", str);
 
             gClientCallback->mediaNotify(cmd, ext1, ext2, str);
         }
@@ -195,7 +195,6 @@ static MsgPriser gMsgInstance;
 bool MediaServiceIFace::initClientIface(MediaServiceCallback *callback)
 {
     gClientCallback = callback;
-    ClientIfaceBase::instance()->setMsgPriser(80080, &gMsgInstance);
 
     int me[] =
     {
@@ -218,74 +217,74 @@ bool MediaServiceIFace::initClientIface(MediaServiceCallback *callback)
         MEDIA_TIME_DISCONTINUITY+ ipc::SERVICE_NOTIFY_Method_Base
     };
 
-    return ClientIfaceBase::instance()->registMessage(me, ARRAY_SIZE(me));
+    return m_pHandler->registMessage(me, ARRAY_SIZE(me));
 }
 
-static void _common_cmd(int cmd)
+static void _common_cmd(ClientIfaceBase *handler, int cmd)
 {
     IPCDataPackage in;
     IPCDataPackage out;
 
     in.setCmdType(cmd);
 
-    ClientIfaceBase::instance()->cmdCall(&in, &out);
+    handler->cmdCall(&in, &out);
 
     //TODO: 'out' process
     if (out.getCmd() == ipc::SERVICE_REPLY_OK)
     {
-        GEN_Printf(LOG_DEBUG, "Set common cmd OK !!!");
+        //GEN_Printf(LOG_DEBUG, "Set common cmd OK !!!");
     } else
     {
-        GEN_Printf(LOG_DEBUG, "Set common cmd failed: %d !!!", out.getCmd());
+        GEN_Printf(LOG_ERROR, "Set common cmd failed: %d !!!", out.getCmd());
     }
 }
 
-static bool _have_arg(int cmd, IPCDataPackage *in, IPCDataPackage *out)
+static bool _have_arg(ClientIfaceBase *handler, int cmd, IPCDataPackage *in, IPCDataPackage *out)
 {
     in->setCmdType(cmd);
 
-    ClientIfaceBase::instance()->cmdCall(in, out);
+    handler->cmdCall(in, out);
 
     //TODO: 'out' process
     if (out->getCmd() == ipc::SERVICE_REPLY_OK)
     {
-        GEN_Printf(LOG_DEBUG, "Set common cmd OK !!!");
+        // GEN_Printf(LOG_DEBUG, "Set common cmd OK !!!");
         return true;
     } else
     {
-        GEN_Printf(LOG_DEBUG, "Set common cmd failed: %d !!!", out->getCmd());
+        GEN_Printf(LOG_ERROR, "Set common cmd failed: %d !!!", out->getCmd());
         return false;
     }
 }
 
 void MediaServiceIFace::start()
 {
-    _common_cmd(CLIENT_CALL_Start);
+    _common_cmd(m_pHandler, CLIENT_CALL_Start);
 }
 
 void MediaServiceIFace::play()
 {
-    _common_cmd(CLIENT_CALL_Play);
+    _common_cmd(m_pHandler, CLIENT_CALL_Play);
 }
 
 void MediaServiceIFace::stop()
 {
-    _common_cmd(CLIENT_CALL_Stop);
+    _common_cmd(m_pHandler, CLIENT_CALL_Stop);
 }
 
 void MediaServiceIFace::pause()
 {
-    _common_cmd(CLIENT_CALL_Pause);
+    _common_cmd(m_pHandler, CLIENT_CALL_Pause);
 }
 
 void MediaServiceIFace::reset()
 {
-    _common_cmd(CLIENT_CALL_Reset);
+    _common_cmd(m_pHandler, CLIENT_CALL_Reset);
 }
 
 void MediaServiceIFace::playPause()
 {
-    _common_cmd(CLIENT_CALL_PlayPause);
+    _common_cmd(m_pHandler, CLIENT_CALL_PlayPause);
 }
 
 void MediaServiceIFace::setFile(const char *file)
@@ -294,7 +293,7 @@ void MediaServiceIFace::setFile(const char *file)
     IPCDataPackage out;
 
     in.allocSetString(file);
-    _have_arg(CLIENT_CALL_SetFile, &in, &out);
+    _have_arg(m_pHandler, CLIENT_CALL_SetFile, &in, &out);
 }
 
 bool MediaServiceIFace::isPlaying()
@@ -302,7 +301,7 @@ bool MediaServiceIFace::isPlaying()
     IPCDataPackage in;
     IPCDataPackage out;
 
-    if (_have_arg(CLIENT_CALL_IsPlaying, &in, &out))
+    if (_have_arg(m_pHandler, CLIENT_CALL_IsPlaying, &in, &out))
     {
         Data::Unpack un(out.packet());
         return out.dataGetInt(un);
@@ -319,7 +318,7 @@ void MediaServiceIFace::seekTo(long msec, int mode)
 
     in.allocSetInt(msec);
     in.allocSetInt(mode);
-    _have_arg(CLIENT_CALL_SeekTo, &in, &out);
+    _have_arg(m_pHandler, CLIENT_CALL_SeekTo, &in, &out);
 }
 
 int MediaServiceIFace::getCurrentPosition()
@@ -327,7 +326,7 @@ int MediaServiceIFace::getCurrentPosition()
     IPCDataPackage in;
     IPCDataPackage out;
 
-   if (_have_arg(CLIENT_CALL_Get_Current_Position, &in, &out))
+   if (_have_arg(m_pHandler, CLIENT_CALL_Get_Current_Position, &in, &out))
    {
        Data::Unpack un(out.packet());
        return out.dataGetInt(un);
@@ -342,7 +341,7 @@ int MediaServiceIFace::getDuration()
     IPCDataPackage in;
     IPCDataPackage out;
 
-    if (_have_arg(CLIENT_CALL_Get_Duration, &in, &out))
+    if (_have_arg(m_pHandler, CLIENT_CALL_Get_Duration, &in, &out))
     {
         Data::Unpack un(out.packet());
         return out.dataGetInt(un);
@@ -350,6 +349,12 @@ int MediaServiceIFace::getDuration()
     {
         return 0;
     }
+}
+
+MediaServiceIFace::MediaServiceIFace()
+    : m_pHandler(new ClientIfaceBase)
+{
+    m_pHandler->setMsgPriser(80080, &gMsgInstance);
 }
 
 
