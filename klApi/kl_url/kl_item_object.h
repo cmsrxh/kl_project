@@ -23,15 +23,12 @@ public:
     {
         mItem.clear();
     }
-    void loadData (uint8_t *data, unsigned long size)
-    {
-        data[size] = '\0';
-        // GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
-
-        genResult((char *)data, size);
+    void loadData (NetBuffer *data)
+    {        
+        genResult(data);
     }
 
-    virtual void genResult(const char */*data*/, unsigned long /*size*/) {}
+    virtual void genResult(NetBuffer */*data*/) {}
 
     item_node &item()
     {

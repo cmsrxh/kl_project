@@ -28,6 +28,7 @@ enum {
     SIG_KL_BDC_OP_COLLECT,      // 当前电台列表项收藏与否
     SIG_KL_RECORD_CURRENT_PLAY, // 记录当前播放项，并把它放入历史记录
     SIG_KL_HISTORY_CLEAR_APP,   // 清空 历史记录 所有项
+    SIG_KL_SEARCH_RESULT_PROC,  // kl搜索结果处理
 };
 
 

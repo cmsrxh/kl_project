@@ -72,10 +72,9 @@ void kl::ChipAudioDetail::profile()
     GEN_Printf(LOG_DUMP, "hasNextPage: %s", mItem.hasNextPage.string());
 }
 
-void kl::ChipAudioDetail::genResult(const char *data, unsigned long size)
+void kl::ChipAudioDetail::genResult(NetBuffer *data)
 {
-    //GEN_Printf(LOG_DEBUG, "%s", data, size);
-    cJSON *root = cJSON_Parse((char *)data, size);
+    cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
 
     if (result)

@@ -12,6 +12,7 @@ extern KLUIProc *gInstance;
 
 DetailUnion::DetailUnion(int type)
     : mDetailType(type)
+    , mLoadAction(-1)
     , m_pDetail(NULL)
 {    
 }
@@ -38,8 +39,9 @@ DetailUnion::~DetailUnion()
     }
 }
 
-void DetailUnion::loadDetail(const ByteString &id)
+void DetailUnion::loadDetail(const ByteString &id, int loadAction)
 {
+    mLoadAction = loadAction;
     switch (mDetailType)
     {
     case PLAY_CHIP_TYPE_ALBUM:

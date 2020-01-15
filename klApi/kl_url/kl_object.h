@@ -20,11 +20,11 @@ public:
 
     static char *genSign(NetUrl &mUrl);
 
-    static void loadStatus (int status, uint8_t *data, size_t len, void *arg);
+    static void loadStatus (int status, void *data, void *arg);
 
     virtual NetUrl &genQueryUrl() = 0;
 
-    virtual void loadData (uint8_t *data, unsigned long size) = 0;
+    virtual void loadData (NetBuffer *data) = 0;
     virtual void loadErrorInfo(int /*type*/, const char */*str*/) {}
 
     void loadOver()

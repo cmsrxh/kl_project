@@ -30,22 +30,19 @@ public:
         }
     }
 
-    void loadData (uint8_t *data, unsigned long size)
-    {
-        data[size] = '\0';
-        // GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
-
-        genResult((char *)data, size);
+    void loadData (NetBuffer *data)
+    {        
+        genResult(data);
 
         if (mSaveFile)
         {
             int fd = open(mSaveFile, O_CREAT | O_WRONLY, 0664);
             if (fd)
             {
-                int ret = write(fd, data, size);
-                if (ret != (int)size)
+                int ret = write(fd, data->buffer(), data->size());
+                if (ret != (int)data->size())
                 {
-                    GEN_Printf(LOG_WARN, "write failed, [%d, %lu]", ret, size);
+                    GEN_Printf(LOG_WARN, "write failed, [%d, %lu]", ret, data->size());
                 }
 
                 close(fd);
@@ -72,8 +69,9 @@ public:
                     int ret = read(fd, data, st.st_size);
                     if(ret > 0)
                     {
-                        data[ret] = '\0';
-                        genResult(data, ret);
+                        char tmp[sizeof(NetBuffer)];
+                        data[ret] = '\0';                        
+                        genResult(NetBuffer::packBuffer(tmp, reinterpret_cast<uint8_t *>(data), (size_t)ret));
                     } else
                     {
                         GEN_Printf(LOG_ERROR, "read failed, %s", strerror(errno));
@@ -101,7 +99,7 @@ public:
         return mNodes.empty();
     }
 
-    virtual void genResult(const char */*data*/, unsigned long /*size*/) {}
+    virtual void genResult(NetBuffer */*data*/) {}
 
     void setSaveFile(const char *saveFile)
     {

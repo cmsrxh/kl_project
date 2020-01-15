@@ -1,7 +1,7 @@
+#include <events/common_log.h>
 #include "kl_ui_proc.h"
 #include "image_frame.h"
 #include "application.h"
-#include <events/common_log.h>
 #include <unistd.h>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>

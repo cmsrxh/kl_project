@@ -53,11 +53,11 @@ NetUrl &kl::InitManage::genQueryUrl()
     return mUrl;
 }
 
-void kl::InitManage::loadData(uint8_t *data, unsigned long size)
+void kl::InitManage::loadData(NetBuffer *data)
 {
     // GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
 
-    cJSON *root = cJSON_Parse((char *)data, size);
+    cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
 
     cJSON *openid = json_items_proc(root, "result", "openid", NULL);
     if(openid != root)

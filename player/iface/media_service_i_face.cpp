@@ -99,14 +99,6 @@ int MediaServiceIFace::getDuration()
 class MsgPriser : public ClientMsgPriserProc
 {
 public:
-    void msgThreadExit()
-    {
-        GEN_Printf(LOG_ERROR, "Client Msg Socket exit ");
-        if (gClientCallback)
-        {
-            gClientCallback->msgLoopExit();
-        }
-    }
 
     void msgPriser(IPCDataPackage *pack)
     {

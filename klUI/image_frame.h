@@ -5,7 +5,7 @@
 // http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg
 #include <QQuickPaintedItem>
 #include <QImage>
-#include "kl_url/kl_image.h"
+#include "kl_url/kl_common.h"
 
 class ImageFrameCpp : public QQuickPaintedItem, public ImageStatus
 {

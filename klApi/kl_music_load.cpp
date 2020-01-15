@@ -43,17 +43,17 @@ void kl::MusicLoad::setTotalSize(const ByteString &size)
     }
 }
 
-void kl::MusicLoad::oneFrameObtain(uint8_t *data, size_t len)
+void kl::MusicLoad::oneFrameObtain(NetBuffer *data)
 {
-    mCurrent += len;
+    mCurrent += data->size();
 
     // GEN_Printf(LOG_DEBUG, "file=%d, (%ld ~ %ld)", mFile, mCurrent, mTotalSize);
-    int ret = write(mFile, data, len);
-    if ((size_t)ret != len)
+    int ret = write(mFile, data->buffer(), data->size());
+    if ((size_t)ret != data->size())
     {
-        GEN_Printf(LOG_ERROR, "write file except, need write=%d, "
+        GEN_Printf(LOG_ERROR, "write file except, need write=%lu, "
                               "actual write=%d, reson: %s",
-                   len, ret, strerror(errno));
+                   data->size(), ret, strerror(errno));
     }
 }
 

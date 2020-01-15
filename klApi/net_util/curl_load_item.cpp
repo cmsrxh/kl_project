@@ -15,7 +15,7 @@
 
 CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
     : m_pCurl(nullptr), m_pPriv(priv)
-    , mMemory(nullptr), mSize(0)
+    , m_pBuffer(nullptr)
     , m_fStatus(fstate)
 {
     CurlGlobal::instance();
@@ -73,9 +73,9 @@ err:
 
 CurlLoadItem::~CurlLoadItem()
 {
-    if (mMemory)
+    if (m_pBuffer)
     {
-        free(mMemory);
+        NetBuffer::unref(m_pBuffer);
     }
 
     if (m_pCurl)
@@ -86,15 +86,10 @@ CurlLoadItem::~CurlLoadItem()
 
 void CurlLoadItem::setBuffer()
 {
-    if (!mMemory)
+    if (!m_pBuffer)
     {
-        mMemory = (uint8_t *)malloc(1);
-        if (!mMemory)
-        {
-            throw std::runtime_error("no memery");
-        }
+        m_pBuffer = NetBuffer::newBuffer();
     }
-    mSize = 0;
 }
 
 size_t CurlLoadItem::writeData(void *ptr, size_t size, size_t nmemb, void *stream)
@@ -114,21 +109,13 @@ size_t CurlLoadItem::writeData(void *ptr, size_t size, size_t nmemb, void *strea
 
 void CurlLoadItem::callbackData(uint8_t *data, size_t size)
 {
-    if (mMemory)
+    if (m_pBuffer)
     {
-        mMemory = (uint8_t *)realloc(mMemory, mSize + size + 1);
-        if (mMemory == nullptr)
-        {
-            GEN_Printf(LOG_WARN, "not enough memory !");
-            return ;
-        }
-
-        memcpy(&(mMemory[mSize]), data, size);
-        mSize += size;
-        mMemory[mSize] = 0;
+        m_pBuffer->append(data, size);
     } else if (m_fStatus)
     {
-        m_fStatus(OP_CURL_STATUS_LOAD_ONE_FRAME, data, size, m_pPriv);
+        char tmp[sizeof(NetBuffer)];
+        m_fStatus(OP_CURL_STATUS_LOAD_ONE_FRAME, NetBuffer::packBuffer(tmp, data, size), m_pPriv);
     }
 }
 
@@ -138,8 +125,8 @@ void CurlLoadItem::callbackData(uint8_t *data, size_t size)
  */
 void CurlLoadItem::tryCallBack()
 {
-    m_fStatus(mMemory ? OP_CURL_STATUS_LOAD_ALL_OVER
-                      : OP_CURL_STATUS_LOAD_OVER, mMemory, mSize, m_pPriv);
+    m_fStatus(m_pBuffer ? OP_CURL_STATUS_LOAD_ALL_OVER
+                        : OP_CURL_STATUS_LOAD_OVER, m_pBuffer, m_pPriv);
 }
 
 CurlGlobal::CurlGlobal()

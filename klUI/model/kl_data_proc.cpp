@@ -17,19 +17,13 @@
 #include "iface/media_service_call_back.h"
 #include "application.h"
 #include "../klIface/kl_service_notify.h"
+#include "../klIface/kl_service_priser.h"
 
 extern KLUIProc *gInstance;
 
 class MpvMsgPriser : public MediaServiceCallback
 {
 public:
-    void msgLoopExit()
-    {
-        GEN_Printf(LOG_ERROR, "msg loop exit, need restart");
-        sleep(2);
-        Application::instance()->postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
-    }
-
     void mediaNotify(int msg, int ext1, int ext2, const char *str)
     {
         //GEN_Printf(LOG_DUMP, "msg: %d (%d, %d), %s", msg, ext1, ext2, str);
@@ -110,13 +104,14 @@ KLDataProc::~KLDataProc()
 
 void KLDataProc::initSockService()
 {
-    KLServiceNotify::instance();
+    static KLServicePriser i;
+    KLServiceNotify::instance()->initPriser(&i);
 }
 
-bool KLDataProc::initMedia()
+void KLDataProc::initMedia()
 {
     static MpvMsgPriser i;
-    return MediaServiceIFace::instance()->initClientIface(&i);
+    MediaServiceIFace::instance()->initClientIface(&i);
 }
 
 void KLDataProc::initAlbum(CategoryModel *cate, CateItemModel *cateItem, ChipItemModel *chip, ChipItemModel *player)
@@ -217,7 +212,7 @@ void KLDataProc::albumSecondClick(int index)
         return;
     }
 
-    ByteString id = vec[index]->id;
+    ByteString id = ByteString::allocString(vec[index]->id);
     int type = vec[index]->type;
 
     GEN_Printf(LOG_DEBUG, "Load Type: %d, id=%s", type, id.string());
@@ -226,7 +221,7 @@ void KLDataProc::albumSecondClick(int index)
 
     DetailQobject::instance()->setDetailName(vec[index]->name);
 
-    AlbunView &tmp = mChipMap[ByteString::allocString(id)];
+    AlbunView &tmp = mChipMap[id];
     if (tmp.chip_item)
     {
         m_pChipItem->setChipItemUnion(tmp.chip_item);
@@ -235,7 +230,7 @@ void KLDataProc::albumSecondClick(int index)
 
         DetailQobject::instance()->setDetailUnion(tmp.datail_item);
         DetailQobject::instance()->getCurrent();
-
+        id.clear(); // 释放malloc内存
         this->enterAlbumView();        
     } else
     {
@@ -278,6 +273,7 @@ void KLDataProc::chipAudioThirdChick(int index)
         gInstance->setSourceUrl(vec[index]->playUrl.string());
         // 把原来的标签切换，赋值给当前
         mPlayPath = mSwitch;
+        mPlayPath.current_play_source = CURREN_PLAY_SOURCE_ALBUM_AUDIO_LIST;
     } else
     {
         GEN_Printf(LOG_DEBUG, "index: %d was setted.", index);
@@ -455,16 +451,17 @@ void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
             return;
         }
 
-        ByteString id = vec[index]->id;
+        ByteString id = ByteString::allocString(vec[index]->id);
         int type = vec[index]->type;
 
-        AlbunView &tmp = mChipMap[ByteString::allocString(id)];
+        AlbunView &tmp = mChipMap[id];
         if (tmp.chip_item)
         {
             m_pChipItemPlay->clear();
             m_pChipItemPlay->setChipItemUnion(tmp.chip_item);
             tmp.chip_item->onLoadOver(m_pChipItemPlay);
             m_pChipItemPlay->resetAll();
+            id.clear();
         } else
         {
             qDebug() << "type=" << type << "id=" << id.string();
@@ -479,6 +476,7 @@ void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
         mSwitch.bdc.bdc_item_index = index;
 
         mPlayPath = mSwitch;
+        mPlayPath.current_play_source = CURREN_PLAY_SOURCE_BDC_SECOND_LIST;
 
         mPlayPath.chip_item_index = index;
     } else
@@ -570,11 +568,27 @@ void KLDataProc::showPlayingInfo()
 
     Q_EMIT m_pChipItemPlay->playingIndexChanged(index);
 
-    if ((mSwitch.current_play_list == mPlayPath.current_play_list)
-             && (MEDIA_TYPE_ALBUMINFO == mPlayPath.media_type) )
+    switch (mPlayPath.current_play_source)
     {
+    case CURREN_PLAY_SOURCE_ALBUM_AUDIO_LIST:        // 专辑碎片列表点击播放
         Q_EMIT m_pChipItem->playingIndexChanged(index);
+        break;
+    case CURREN_PLAY_SOURCE_BDC_SECOND_LIST:         // 电台节目列表中的中二级列表点击播放
+        break;
+    case CURREN_PLAY_SOURCE_COLLECT_LIST:            // 从收藏列表中开始播放
+        break;
+    case CURREN_PLAY_SOURCE_DOWNLOAD_LIST:           // 从下载列表中开始播放
+        break;
+    case CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST:     // 从历史记录列表中开始播放
+        break;
+    case CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST:      // 从客户端搜索列表中开始播放
+        break;
+    default:
+        GEN_Printf(LOG_WARN, "unkown play source");
+        assert(0);
+        break;
     }
+
 
     Q_EMIT gInstance->playingInfo(QStringFromByteString(vec[index]->name),
                                   QStringFromByteString(vec[index]->desc));
@@ -715,7 +729,8 @@ void KLDataProc::notifyBDCCollectChange(int index, bool isCollect)
 
 void KLDataProc::localItemTypeRadioPlay(int local_type, int main_index, const ByteString &parentId, const ByteString &id)
 {
-    AlbunView &tmp = mChipMap[ByteString::allocString(parentId)];
+    ByteString pId = ByteString::allocString(parentId);
+    AlbunView &tmp = mChipMap[pId];
 
     m_pChipItemPlay->setDefaultId(id);
     mSwitch.local.table_type = local_type;
@@ -730,7 +745,8 @@ void KLDataProc::localItemTypeRadioPlay(int local_type, int main_index, const By
 
         mSwitch.setCurrentPlayList(tmp.chip_item);
         mPlayPath = mSwitch;
-
+        mPlayPath.current_play_source = local_type;
+        pId.clear();
         playDefaultItem();
     } else
     {
@@ -741,12 +757,14 @@ void KLDataProc::localItemTypeRadioPlay(int local_type, int main_index, const By
         tmp.datail_item = NULL;
         mSwitch.setCurrentPlayList(tmp.chip_item);
         mPlayPath = mSwitch;
+        mPlayPath.current_play_source = local_type;
     }
 }
 
 void KLDataProc::localItemBroadcastPlay(int local_type, int main_index, const ByteString &parentId, const ByteString &id)
 {
-    AlbunView &tmp = mChipMap[ByteString::allocString(parentId)];
+    ByteString pId = ByteString::allocString(parentId);
+    AlbunView &tmp = mChipMap[pId];
 
     m_pChipItemPlay->setDefaultId(id);
     mSwitch.local.table_type = local_type;
@@ -761,7 +779,8 @@ void KLDataProc::localItemBroadcastPlay(int local_type, int main_index, const By
 
         mSwitch.setCurrentPlayList(tmp.chip_item);
         mPlayPath = mSwitch;
-
+        mPlayPath.current_play_source = local_type;
+        pId.clear();
         playDefaultItem();
     } else
     {
@@ -772,12 +791,14 @@ void KLDataProc::localItemBroadcastPlay(int local_type, int main_index, const By
         tmp.datail_item = NULL;
         mSwitch.setCurrentPlayList(tmp.chip_item);
         mPlayPath = mSwitch;
+        mPlayPath.current_play_source = local_type;
     }
 }
 
 void KLDataProc::localItemAlbumPlay(int local_type, int main_index, const ByteString &parentId, const ByteString &id)
 {
-    AlbunView &tmp = mChipMap[ByteString::allocString(parentId)];
+    ByteString pId = ByteString::allocString(parentId);
+    AlbunView &tmp = mChipMap[pId];
 
     m_pChipItemPlay->setDefaultId(id);
     mSwitch.local.table_type = local_type;
@@ -791,7 +812,8 @@ void KLDataProc::localItemAlbumPlay(int local_type, int main_index, const ByteSt
         m_pChipItemPlay->resetAll();
         mSwitch.setCurrentPlayList(tmp.chip_item);
         mPlayPath = mSwitch;
-
+        mPlayPath.current_play_source = local_type;
+        pId.clear();
         playDefaultItem();
     } else
     {
@@ -803,7 +825,13 @@ void KLDataProc::localItemAlbumPlay(int local_type, int main_index, const ByteSt
 
         mSwitch.setCurrentPlayList(tmp.chip_item);
         mPlayPath = mSwitch;
+        mPlayPath.current_play_source = local_type;
     }
+}
+
+void KLDataProc::localItemAlbumAudioPlay(int local_type, int main_index, const ByteString &id)
+{
+
 }
 
 void KLDataProc::localItemDownLoadPlay(int local_type, int main_index)
@@ -817,6 +845,7 @@ void KLDataProc::localItemDownLoadPlay(int local_type, int main_index)
 
     m_pChipItemPlay->resetAll();
     mPlayPath = mSwitch;
+    mPlayPath.current_play_source = local_type;
 
     VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
     if (main_index >= 0 && main_index < vec.size())
@@ -831,19 +860,22 @@ void KLDataProc::playDefaultItem()
 {
     int i = 0;
     VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
-
-    for (; i < vec.size(); ++i)
+    ByteString &defaultId = m_pChipItemPlay->getDefaultId();
+    if (!defaultId.empty())
     {
-        if (vec[i]->chipId == m_pChipItemPlay->getDefaultId())
+        for (; i < vec.size(); ++i)
         {
-            break;
+            if (vec[i]->chipId == defaultId)
+            {
+                break;
+            }
         }
-    }
 
-    if (i == vec.size())
-    {
-        GEN_Printf(LOG_WARN, "Current Default item not in list.");
-        --i;
+        if (i == vec.size())
+        {
+            GEN_Printf(LOG_WARN, "Current Default item not in list.");
+            --i;
+        }
     }
 
     if (i >= 0 && i < vec.size())

@@ -17,28 +17,44 @@ void DetailQobject::getCurrent()
 
 void DetailQobject::onLoadOver(long ptr)
 {
-    if ((long)m_pUnion != ptr)
+    DetailUnion *unionPtr = reinterpret_cast<DetailUnion *> (ptr);
+
+    unionPtr->getDetail(mDetail);
+
+    switch (unionPtr->getLoadAction())
     {
-        qWarning() << "Current is not need.";
-        return;
+    case DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW:
+    {
+        Q_ASSERT(PLAY_CHIP_TYPE_ALBUM == unionPtr->getChipType());
+        if (unionPtr == m_pUnion)
+        {
+            QList<QString> keyWords;
+            ListTable<ByteString>::iterator it = mDetail.keywords->begin();
+            for (; it != mDetail.keywords->end(); ++it)
+            {
+                keyWords.push_back(QStringFromByteString(*it));
+            }
+            KLDataProc::instance()->enterAlbumView();
+
+            mKeyWords.swap(keyWords);
+
+            Q_EMIT albumInfoNameChanged();
+            Q_EMIT albumInfoImageChanged();
+            Q_EMIT albumInfoHostNameChanged();
+            Q_EMIT keyWordsChanged();
+        }
+        break;
+    }
+    case DetailUnion::LOAD_DETAIL_AUDIO_PLAYING:
+    {
+        Q_ASSERT(PLAY_CHIP_TYPE_AUDIO_CHIP == unionPtr->getChipType());
+
+        break;
+    }
+    default:
+        break;
     }
 
-    m_pUnion->getDetail(mDetail);
-
-    QList<QString> keyWords;
-    ListTable<ByteString>::iterator it = mDetail.keywords->begin();
-    for (; it != mDetail.keywords->end(); ++it)
-    {
-        keyWords.push_back(QStringFromByteString(*it));
-    }
-    KLDataProc::instance()->enterAlbumView();
-
-    mKeyWords.swap(keyWords);
-
-    Q_EMIT albumInfoNameChanged();
-    Q_EMIT albumInfoImageChanged();
-    Q_EMIT albumInfoHostNameChanged();
-    Q_EMIT keyWordsChanged();
 }
 
 QString DetailQobject::albumInfoName()

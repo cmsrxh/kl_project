@@ -51,10 +51,9 @@ void kl::BroadcastItemDetail::profile()
     GEN_Printf(LOG_DUMP, "areaCode: %s", mItem.mAreaCode.string());
 }
 
-void kl::BroadcastItemDetail::genResult(const char *data, unsigned long size)
+void kl::BroadcastItemDetail::genResult(NetBuffer *data)
 {
-    //GEN_Printf(LOG_DEBUG, "%s", data, size);
-    cJSON *root = cJSON_Parse((char *)data, size);
+    cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
 
     if (result)

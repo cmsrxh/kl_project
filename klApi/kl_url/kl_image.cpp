@@ -41,14 +41,14 @@ void kl::KLImage::obtain()
     }
 }
 
-void kl::KLImage::oneFrameObtain(uint8_t *data, size_t len)
+void kl::KLImage::oneFrameObtain(NetBuffer *data)
 {
-    int ret = write(mFile, data, len);
-    if ((size_t)ret != len)
+    int ret = write(mFile, data->buffer(), data->size());
+    if ((size_t)ret != data->size())
     {
-        GEN_Printf(LOG_ERROR, "write file except, need write=%d, "
+        GEN_Printf(LOG_ERROR, "write file except, need write=%lu, "
                               "actual write=%d, reson: %s",
-                   len, ret, strerror(errno));
+                   data->size(), ret, strerror(errno));
     }
 }
 

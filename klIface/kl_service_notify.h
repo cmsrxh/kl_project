@@ -14,11 +14,11 @@ public:
 
     void initPriser(ServiceCmdPriserProc *priser);
 
-    void notifySearchResult(const char *data, int size);
+    void notifySearchResult(const char *id, const char *data, int size);
 private:
     KLServiceNotify();
     KLServiceNotify(KLServiceNotify &);
-    KLServiceNotify &operator =(KLServiceNotify &);
+    KLServiceNotify &operator=(KLServiceNotify &);
 
     ServiceIfaceBase *m_pHandler;
 };

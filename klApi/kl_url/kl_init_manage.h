@@ -16,7 +16,7 @@ public:
 
     NetUrl &genQueryUrl();
 
-    void loadData (uint8_t *data, unsigned long size);
+    void loadData (NetBuffer *data);
     void loadErrorInfo(int type, const char *str);
 };
 

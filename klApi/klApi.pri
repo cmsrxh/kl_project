@@ -14,7 +14,6 @@ HEADERS += \
     $$APISRC/kl_url/kl_init_manage.h \
     $$APISRC/kl_url/kl_object.h \
     $$APISRC/kl_url/kl_image.h \
-    $$APISRC/net_util/net_buffer.h \
     $$APISRC/net_util/test_data_load.h \
     $$APISRC/net_util/net_common.h \
     $$APISRC/net_util/cJSON.h \
@@ -44,7 +43,8 @@ HEADERS += \
     $$PWD/save_manage_object.h \
     $$PWD/kl_save_record.h \
     $$PWD/kl_download_manage.h \
-    $$PWD/image_cache_manage.h
+    $$PWD/image_cache_manage.h \
+    $$PWD/kl_search_manage.h
 
 SOURCES += \
     $$APISRC/net_util/curl_load_proc.cpp \
@@ -56,7 +56,6 @@ SOURCES += \
     $$APISRC/kl_url/kl_init_manage.cpp \
     $$APISRC/kl_url/kl_object.cpp \
     $$APISRC/kl_url/kl_image.cpp \
-    $$APISRC/net_util/net_buffer.cpp \
     $$APISRC/net_util/test_data_load.cpp \
     $$APISRC/kl_url/kl_broadcast_area_list.cpp \
     $$APISRC/kl_url/kl_category_broadcast.cpp \
@@ -80,4 +79,5 @@ SOURCES += \
     $$PWD/kl_record_manage.cpp \
     $$PWD/kl_save_record.cpp \
     $$PWD/kl_download_manage.cpp \
-    $$PWD/image_cache_manage.cpp
+    $$PWD/image_cache_manage.cpp \
+    $$PWD/kl_search_manage.cpp

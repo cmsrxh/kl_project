@@ -11,7 +11,8 @@
 
 int main(int , char **)
 {
-    KLClientCall::instance()->initClientIface(nullptr);
+    client::ClientResult res;
+    KLClientCall::instance()->initClientResult(&res);
 
     char cmd[256];
 
@@ -21,11 +22,29 @@ int main(int , char **)
 
         if (0 == strcmp("search", cmd))
         {
-            printf("Please Input key word\n");
-
+            printf("Please Input key word: \n");
             scanf("%s", cmd);
-
             KLClientCall::instance()->searchKeyWord(cmd);
+        } else if (0 == strcmp("index", cmd))
+        {
+            printf("Please Input index: \n");
+            scanf("%s", cmd);
+            KLClientCall::instance()->playSearchIndex(atoi(cmd));
+        } else if (0 == strcmp("pause", cmd))
+        {
+            KLClientCall::instance()->playPause();
+        } else if (0 == strcmp("play", cmd))
+        {
+            KLClientCall::instance()->playPlaying();
+        } else if (0 == strcmp("next", cmd))
+        {
+            KLClientCall::instance()->playNext();
+        } else if (0 == strcmp("prev", cmd))
+        {
+            KLClientCall::instance()->playPrev();
+        } else
+        {
+            printf("unkown cmd: %s\n", cmd);
         }
     }
 

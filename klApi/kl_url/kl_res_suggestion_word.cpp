@@ -43,10 +43,9 @@ void kl::SuggestionWord::profile()
     }
 }
 
-void kl::SuggestionWord::genResult(const char *data, unsigned long size)
+void kl::SuggestionWord::genResult(NetBuffer *data)
 {
-    // GEN_Printf(LOG_DEBUG, "size: %lu\n%s", size, data);
-    cJSON *root = cJSON_Parse((char *)data, size);
+    cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
     if (result)
     {
@@ -69,7 +68,7 @@ void kl::SuggestionWord::genResult(const char *data, unsigned long size)
         }
     }else
     {
-        GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", size, data);
+        GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());
     }
 
     cJSON_Delete(root);

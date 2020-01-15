@@ -527,4 +527,11 @@ public:
 };
 }
 
+class ImageStatus
+{
+public:
+    virtual void dataPrepare() = 0;
+    virtual void errorInfo(int , const char *) {}
+};
+
 #endif // KL_COMMON_H

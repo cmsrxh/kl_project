@@ -31,7 +31,6 @@ HEADERS += app_common.h application.h \
     kl_url/kl_init_manage.h \
     kl_url/kl_object.h \
     kl_url/kl_image.h \
-    net_util/net_buffer.h \
     net_util/test_data_load.h \
     net_util/net_common.h \
     net_util/cJSON.h \
@@ -76,7 +75,6 @@ SOURCES += application.cpp main.cpp \
     kl_url/kl_init_manage.cpp \
     kl_url/kl_object.cpp \
     kl_url/kl_image.cpp \
-    net_util/net_buffer.cpp \
     net_util/test_data_load.cpp \
     kl_url/kl_broadcast_area_list.cpp \
     kl_url/kl_category_broadcast.cpp \

@@ -23,6 +23,7 @@
 #include "kl_url/kl_res_suggestion_word.h"
 #include "kl_url/kl_res_voice_search_all.h"
 #include "test_album_load.h"
+#include "util/net_buffer.h"
 #include "util/config_setting.h"
 #include "application.h"
 
@@ -128,9 +129,9 @@ void Application::initialize()
 
 //        suggest.obtain();
 
-        static TestAlbumLoad test;
+//        static TestAlbumLoad test;
 
-        test.obtain();
+//        test.obtain();
     }
 }
 

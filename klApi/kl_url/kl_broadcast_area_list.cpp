@@ -48,9 +48,9 @@ void kl::BroadcastAreaList::profile()
     }
 }
 
-void kl::BroadcastAreaList::genResult(const char *data, unsigned long size)
+void kl::BroadcastAreaList::genResult(NetBuffer *data)
 {
-    cJSON *root = cJSON_Parse((char *)data, size);
+    cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
     if (result)
     {
@@ -72,7 +72,7 @@ void kl::BroadcastAreaList::genResult(const char *data, unsigned long size)
         }
     }else
     {
-        GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", size, data);
+        GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());
     }
 
     cJSON_Delete(root);

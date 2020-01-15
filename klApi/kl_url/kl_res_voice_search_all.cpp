@@ -45,6 +45,7 @@ http://open.kaolafm.com/v2/resource/voice/searchall?deviceid=69acf5ec77a42531d17
 
 kl::VoiceSearchAll::VoiceSearchAll(const ByteString &query)
     : SaveObject<SearchItem> ("http://open.kaolafm.com/v2/resource/voice/searchall", NetUrl::NET_HTTP_METHOD_GET)
+    , m_pData(nullptr)
 {
     char buffer[sizeof(QUERY_BOX) + query.size() * 2];
     int  len = sprintf(buffer, QUERY_BOX, query.string()/*, query.string()*/);
@@ -58,6 +59,7 @@ kl::VoiceSearchAll::VoiceSearchAll(const ByteString &query)
 
 kl::VoiceSearchAll::~VoiceSearchAll()
 {
+    NetBuffer::unref(m_pData);
     mQuery.clear();
 }
 
@@ -84,10 +86,29 @@ void kl::VoiceSearchAll::profile()
     }
 }
 
-void kl::VoiceSearchAll::genResult(const char *data, unsigned long size)
+void kl::VoiceSearchAll::search(const ByteString &query)
 {
-    cJSON *root = cJSON_Parse((char *)data, size);
+    char buffer[sizeof(QUERY_BOX) + query.size() * 2];
+    int  len = sprintf(buffer, QUERY_BOX, query.string()/*, query.string()*/);
+
+    ByteString box(buffer, len);
+
+    HttpUtil::urlEncoding(box, mQuery);
+
+    obtain();
+}
+
+void kl::VoiceSearchAll::genResult(NetBuffer *data)
+{
+    cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
+
+    if (m_pData)
+    {
+        NetBuffer::unref(m_pData);
+        m_pData = nullptr;
+    }
+
     if (result)
     {
         cJSON *dataList;
@@ -118,15 +139,32 @@ void kl::VoiceSearchAll::genResult(const char *data, unsigned long size)
         }
         if (mNodes.empty())
         {
+            nofity(this, false);
             GEN_Printf(LOG_WARN, "load voice search list is empty.");
-        } /*else
-        {
-            profile();
-        }*/
+        } else
+        {            
+            m_pData = NetBuffer::ref(data);
+            //profile();
+            nofity(this, true);
+        }
     }else
     {
-        GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", size, data);
+        nofity(this, false);
+        GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());
     }
 
     cJSON_Delete(root);
 }
+
+void kl::VoiceSearchAll::loadErrorInfo(int type, const char *str)
+{
+    GEN_Printf(LOG_ERROR, "load error, type: %d, error: %s", type, str);
+    if (m_pData)
+    {
+        NetBuffer::unref(m_pData);
+        m_pData = nullptr;
+    }
+    nofity(this, false);
+}
+
+

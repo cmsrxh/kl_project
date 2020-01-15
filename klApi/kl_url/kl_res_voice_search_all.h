@@ -5,6 +5,8 @@
 
 namespace kl
 {
+class VoiceSearchAll;
+typedef void (*SearchNotify)(VoiceSearchAll *obj, bool res);
 class VoiceSearchAll : public SaveObject<SearchItem>
 {
 public:
@@ -15,10 +17,25 @@ public:
 
     void profile();
 
-    void genResult(const char *data, unsigned long size);
+    void search(const ByteString &query);
+
+    void genResult(NetBuffer *data);
+    void loadErrorInfo(int type, const char *str);
+
+    NetBuffer *pData() const
+    {
+        return m_pData;
+    }
+
+    void setNofity(const SearchNotify &value)
+    {
+        nofity = value;
+    }
 
 private:
-    ByteString mQuery;
+    NetBuffer      *m_pData;
+    ByteString      mQuery;
+    SearchNotify    nofity;
 };
 }
 

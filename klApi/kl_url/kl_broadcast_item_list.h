@@ -25,7 +25,7 @@ public:
 
     void profile();
 
-    void genResult(const char *data, unsigned long size);
+    void genResult(NetBuffer *data);
 
     int getHaveNext() const
     {

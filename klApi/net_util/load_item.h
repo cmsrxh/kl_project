@@ -11,6 +11,7 @@
  */
 class CurlLoadItem;
 class NetUrl;
+class NetBuffer;
 class LoadItem
 {
 public:
@@ -68,7 +69,7 @@ public:
      * @param arg [in] 回调的私有数据
      * @details 下载功能的回调函数
      */
-    static void loadStatus (int status, uint8_t *data, size_t len, void *arg);
+    static void loadStatus (int status, void *data, void *arg);
 
     /**
      * @brief obtain
@@ -84,7 +85,7 @@ public:
      * @param len [out]
      * @details 表示一次性回调给的所有数据, 根据构造函数传递的参数是true
      */
-    virtual void allDataObtain(uint8_t */*data*/, size_t /*len*/) {}
+    virtual void allDataObtain(NetBuffer */*data*/) {}
 
     /**
      * @brief oneFrameObtain
@@ -93,7 +94,7 @@ public:
      * @details 表示传递的是整个下载过程中的一帧/一小块的数据，当构造传递的参数是false
      * 与oneFrameObtainOver函数搭配使用，构成真个下载流程
      */
-    virtual void oneFrameObtain(uint8_t */*data*/, size_t /*len*/) {}
+    virtual void oneFrameObtain(NetBuffer */*data*/) {}
     /**
      * @brief oneFrameObtainOver
      * @details 便是块数据下载完成，与oneFrameObtain函数搭配使用

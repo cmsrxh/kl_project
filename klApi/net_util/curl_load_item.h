@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include <util/byte_string.h>
 #include <util/list_node.h>
+#include <util/net_buffer.h>
 #include "net_common.h"
 #include "net_url.h"
 
@@ -32,7 +33,7 @@ public:
 
     inline void errorState(int state, const char *str)
     {
-        m_fStatus(OP_CURL_STATUS_ERROR_TYPE + state, (uint8_t *)str, 0, m_pPriv);
+        m_fStatus(OP_CURL_STATUS_ERROR_TYPE + state, (uint8_t *)str, m_pPriv);
     }
 
 private:
@@ -40,8 +41,7 @@ private:
 
     CURL            *m_pCurl;
     void            *m_pPriv;
-    uint8_t         *mMemory;
-    size_t           mSize;
+    NetBuffer       *m_pBuffer;
     OpCurlStatus     m_fStatus;
     friend class CurlGlobal;
 };

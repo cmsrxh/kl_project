@@ -153,15 +153,15 @@ void LocalDataProc::collectItemPlay(int index)
     {
     case PLAY_CHIP_TYPE_ALBUM:
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
-        KLDataProc::instance()->localItemAlbumPlay(0, index, secId, thirdId);
+        KLDataProc::instance()->localItemAlbumPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, secId, thirdId);
         break;
     case PLAY_CHIP_TYPE_TYPE_RADIO:
     case PLAY_CHIP_TYPE_RADIO_CHIP:
-        KLDataProc::instance()->localItemTypeRadioPlay(0, index, secId, thirdId);
+        KLDataProc::instance()->localItemTypeRadioPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, secId, thirdId);
         break;
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
     case PLAY_CHIP_TYPE_BROADCAST:
-        KLDataProc::instance()->localItemBroadcastPlay(0, index, secId, thirdId);
+        KLDataProc::instance()->localItemBroadcastPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, secId, thirdId);
         break;
     default:
         break;
@@ -183,7 +183,7 @@ void LocalDataProc::downLoadItemPlay(int index)
         return;
     }
 
-    KLDataProc::instance()->localItemDownLoadPlay(2, index);
+    KLDataProc::instance()->localItemDownLoadPlay(CURREN_PLAY_SOURCE_DOWNLOAD_LIST, index);
 }
 
 void LocalDataProc::historyItemPlay(int index)
@@ -203,15 +203,15 @@ void LocalDataProc::historyItemPlay(int index)
     {
     case PLAY_CHIP_TYPE_ALBUM:
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
-        KLDataProc::instance()->localItemAlbumPlay(1, index, secId, thirdId);
+        KLDataProc::instance()->localItemAlbumPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, secId, thirdId);
         break;
     case PLAY_CHIP_TYPE_TYPE_RADIO:
     case PLAY_CHIP_TYPE_RADIO_CHIP:
-        KLDataProc::instance()->localItemTypeRadioPlay(1, index, secId, thirdId);
+        KLDataProc::instance()->localItemTypeRadioPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, secId, thirdId);
         break;
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
     case PLAY_CHIP_TYPE_BROADCAST:
-        KLDataProc::instance()->localItemBroadcastPlay(1, index, secId, thirdId);
+        KLDataProc::instance()->localItemBroadcastPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, secId, thirdId);
         break;
     default:
         break;

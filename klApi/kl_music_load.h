@@ -18,7 +18,7 @@ public:
 
     void setTotalSize(ByteString const &size);
 
-    void oneFrameObtain(uint8_t *data, size_t len);
+    void oneFrameObtain(NetBuffer *data);
 
     void oneFrameObtainOver();
 

@@ -144,6 +144,7 @@ void HttpUtil::urlEncoding(const ByteString &query, ByteString &result, char per
     }
     data[outlen] = '\0';
 
+    result.clear();
     result = ByteString(data, outlen);
 }
 

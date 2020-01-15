@@ -4,6 +4,16 @@
 #include "util/map_table.h"
 #include "kl_ui_data_union.h"
 
+enum
+{
+    CURREN_PLAY_SOURCE_ALBUM_AUDIO_LIST,        // 专辑碎片列表点击播放
+    CURREN_PLAY_SOURCE_BDC_SECOND_LIST,         // 电台节目列表中的中二级列表点击播放
+    CURREN_PLAY_SOURCE_COLLECT_LIST,            // 从收藏列表中开始播放
+    CURREN_PLAY_SOURCE_DOWNLOAD_LIST,           // 从下载列表中开始播放
+    CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST,     // 从历史记录列表中开始播放
+    CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST,      // 从客户端搜索列表中开始播放
+};
+
 class CategoryUnion;
 class CateItemUnion;
 class ChipItemUnion;
@@ -35,6 +45,7 @@ public:
             , cate_tab_sub_index(-1)
             , cate_item_index(-1)
             , chip_item_index(-1)
+            , current_play_source(-1)
             , current_play_list(nullptr)
             , bdc {-1, -1, -1}
         {}
@@ -75,6 +86,7 @@ public:
         int cate_tab_sub_index;
         int cate_item_index;
         int chip_item_index;
+        int current_play_source;
         ChipItemUnion *current_play_list;
 
         struct {
@@ -112,7 +124,7 @@ public:
 
     void initSockService();
 
-    bool initMedia();
+    void initMedia();
 
     void initAlbum(CategoryModel *cate,
                    CateItemModel *cateItem,
@@ -254,6 +266,7 @@ public:
     void localItemTypeRadioPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
     void localItemBroadcastPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
     void localItemAlbumPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
+    void localItemAlbumAudioPlay(int local_type, int main_index, ByteString const &id);
     void localItemDownLoadPlay(int local_type, int main_index);
 
     /**

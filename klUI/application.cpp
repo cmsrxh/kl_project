@@ -16,17 +16,13 @@
 #include "kl_collect_manage.h"
 #include "kl_download_manage.h"
 #include "kl_record_manage.h"
+#include "kl_search_manage.h"
 #include "application.h"
 
 Application::Application()
     : m_pKLInit(NULL), m_pKLActive(NULL)
-    , m_pIpcSockLanuch(new ATimer)
 {
     setlocale(LC_NUMERIC, "C");
-
-    m_pIpcSockLanuch->setRepeat(false);
-    m_pIpcSockLanuch->setHandler(Application::ipcSockLanuchTimer, nullptr);
-
 }
 
 void Application::initialize()
@@ -86,10 +82,7 @@ void Application::runLoop()
             break;
 #endif
         case SIG_SOCKET_CLIENT_MSG_EXIT:
-            if (false == KLDataProc::instance()->initMedia())
-            {
-                m_pIpcSockLanuch->restart(3000);
-            }
+            KLDataProc::instance()->initMedia();
             break;
         case SIG_KL_INIT_ERROR:
             klInitActiveManage((GeneralQEvt *)evt);
@@ -113,6 +106,11 @@ void Application::runLoop()
 
         case SIG_KL_HISTORY_CLEAR_APP:
             kl::RecordManage::instance()->historyClear();
+            break;
+
+        case SIG_KL_SEARCH_RESULT_PROC:
+            kl::SearchManage::instance()->onSearchResult((kl::VoiceSearchAll *)(((GeneralQEvt *)evt)->pHander),
+                                                         ((GeneralQEvt *)evt)->wParam);
             break;
 
         case SIG_USER_UNUSED:
@@ -175,11 +173,6 @@ void Application::klInitGetOpenId()
     {
         (*it)->obtain();
     }
-}
-
-void Application::ipcSockLanuchTimer(ATimer *, void *)
-{
-    Application::instance()->postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 }
 
 

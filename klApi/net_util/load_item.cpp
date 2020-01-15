@@ -53,16 +53,16 @@ bool LoadItem::cancel()
     return ret;
 }
 
-void LoadItem::loadStatus(int status, uint8_t *data, size_t len, void *arg)
+void LoadItem::loadStatus(int status, void *data, void *arg)
 {
     switch (status)
     {
     case OP_CURL_STATUS_LOAD_ALL_OVER:      // 表示数据下载全部一次性返回了
         static_cast<LoadItem *>(arg)->loadOver();
-        static_cast<LoadItem *>(arg)->allDataObtain(data, len);        
+        static_cast<LoadItem *>(arg)->allDataObtain(static_cast<NetBuffer *>(data));
         break;
     case OP_CURL_STATUS_LOAD_ONE_FRAME:     // 表示数据下载方式按照块来计算，有多少数据就来多少
-        static_cast<LoadItem *>(arg)->oneFrameObtain(data, len);
+        static_cast<LoadItem *>(arg)->oneFrameObtain(static_cast<NetBuffer *>(data));
         break;
     case OP_CURL_STATUS_LOAD_OVER:          // 表示数据下载完成了，与上一个枚举配合，表示下载已经完成，可以关闭文件。
         static_cast<LoadItem *>(arg)->loadOver();

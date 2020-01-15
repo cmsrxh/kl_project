@@ -56,7 +56,8 @@ SOURCES += application.cpp main.cpp \
     model/kl_local_data_proc.cpp \
     image_frame.cpp
 
-RESOURCES += res/qml.qrc \
+RESOURCES += \
+    res/qml.qrc \
     res/image.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -81,7 +82,11 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+#kl所有的数据加载API
 include(../klApi/klApi.pri)
+#kl把播放器功能作为一个SDK作为调用
 #include(../player/mpvPlayer.pri)
+#kl作为客户端接口，调用播放器服务程序的各种API
 include(../playerClient/playerClient.pri)
+#kl作为服务端接口，给各种需要调用kl功能的APP使用
 include(../klIface/klServiceIface.pri)

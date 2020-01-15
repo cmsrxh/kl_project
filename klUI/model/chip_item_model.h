@@ -75,7 +75,7 @@ public:
 
     bool isCollect();
 
-    ByteString getDefaultId() const
+    ByteString &getDefaultId()
     {
         return mDefaultId;
     }

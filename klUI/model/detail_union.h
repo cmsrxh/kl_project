@@ -10,10 +10,15 @@
 class DetailUnion : public kl::UINotifyIface
 {
 public:
+    // 下载动作
+    enum {
+        LOAD_DETAIL_SHOW_IN_ALBUM_VIEW,     // 显示在在专辑信息界面中的
+        LOAD_DETAIL_AUDIO_PLAYING           // 下载专辑碎片并进行播放
+    };
     DetailUnion(int type);
     virtual ~DetailUnion();
 
-    void loadDetail(const ByteString &id);
+    void loadDetail(const ByteString &id, int loadAction = LOAD_DETAIL_SHOW_IN_ALBUM_VIEW);
 
     void dataPrepare();
 
@@ -21,8 +26,18 @@ public:
 
     void getDetail(MusicDetail &detail);
 
+    int getLoadAction() const
+    {
+        return mLoadAction;
+    }
+
+    int getChipType() const
+    {
+        return mDetailType;
+    }
 private:
     int          mDetailType;
+    int          mLoadAction;
     UIDetail    *m_pDetail;    
 };
 

@@ -5,13 +5,7 @@
 #include "app_common.h"
 #include "net_util/net_url.h"
 #include "net_util/load_item.h"
-
-class ImageStatus
-{
-public:
-    virtual void dataPrepare() = 0;
-    virtual void errorInfo(int , const char *) {}
-};
+#include "kl_url/kl_common.h"
 
 namespace kl
 {
@@ -23,7 +17,7 @@ public:
 
     void obtain();
 
-    void oneFrameObtain(uint8_t *data, size_t len);
+    void oneFrameObtain(NetBuffer *data);
 
     void oneFrameObtainOver();
 

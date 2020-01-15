@@ -15,21 +15,7 @@ public:
     void cmdPriser(IPCDataPackage *in, IPCDataPackage *out)
     {
         out->setCmdType(ipc::SERVICE_REPLY_OK);
-
-        switch (in->getCmd())
-        {
-        case CLIENT_CALL_SEARCH_KEY_WORD:
-        {
-            Data::Unpack un(in->packet());
-            char *keyword = in->dataGetString(un);
-
-            GEN_Printf(LOG_DEBUG, "Search key word: %s", keyword);
-            break;
-        }
-        default:
-            GEN_Printf(LOG_DEBUG, "UNKown Cmd: %d", in->getCmd());
-            break;
-        }
+        GEN_Printf(LOG_DEBUG, "Test Cmd: %d not process.", in->getCmd());
     }
 };
 
@@ -39,7 +25,7 @@ void KLServiceNotify::initPriser(ServiceCmdPriserProc *priser)
     m_pHandler->setCmdPriser(priser);
 }
 
-void KLServiceNotify::notifySearchResult(const char *data, int size)
+void KLServiceNotify::notifySearchResult(const char *id, const char *data, int size)
 {
     IPCDataPackage in;
 
@@ -47,6 +33,7 @@ void KLServiceNotify::notifySearchResult(const char *data, int size)
     in.setCmdType(SERVICE_NOTIFY_SEARCH_RESULT);
 
     /* 添加参数 */
+    in.allocSetString(id);
     in.allocSetData(data, size);
 
     m_pHandler->msgNotify(&in);
