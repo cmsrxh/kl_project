@@ -22,8 +22,8 @@ static void searchNotify(kl::VoiceSearchAll *obj, bool res)
 }
 
 kl::SearchManage::SearchManage()
+    : m_pDeleteSearch(nullptr)
 {
-
 }
 
 kl::SearchManage::SearchStatus *kl::SearchManage::getSearchNode(const ByteString &id)
@@ -40,7 +40,7 @@ kl::SearchManage::SearchStatus *kl::SearchManage::getSearchNode(const ByteString
     return nullptr;
 }
 
-void kl::SearchManage::playSearchItem(kl::SearchManage::SearchStatus *item, int index)
+void kl::SearchManage::playSearchItem(const char *id, kl::SearchManage::SearchStatus *item, int index)
 {
     int start = index;
     ListTable<SearchItem> &nodes = item->search->nodes();
@@ -52,23 +52,9 @@ void kl::SearchManage::playSearchItem(kl::SearchManage::SearchStatus *item, int 
             item->playState    = 1;
             item->currentIndex = start;
             /* 0：专辑, 1：碎片, 3：智能电台, 11：传统电台 */
-            switch (it->type.toInt())
-            {
-            case 0:
-                KLDataProc::instance()->localItemAlbumPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id, ByteString());
-                break;
-            case 1:
-                KLDataProc::instance()->localItemAlbumAudioPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id);
-                break;
-            case 3:
-                KLDataProc::instance()->localItemTypeRadioPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id, ByteString());
-                break;
-            case 11:
-                KLDataProc::instance()->localItemBroadcastPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id, ByteString());
-                break;
-            default:
-                break;
-            }
+            Q_EMIT gInstance->searchProc(1, index, (long)item->search);
+            mPlaySearch = *item;
+            strncpy(mPlayId, id, 31);
         }
     }
 }
@@ -81,6 +67,11 @@ kl::SearchManage::~SearchManage()
     {
         it->id.clear();
         delete it->search;
+    }
+
+    if (m_pDeleteSearch)
+    {
+        delete m_pDeleteSearch;
     }
 }
 
@@ -100,21 +91,25 @@ void kl::SearchManage::searchKeyword(const char *id, const char *keyWord)
 
     if (search)
     {
-        search->search(keyWord);
-    } else
-    {
-        search = new VoiceSearchAll(keyWord);
-        search->setNofity(searchNotify);
-        search->obtain();
-
-        SearchStatus node;
-
-        node.search    = search;
-        node.playState = 0;
-        node.id        = ByteString::allocString(id);
-
-        mList.push_back(node);
+        if (mPlaySearch.search != search)
+        {
+            search->search(keyWord);
+            return;
+        }
     }
+
+    search = new VoiceSearchAll(keyWord);
+    search->setNofity(searchNotify);
+    search->obtain();
+
+    SearchStatus node;
+
+    node.search    = search;
+    node.playState = 0;
+    node.id        = ByteString::allocString(id);
+
+    mList.push_back(node);
+
 }
 
 void kl::SearchManage::onSearchResult(kl::VoiceSearchAll *search, bool )
@@ -157,23 +152,9 @@ void kl::SearchManage::playSearchName(const char *id, const char *name)
                 state->playState    = 1;
                 state->currentIndex = index;
                 /* 0：专辑, 1：碎片, 3：智能电台, 11：传统电台 */
-                switch (it->type.toInt())
-                {
-                case 0:
-                    KLDataProc::instance()->localItemAlbumPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id, ByteString());
-                    break;
-                case 1:
-                    KLDataProc::instance()->localItemAlbumAudioPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id);
-                    break;
-                case 3:
-                    KLDataProc::instance()->localItemTypeRadioPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id, ByteString());
-                    break;
-                case 11:
-                    KLDataProc::instance()->localItemBroadcastPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST, index, it->id, ByteString());
-                    break;
-                default:
-                    break;
-                }
+                Q_EMIT gInstance->searchProc(1, index, (long)state->search);
+                mPlaySearch = *state;
+                strncpy(mPlayId, id, 31);
             }
         }
     } else
@@ -187,7 +168,7 @@ void kl::SearchManage::playSearchIndex(const char *id, int index)
     SearchStatus *state = getSearchNode(id);
     if (state)
     {
-        playSearchItem(state, index);
+        playSearchItem(id, state, index);
     } else
     {
         GEN_Printf(LOG_ERROR, "No exist id[%s] process", id);
@@ -196,10 +177,9 @@ void kl::SearchManage::playSearchIndex(const char *id, int index)
 
 void kl::SearchManage::playPause(const char *id)
 {
-    SearchStatus *state = getSearchNode(id);
-    if (state)
+    if (0 == strncmp(mPlayId, id, 31))
     {
-        if (state->playState)
+        if (mPlaySearch.playState)
         {
             gInstance->qmlPause();
         } else
@@ -214,10 +194,9 @@ void kl::SearchManage::playPause(const char *id)
 
 void kl::SearchManage::playPlaying(const char *id)
 {
-    SearchStatus *state = getSearchNode(id);
-    if (state)
+    if (0 == strncmp(mPlayId, id, 31))
     {
-        if (state->playState)
+        if (mPlaySearch.playState)
         {
             gInstance->qmlPlay();
         } else
@@ -232,12 +211,11 @@ void kl::SearchManage::playPlaying(const char *id)
 
 void kl::SearchManage::playNext(const char *id)
 {
-    SearchStatus *state = getSearchNode(id);
-    if (state)
+    if (0 == strncmp(mPlayId, id, 31))
     {
-        if (state->playState)
+        if (mPlaySearch.playState)
         {
-            playSearchItem(state, state->currentIndex + 1);
+            Q_EMIT gInstance->searchProc(2, 0, 0);
         } else
         {
             GEN_Printf(LOG_WARN, "Id[%s] not in playing", id);
@@ -250,12 +228,11 @@ void kl::SearchManage::playNext(const char *id)
 
 void kl::SearchManage::playPrev(const char *id)
 {
-    SearchStatus *state = getSearchNode(id);
-    if (state)
+    if (0 == strncmp(mPlayId, id, 31))
     {
-        if (state->playState)
+        if (mPlaySearch.playState)
         {
-            playSearchItem(state, state->currentIndex - 1);
+            Q_EMIT gInstance->searchProc(3, 0, 0);
         } else
         {
             GEN_Printf(LOG_WARN, "Id[%s] not in playing", id);
@@ -264,4 +241,13 @@ void kl::SearchManage::playPrev(const char *id)
     {
         GEN_Printf(LOG_ERROR, "No exist id[%s] process", id);
     }
+}
+
+void kl::SearchManage::setCurSearch(kl::VoiceSearchAll *seach)
+{
+    if (m_pDeleteSearch)
+    {
+        delete m_pDeleteSearch;
+    }
+    m_pDeleteSearch = seach;
 }

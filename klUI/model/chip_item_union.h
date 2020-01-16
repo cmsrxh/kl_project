@@ -9,13 +9,12 @@ class ChipItemModel;
 class ChipItemUnion : public kl::UINotifyIface
 {
 public:
+    // 下载动作
     enum {
         LOAD_OVER_ALBUM_NORMAL_SHOW,        // 正常加载数据，并显示出来，应用于专辑相关的界面
         LOAD_OVER_ALBUM_IN_PLAYVIEW,        // 正常加载的数据，显示在节目列表界面中，用于专辑当前正在播放的列表,发生在当前播放列表已经放完需要后台加载。
         LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW,   // 显示广播节目，在节目列表界面上, 然后要自动播放最新的电台节目
-        LOAD_OVER_TYPE_RADIO__PLAY_CHOICE,  // 加载智能电台，并播放当前选择的节目
-        LOAD_OVER_BROADCAST__PLAY_CHOICE,   // 加载传统电台，并播放当前选择的节目
-        LOAD_OVER_ALBUM__PLAY_CHOICE,       // 加载专辑，并播放当前选择的碎片
+        LOAD_OVER_BACK_PLAY_OP,             // 直接播放专辑等二级列表项
     };
     // 资源类型 (0:专辑|3:电台:11:传统电台)
     ChipItemUnion(int type);
@@ -44,15 +43,18 @@ public:
     bool loadNextPage(int loadAction);
 
     /**
-     * @brief getUnionInfoByIndex
+     * @brief getUnionLatestInfo
      * @param info [out] 输出index对应的信息
-     * @param index [in]
      * @return index 超过范围就返回false，就是out数据无效
      * @details 用于当前列表界面，与上一次的界面不一样时，还能够继续上一次chip列表播放
      *          用于自动播放下一曲的功能
      */
-    bool getUnionInfoByIndex(MusicChipItemUnion &info, int index);
+    bool getUnionLatestInfo(MusicChipItemUnion &info);
 
+    /**
+     * @brief getChipType
+     * @return PLAY_CHIP_TYPE_...
+     */
     int getChipType() const
     {
         return mChipType;
@@ -76,7 +78,9 @@ private:
     void genCatesByAudioItem(ListTable<kl::AudioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
     void genCatesByBDCProgramItem(ListTable<kl::BDCastProgramItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
     void genCatesByLocalLoadItem(ListTable<kl::RecordItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
-
+    void genCatesByCollectItem(ListTable<kl::RecordItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
+    void genCatesByHistroyItem(ListTable<kl::RecordItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
+    void genCatesBySearchItem(ListTable<kl::SearchItem> &nodes, VectorTable<MusicChipItemUnion *> &vec);
 };
 
 #endif // CHIP_ITEM_UNION_H

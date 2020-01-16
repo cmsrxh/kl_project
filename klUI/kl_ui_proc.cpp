@@ -7,6 +7,7 @@
 #include "model/kl_local_data_proc.h"
 #include "model/kl_data_proc.h"
 #include "model/detail_qobject.h"
+#include "kl_search_manage.h"
 #include "qml_view_switch_stack.h"
 #include "kl_ui_proc.h"
 #include <QDebug>
@@ -21,6 +22,7 @@ KLUIProc::KLUIProc()
     , m_pViewStack(new ViewSwitchStack)
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
+    connect(this, SIGNAL(searchProc(int,int,long)), this, SLOT(onSearchProc(int,int,long)));
 }
 
 KLUIProc::~KLUIProc()
@@ -43,8 +45,8 @@ void KLUIProc::init(QQmlContext *ctx)
 {    
     m_pCate         = new CategoryModel;
     m_pCateItem     = new CateItemModel;
-    m_pChipItem     = new ChipItemModel(false);
-    m_pChipItemPlay = new ChipItemModel(true);
+    m_pChipItem     = new ChipItemModel();
+    m_pChipItemPlay = new ChipItemModel();
 
     KLDataProc::instance()->initAlbum(m_pCate, m_pCateItem, m_pChipItem, m_pChipItemPlay);
 
@@ -163,6 +165,11 @@ void KLUIProc::qmlMainTabClick(int index)
     }
 }
 
+void KLUIProc::qmlSelfTabClick(int index)
+{
+    KLDataProc::instance()->selfTabClick(index);
+}
+
 void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
 {
     switch (msg)
@@ -178,6 +185,8 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         break;
     case MEDIA_PREPARED:
         qmlStart();
+        mPositionBase = 0;
+        mDuringBase   = 0;
         KLDataProc::instance()->showPlayingInfo();
         // qDebug() << "Time Base: " << mPositionBase << mDuringBase;
         break;
@@ -206,6 +215,26 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         break;
     default:
         qDebug() << "msg=" << msg << ext1 << ext2 << str;
+        break;
+    }
+}
+
+void KLUIProc::onSearchProc(int type, int index, long searchPtr)
+{
+    switch (type)
+    {
+    case 1:
+        KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST,
+                                              index, reinterpret_cast<UIChipItemList *>(searchPtr));
+        kl::SearchManage::instance()->setCurSearch(reinterpret_cast<kl::VoiceSearchAll *>(searchPtr));
+        break;
+    case 2:
+        KLDataProc::instance()->playNext();
+        break;
+    case 3:
+        KLDataProc::instance()->playPrev();
+        break;
+    default:
         break;
     }
 }

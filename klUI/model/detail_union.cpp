@@ -127,7 +127,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
         detail.hostName = item.host;
         detail.name = item.name;
         detail.image = item.img;
-        detail.desc = item.desc;
+        detail.desc = item.desc;        
         detail.keywords = &item.keyWords;
         break;
     }
@@ -139,6 +139,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
 //        detail.hostName = ByteString();
         detail.name = item.mName;
         detail.image = item.mImg;
+        detail.playUrl = item.mPlayUrl;
 //        detail.desc = item.desc;
 //        detail.keywords = item.keyWords;
         break;
@@ -152,6 +153,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
         detail.name = item.audioName;
         detail.image = item.audioPic;
         detail.desc = item.audioDes;
+        detail.playUrl = item.mp3PlayUrl64;
 //        detail.keywords = item.keyWords;
         break;
     }

@@ -9,7 +9,7 @@ class CollectModel : public QAbstractListModel
 {
     Q_OBJECT
     // 表示当前播放的index
-    Q_PROPERTY(int collectId READ collectId WRITE setCollectId NOTIFY collectIdChanged)
+    Q_PROPERTY(int collectId READ collectId NOTIFY collectIdChanged)
 
     // 收听历史总数
     Q_PROPERTY(int items READ items NOTIFY itemsChanged)
@@ -25,8 +25,7 @@ public:
 
     void resetAll();
 
-    int  collectId() const;
-    void setCollectId(int collectId);
+    int  collectId();
 
     int items() const
     {
@@ -42,7 +41,7 @@ public:
 
     void itemsContentChange(int i);
 signals:
-    void collectIdChanged(int collectId);
+    void collectIdChanged();
 
     void itemsChanged();
 
@@ -61,9 +60,7 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
-    int                         mCollectId;
-    QHash<int, QByteArray>      roles;
-
+    QHash<int, QByteArray>            roles;
     ListTable<kl::RecordItem>::vector mVec;
 };
 

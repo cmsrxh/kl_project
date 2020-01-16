@@ -58,11 +58,16 @@ public Q_SLOTS:
     void qmlPlayPrev();
     void qmlPlayNext();
     void qmlMainTabClick(int index);
+    void qmlSelfTabClick(int index);
     //
     void onRecvNotify(int msg, int ext1, int ext2, const QString &str);
 
+    void onSearchProc(int type, int index, long searchPtr);
+
 Q_SIGNALS:
     void recvNotify(int msg, int ext1, int ext2, const QString &str);
+
+    void searchProc(int type, int index, long searchPtr);
 
     // property signal
     void playStateChanged();
@@ -71,9 +76,7 @@ Q_SIGNALS:
     // qml
     void durationChanged(int duration, QString const &durStr);
     void positionChanged(QString const &curPos);
-    void playingInfo(QString const &name, QString const &desc);
-    void albumInfoName(QString const &name);
-    void albumInfoDesc(QString const &imgUrl, QString const &desc, const QString &hostName);
+    void playingInfo(QString const &name, QString const &desc);    
 private:
     QString numToTimeStr(int num);
 

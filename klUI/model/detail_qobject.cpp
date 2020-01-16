@@ -10,9 +10,9 @@ DetailQobject::~DetailQobject()
     mDetail.keywords->clear();
 }
 
-void DetailQobject::getCurrent()
+void DetailQobject::getCurrent(DetailUnion *pUnion)
 {
-    m_pUnion->getDetail(mDetail);
+    pUnion->getDetail(mDetail);
 }
 
 void DetailQobject::onLoadOver(long ptr)
@@ -34,10 +34,14 @@ void DetailQobject::onLoadOver(long ptr)
             {
                 keyWords.push_back(QStringFromByteString(*it));
             }
-            KLDataProc::instance()->enterAlbumView();
+
+            mName     = QStringFromByteString(mDetail.name);
+            mImage    = QStringFromByteString(mDetail.image);
+            mHostName = QStringFromByteString(mDetail.hostName);
 
             mKeyWords.swap(keyWords);
 
+            KLDataProc::instance()->enterAlbumView();
             Q_EMIT albumInfoNameChanged();
             Q_EMIT albumInfoImageChanged();
             Q_EMIT albumInfoHostNameChanged();
@@ -48,7 +52,8 @@ void DetailQobject::onLoadOver(long ptr)
     case DetailUnion::LOAD_DETAIL_AUDIO_PLAYING:
     {
         Q_ASSERT(PLAY_CHIP_TYPE_AUDIO_CHIP == unionPtr->getChipType());
-
+        m_pPlayUnion = unionPtr;
+        KLDataProc::instance()->audioDetailLoadOver(mDetail);
         break;
     }
     default:
@@ -57,24 +62,28 @@ void DetailQobject::onLoadOver(long ptr)
 
 }
 
-QString DetailQobject::albumInfoName()
+void DetailQobject::loadDetail(int type, const ByteString &id, int loadAction)
 {
-    return QStringFromByteString(mDetail.name);
+    ByteString detailId = ByteString::allocString(id);
+    DetailUnion *&pUnion = mMap[detailId];
+    if (pUnion)
+    {
+        pUnion->getDetail(mDetail);
+        KLDataProc::instance()->enterAlbumView();
+    } else
+    {
+        pUnion = new DetailUnion(type);
+        pUnion->loadDetail(detailId, loadAction);
+        clearAlbumDetail();
+    }
 }
 
-QString DetailQobject::albumInfoImage()
+void DetailQobject::clearAlbumDetail()
 {
-    return QStringFromByteString(mDetail.image);
-}
-
-QString DetailQobject::albumInfoHostName()
-{
-    return QStringFromByteString(mDetail.hostName);
-}
-
-QStringList DetailQobject::keyWords()
-{
-    return mKeyWords;
+    mName.clear();
+    mImage.clear();
+    mHostName.clear();
+    mKeyWords.clear();
 }
 
 DetailQobject::DetailQobject()

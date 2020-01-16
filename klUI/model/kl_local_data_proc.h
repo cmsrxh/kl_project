@@ -2,7 +2,7 @@
 #define KL_LOCAL_DATA_PROC_H
 
 #include <QObject>
-#include "util/byte_string.h"
+#include "kl_ui_data_union.h"
 
 class CollectNode;
 class CollectModel;
@@ -29,7 +29,7 @@ public:
      * @return
      * @details 根据当前传递进来的实例获取播放index
      */
-    int getLocalPlayIndex(CollectModel *ptr);
+    int getLocalPlayIndex(ListTable<kl::RecordItem>::vector &vec);
 
     /**
      * @brief checkCurIsCollect
@@ -102,6 +102,10 @@ public:
      * @details 清空所有历史记录
      */
     void historyClearAll();
+
+    void showCollectIndex();
+    void showDownloadIndex();
+    void showHistoryIndex();
 
 public Q_SLOTS:
     void onCollect(int st, long ptr);

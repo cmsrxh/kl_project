@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import Hongjing.HMI.KL 1.0 as KL
 
 Item {
     id: option
@@ -55,6 +56,7 @@ Item {
                         onClicked:
                         {
                             curFocus = index
+                            KL.Controller.qmlSelfTabClick(index)
                         }
                     }
                 }

@@ -20,8 +20,17 @@ class ChipItemModel : public QAbstractListModel
 
     Q_PROPERTY(bool isCollect READ isCollect NOTIFY isCollectChanged)
 
+    ChipItemModel(ChipItemModel &);
 public:
-    ChipItemModel(bool isPlayModel);
+    ChipItemModel();
+
+//    ChipItemModel &operator=(ChipItemModel &);
+//    bool operator==(ChipItemModel &);
+    void assign(ChipItemModel *);
+    bool equal(ChipItemModel *th)
+    {
+        return m_pUnion == th->m_pUnion;
+    }
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -44,7 +53,7 @@ public:
     }
 
     // property
-    int  playingIndex() const;
+    int  playingIndex();
 
     int  itemCount() const;
 
@@ -53,11 +62,6 @@ public:
         return mVec.size();
     }
     void  clean();
-
-    bool isPlayModel() const
-    {
-        return mIsPlayModel;
-    }
 
     bool checkUnion(ChipItemUnion *uni)
     {
@@ -73,6 +77,10 @@ public:
      */
     void getSliderBase(int &cur, int &dur, int index);
 
+    /**
+     * @brief isCollect
+     * @return 返回当前播放的节目是否在收藏列表中
+     */
     bool isCollect();
 
     ByteString &getDefaultId()
@@ -90,6 +98,15 @@ public:
      * @details 必须在主线程中调用，即在信号槽函数中调用
      */
     void chipLoadOver(long ptr);
+    void chipLocalLoad(ChipItemUnion *pUnion);
+
+    bool isEmpty()
+    {
+        return mVec.empty();
+    }
+    int getChipType() const;
+
+    void loadNextPage(int loadAction);
 
 public Q_SLOTS:
 
@@ -116,7 +133,6 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
-    const bool                        mIsPlayModel;
     ChipItemUnion                    *m_pUnion;
     ByteString                        mDefaultId;
     QHash<int, QByteArray>            roles;

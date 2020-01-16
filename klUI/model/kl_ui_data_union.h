@@ -13,7 +13,11 @@ enum
     PLAY_CHIP_TYPE_AUDIO_CHIP   ,    // 专辑音乐节目碎片三级标签item
     PLAY_CHIP_TYPE_RADIO_CHIP   ,    // 智能电台节目碎片三级标签item
     PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP, // 电台节目碎片三级标签item
+
     PLAY_CHIP_TYPE_LOCAL_LOAD   ,    // 下载的音频碎片（专辑音乐碎片）
+    PLAY_CHIP_TYPE_COLLECT_RECORD,   // 加载收藏
+    PLAY_CHIP_TYPE_HISTROY_RECORD,   // 加载历史记录
+    PLAY_CHIP_TYPE_SEARCH_LOAD,      // 加载搜索列表
 };
 
 struct MusicCateUnion
@@ -42,6 +46,7 @@ struct MusicCateItemUnion
 struct MusicChipItemUnion
 {
     int type;
+    int sub_type;
     ByteString parentId;
     ByteString chipId;
 
@@ -62,6 +67,7 @@ struct MusicDetail
     ByteString desc;
     ByteString image;
     ByteString hostName;
+    ByteString playUrl;
     ListTable<ByteString> *keywords;
 };
 

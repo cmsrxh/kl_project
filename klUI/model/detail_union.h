@@ -18,7 +18,7 @@ public:
     DetailUnion(int type);
     virtual ~DetailUnion();
 
-    void loadDetail(const ByteString &id, int loadAction = LOAD_DETAIL_SHOW_IN_ALBUM_VIEW);
+    void loadDetail(const ByteString &id, int loadAction);
 
     void dataPrepare();
 

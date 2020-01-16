@@ -46,8 +46,8 @@ public:
             , cate_item_index(-1)
             , chip_item_index(-1)
             , current_play_source(-1)
-            , current_play_list(nullptr)
             , bdc {-1, -1, -1}
+            , local{-1, 0, -1}
         {}
         void setMainTabIndex(int index)
         {
@@ -76,10 +76,7 @@ public:
         {
             chip_item_index = index;
         }
-        void setCurrentPlayList(ChipItemUnion *chip)
-        {
-            current_play_list = chip;
-        }
+
         int mainTabIndex;
         int media_type;
         int cate_tab_index;
@@ -87,7 +84,6 @@ public:
         int cate_item_index;
         int chip_item_index;
         int current_play_source;
-        ChipItemUnion *current_play_list;
 
         struct {
             int bdc_cate_tab_index;
@@ -96,24 +92,11 @@ public:
         } bdc;
         struct {
             int table_type;
-            int table_list_main_index;
+            int self_tab_index;
+            int table_list_item_index;
         } local;
     };
 
-    struct AlbunView
-    {
-        AlbunView()
-            : chip_item(nullptr)
-            , datail_item(nullptr)
-        {}
-        AlbunView(ChipItemUnion *item)
-            : chip_item(item)
-            , datail_item(nullptr)
-        {}
-
-        ChipItemUnion *chip_item;
-        DetailUnion   *datail_item;
-    };
     static KLDataProc *instance()
     {
         static KLDataProc i;
@@ -136,12 +119,24 @@ public:
                        CateItemModel *bdcItem);
 
     /**
+     * @brief getCurrentShowView
+     * @return 返回当前处于哪一个界面，然后才把当前播放变化的信息通知到这个界面上
+     */
+    int getCurrentShowView();
+
+    /**
      * @brief mainTabClick
      * @param index
      * @details 主页“精品、我的” 标签点击ID
      */
     void mainTabClick(int index);
 
+    /**
+     * @brief selfTabClick
+     * @param index
+     * @details “我的”标签下面的各种设置标签点击，标识切换到对应的界面
+     */
+    void selfTabClick(int index);
     /**
      * @brief albumFirstClick
      * @param index
@@ -178,6 +173,11 @@ public:
 
     void bdcSecondItemCollectClick(int index, bool isCollect);
 
+    /**
+     * @brief bdcProgramListAction
+     * @details 其中包含智能电台和传统电台两种类型，
+     * 智能电台需要从开始处播放，传统电台默认播放当前时间。
+     */
     void bdcProgramListAction();
     /**
      * @brief showPlayingInfo
@@ -200,6 +200,7 @@ public:
     /**
      * @brief getChipAudioThirdIndex
      * @return 专辑audio列表需要获取的ID
+     * @note not used
      */
     int  getChipAudioThirdIndex();
 
@@ -207,7 +208,7 @@ public:
      * @brief getPlayThirdIndex
      * @return 播放列表需要获取的id
      */
-    int  getPlayThirdIndex();
+    int  getPlayThirdIndex(ChipItemModel *model);
 
     /**
      * @brief getAlbumSecondIndex
@@ -244,44 +245,60 @@ public:
      */
     void currentIsCollect();
     void notifyCurIsCollect(bool isCollect);
-    void notifyBDCCollectChange(int index, bool isCollect);
     bool isCollect() const
     {
         return mCurrentIsCollect;
     }
-
-    CollectNode &getCurrentPlayInfo()
-    {
-        return mPlayInfo;
-    }
+    /**
+     * @brief notifyBDCCollectChange
+     * @param index [in] 标签ID
+     * @param isCollect [in] 当前是否收藏（没有用到）
+     * @details 电台界面收藏处理
+     */
+    void notifyBDCCollectChange(int index, bool isCollect);
 
     /**
-     * @brief localItemTypeRadioPlay
-     * @brief localItemBroadcastPlay
-     * @brief localItemAlbumPlay
-     * @param parentId [in] 输入二级标签ID, 如专辑ID
-     * @param id [in] 输入三级标签ID, 如专辑碎片ID
+     * @brief getCurrentPlayInfo
+     * @param parentId
+     * @param id
+     * @return
+     * @details 获取当前播放的父子ID
+     */
+    bool getCurrentPlayInfo(ByteString &parentId, ByteString &id);
+
+    /**
+     * @brief localItemPlay
+     * @param local_type
+     * @param main_index
      * @details 根据本地信息（收藏 历史记录 或者下载记录），进行播放处理
      */
-    void localItemTypeRadioPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
-    void localItemBroadcastPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
-    void localItemAlbumPlay(int local_type, int main_index, ByteString const &parentId, ByteString const &id);
-    void localItemAlbumAudioPlay(int local_type, int main_index, ByteString const &id);
-    void localItemDownLoadPlay(int local_type, int main_index);
+    void localItemPlay(int type, int index, UIChipItemList *ptr) ;
 
     /**
      * @brief playDefaultItem
      * @details 加载列表完成播放默认的曲目
      */
-    void playDefaultItem();
+    void playDefaultItem(ChipItemUnion *pUnion);
+
+    /**
+     * @brief audioDetailLoadOver
+     * @param detail
+     * @details 根据专辑audioID号，获取其详情，然后播放，并下载对应的专辑列表
+     */
+    void audioDetailLoadOver(MusicDetail &detail);
+
 private:
     KLDataProc();
     void enterBroadcastView();
+    void playSubItem(MusicChipItemUnion *chip);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
-    //download
+    //local op
+    ChipItemUnion    *m_pDownLoadChip;
+    ChipItemUnion    *m_pCollectChip;
     ChipItemUnion    *m_pHistoryChip;
+    ChipItemUnion    *m_pSearchChip;
 
     // album
     CategoryUnion    *m_pCateData;
@@ -291,6 +308,7 @@ private:
 
     // player
     ChipItemModel    *m_pChipItemPlay;
+    ChipItemUnion    *m_pCurPlayUnion;
 
     // broadcast
     CategoryUnion    *m_pBDCTabData;
@@ -303,9 +321,9 @@ private:
     SwitchPath        mPlayPath;
     CollectNode       mPlayInfo;
 
-    MapTable<int, CateItemUnion*>   mCidMap;
-    MapTable<int, CateItemUnion*>   mBDCMap;
-    MapTable<ByteString, AlbunView> mChipMap;
+    MapTable<int, CateItemUnion*>         mCidMap;
+    MapTable<int, CateItemUnion*>         mBDCMap;
+    MapTable<ByteString, ChipItemUnion *> mChipMap;
 
     void setPlayInfo(MusicChipItemUnion &chip);
 

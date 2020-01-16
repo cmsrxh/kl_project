@@ -4,9 +4,9 @@
 #include "kl_record_manage.h"
 #include "collect_model.h"
 #include "kl_ui_data_union.h"
-#include "kl_local_data_proc.h"
 #include "kl_data_proc.h"
 #include "application.h"
+#include "kl_local_data_proc.h"
 
 static void collectDataStatus(int status, long ptr)
 {
@@ -46,23 +46,16 @@ void LocalDataProc::initLocal(CollectModel *collect, CollectModel *load, Collect
     kl::RecordManage::instance()->setCallBack(historyDataStatus);
 }
 
-int LocalDataProc::getLocalPlayIndex(CollectModel *ptr)
+int LocalDataProc::getLocalPlayIndex(ListTable<kl::RecordItem>::vector &vec)
 {
-    CollectNode &info = KLDataProc::instance()->getCurrentPlayInfo();
-    ListTable<kl::RecordItem>::vector &vec = ptr->vec();
+    ByteString parentId;
+    ByteString id;
 
-    for (int i = 0; i < vec.size(); ++i)
+    if (KLDataProc::instance()->getCurrentPlayInfo(parentId, id))
     {
-        if (vec[i].type == info.type
-                && vec[i].parentId == info.parentId)
+        for (int i = 0; i < vec.size(); ++i)
         {
-            if (info.type > PLAY_CHIP_TYPE_TYPE_RADIO)
-            { // 表示第三级列表必须比对子ID
-                if (vec[i].id == info.id)
-                {
-                    return i;
-                }
-            } else
+            if (vec[i].id == id && vec[i].parentId == parentId)
             {
                 return i;
             }
@@ -146,26 +139,7 @@ void LocalDataProc::collectItemPlay(int index)
         GEN_Printf(LOG_WARN, "Collect List, index=%d, size=%d out of range", index, vec.size());
         return;
     }
-    ByteString secId   = vec[index].parentId;
-    ByteString thirdId = vec[index].id;
-
-    switch (vec[index].type)
-    {
-    case PLAY_CHIP_TYPE_ALBUM:
-    case PLAY_CHIP_TYPE_AUDIO_CHIP:
-        KLDataProc::instance()->localItemAlbumPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, secId, thirdId);
-        break;
-    case PLAY_CHIP_TYPE_TYPE_RADIO:
-    case PLAY_CHIP_TYPE_RADIO_CHIP:
-        KLDataProc::instance()->localItemTypeRadioPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, secId, thirdId);
-        break;
-    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
-    case PLAY_CHIP_TYPE_BROADCAST:
-        KLDataProc::instance()->localItemBroadcastPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, secId, thirdId);
-        break;
-    default:
-        break;
-    }
+    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, kl::CollectManage::instance());
 }
 
 void LocalDataProc::collectItemEnable(int index)
@@ -183,12 +157,12 @@ void LocalDataProc::downLoadItemPlay(int index)
         return;
     }
 
-    KLDataProc::instance()->localItemDownLoadPlay(CURREN_PLAY_SOURCE_DOWNLOAD_LIST, index);
+    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_DOWNLOAD_LIST, index, kl::DownloadManage::instance());
 }
 
 void LocalDataProc::historyItemPlay(int index)
 {
-    ListTable<kl::RecordItem>::vector &vec = m_pCollect->vec();
+    ListTable<kl::RecordItem>::vector &vec = m_pHistory->vec();
 
     if (index < 0 || index > vec.size())
     {
@@ -196,31 +170,27 @@ void LocalDataProc::historyItemPlay(int index)
         return;
     }
 
-    ByteString secId   = vec[index].parentId;
-    ByteString thirdId = vec[index].id;
-
-    switch (vec[index].type)
-    {
-    case PLAY_CHIP_TYPE_ALBUM:
-    case PLAY_CHIP_TYPE_AUDIO_CHIP:
-        KLDataProc::instance()->localItemAlbumPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, secId, thirdId);
-        break;
-    case PLAY_CHIP_TYPE_TYPE_RADIO:
-    case PLAY_CHIP_TYPE_RADIO_CHIP:
-        KLDataProc::instance()->localItemTypeRadioPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, secId, thirdId);
-        break;
-    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
-    case PLAY_CHIP_TYPE_BROADCAST:
-        KLDataProc::instance()->localItemBroadcastPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, secId, thirdId);
-        break;
-    default:
-        break;
-    }
+    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, kl::RecordManage::instance());
 }
 
 void LocalDataProc::historyClearAll()
 {
     Application::instance()->postKlEvent(SIG_KL_HISTORY_CLEAR_APP);
+}
+
+void LocalDataProc::showCollectIndex()
+{
+    Q_EMIT m_pCollect->collectIdChanged();
+}
+
+void LocalDataProc::showDownloadIndex()
+{
+    Q_EMIT m_pDownload->collectIdChanged();
+}
+
+void LocalDataProc::showHistoryIndex()
+{
+    Q_EMIT m_pHistory->collectIdChanged();
 }
 
 void LocalDataProc::onCollect(int st, long ptr)

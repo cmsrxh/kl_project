@@ -6,8 +6,8 @@
 
 #define CHIP_ITEM_NAME     Qt::UserRole
 
-ChipItemModel::ChipItemModel(bool isPlayModel)
-    : mIsPlayModel(isPlayModel), m_pUnion(NULL)
+ChipItemModel::ChipItemModel()
+    : m_pUnion(NULL)
 {
     roles[CHIP_ITEM_NAME]    = "chipItemName";
 
@@ -32,6 +32,13 @@ ChipItemModel::ChipItemModel(bool isPlayModel)
     mVec.push_back(uni);
     mVec.push_back(uni);
 #endif
+}
+
+void ChipItemModel::assign(ChipItemModel *th)
+{
+    m_pUnion = th->m_pUnion;
+    mVec.clear();
+    m_pUnion->onLoadOver(this);
 }
 
 int ChipItemModel::rowCount(const QModelIndex &) const
@@ -104,6 +111,27 @@ void ChipItemModel::chipLoadOver(long ptr)
     }
 }
 
+void ChipItemModel::chipLocalLoad(ChipItemUnion *pUnion)
+{
+    qDebug() << "local chip load over";
+    mVec.clearPtr();
+    m_pUnion = pUnion;
+    m_pUnion->onLoadOver(this);
+
+    beginResetModel();
+    endResetModel();
+}
+
+int ChipItemModel::getChipType() const
+{
+    return m_pUnion->getChipType();
+}
+
+void ChipItemModel::loadNextPage(int loadAction)
+{
+    m_pUnion->loadNextPage(loadAction);
+}
+
 void ChipItemModel::chipItemClick(int index)
 {
     qDebug() << "Chip Item Click " << index;
@@ -139,10 +167,9 @@ QHash<int, QByteArray> ChipItemModel::roleNames() const
     return roles;
 }
 
-int ChipItemModel::playingIndex() const
+int ChipItemModel::playingIndex()
 {
-    return mIsPlayModel ? KLDataProc::instance()->getPlayThirdIndex()
-                        : KLDataProc::instance()->getChipAudioThirdIndex();
+    return KLDataProc::instance()->getPlayThirdIndex(this);
 }
 
 int ChipItemModel::itemCount() const

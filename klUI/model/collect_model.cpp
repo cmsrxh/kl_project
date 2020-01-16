@@ -75,15 +75,9 @@ QHash<int, QByteArray> CollectModel::roleNames() const
     return roles;
 }
 
-int CollectModel::collectId() const
+int CollectModel::collectId()
 {
-    return LocalDataProc::instance()->getLocalPlayIndex(const_cast<CollectModel *> (this));
-}
-
-void CollectModel::setCollectId(int collectId)
-{
-    mCollectId = collectId;
-    Q_EMIT collectIdChanged(collectId);
+    return LocalDataProc::instance()->getLocalPlayIndex(mVec);
 }
 
 QString CollectModel::loadInfo()
