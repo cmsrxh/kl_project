@@ -4,6 +4,7 @@
 #include <util/byte_string.h>
 #include <util/map_table.h>
 
+class ChipItemUnion;
 namespace kl
 {
 class VoiceSearchAll;
@@ -48,7 +49,7 @@ public:
 
     // for KLUIProc
     void setCurSearch(VoiceSearchAll *seach);
-
+    ChipItemUnion *genUnion(VoiceSearchAll *seach);
 private:
     SearchManage(SearchManage &);
     SearchManage &operator=(SearchManage &);
@@ -59,6 +60,7 @@ private:
     void playSearchItem(const char *id, SearchStatus *item, int index);
 
     VoiceSearchAll         *m_pDeleteSearch;
+    ChipItemUnion          *m_pSearchChip;
     // 此项搜索的结果，是正在播放的列表，其中的子项都被当前播放列表引用，不能随意释放增删
     SearchStatus            mPlaySearch;
     char                    mPlayId[32];

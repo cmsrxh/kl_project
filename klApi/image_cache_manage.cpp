@@ -30,7 +30,7 @@ ByteString ImageCacheManage::loadImage(const ByteString &imgUrl, ImageStatus *no
 
     mList.push_back(filePath);
 
-    GEN_Printf(LOG_DEBUG, "Save path: %s", filePath.string());
+    // GEN_Printf(LOG_DUMP, "Save path: %s", filePath.string());
 
     struct stat st;
 

@@ -31,6 +31,7 @@ DetailUnion::~DetailUnion()
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
         delete ((kl::ChipAudioDetail *)m_pDetail);
         break;
+    case PLAY_CHIP_TYPE_TYPE_RADIO:
     case PLAY_CHIP_TYPE_RADIO_CHIP:
         delete ((kl::ChipRadioDetail *)m_pDetail);
         break;
@@ -42,6 +43,7 @@ DetailUnion::~DetailUnion()
 void DetailUnion::loadDetail(const ByteString &id, int loadAction)
 {
     mLoadAction = loadAction;
+
     switch (mDetailType)
     {
     case PLAY_CHIP_TYPE_ALBUM:
@@ -81,6 +83,7 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
         audio->obtain();
         break;
     }
+    case PLAY_CHIP_TYPE_TYPE_RADIO:
     case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         kl::ChipRadioDetail *radio;
@@ -98,6 +101,8 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
         break;
     }
     default:
+        GEN_Printf(LOG_WARN, "load detail type invalid: action=%d, type=%d",
+                   loadAction, mDetailType);
         break;
     }
 }
@@ -157,6 +162,7 @@ void DetailUnion::getDetail(MusicDetail &detail)
 //        detail.keywords = item.keyWords;
         break;
     }
+    case PLAY_CHIP_TYPE_TYPE_RADIO:
     case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         kl::RadioDetail &item = ((kl::ChipRadioDetail *)m_pDetail)->item();

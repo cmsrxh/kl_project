@@ -64,6 +64,8 @@ public Q_SLOTS:
 
     void onSearchProc(int type, int index, long searchPtr);
 
+    // 专辑标签下载完毕
+    void onAlbumTabLoadOver(long pUnion);
 Q_SIGNALS:
     void recvNotify(int msg, int ext1, int ext2, const QString &str);
 

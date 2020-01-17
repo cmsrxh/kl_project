@@ -97,10 +97,10 @@ void kl::CategorySublist::genResult(NetBuffer *data)
         if (mNodes.empty())
         {
             GEN_Printf(LOG_WARN, "load sub list is empty");
-        } else
+        }/* else
         {
             profile();
-        }
+        }*/
     } else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());

@@ -1,6 +1,7 @@
 TEMPLATE = subdirs 
 
-SUBDIRS += klApi/klApi.pro
+SUBDIRS += klApi/klApi.pro \
+    netNotify
 
 SUBDIRS += klUI
 

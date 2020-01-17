@@ -6,6 +6,7 @@
 #include "kl_ui_data_union.h"
 #include "kl_data_proc.h"
 #include "application.h"
+#include "model/chip_item_union.h"
 #include "kl_local_data_proc.h"
 
 static void collectDataStatus(int status, long ptr)
@@ -24,6 +25,9 @@ static void historyDataStatus(int status, long ptr)
 }
 
 LocalDataProc::LocalDataProc()
+    : m_pDownLoadChip(new ChipItemUnion(PLAY_CHIP_TYPE_LOCAL_LOAD))
+    , m_pCollectChip(new ChipItemUnion(PLAY_CHIP_TYPE_COLLECT_RECORD))
+    , m_pHistoryChip(new ChipItemUnion(PLAY_CHIP_TYPE_HISTROY_RECORD))
 {
     connect(this, SIGNAL(collectStatus(int, long)),  this, SLOT(onCollect(int, long)));
     connect(this, SIGNAL(downloadStatus(int, long)), this, SLOT(onDownload(int, long)));
@@ -32,7 +36,9 @@ LocalDataProc::LocalDataProc()
 
 LocalDataProc::~LocalDataProc()
 {
-
+    delete m_pDownLoadChip;
+    delete m_pCollectChip;
+    delete m_pHistoryChip;
 }
 
 void LocalDataProc::initLocal(CollectModel *collect, CollectModel *load, CollectModel *history)
@@ -40,6 +46,10 @@ void LocalDataProc::initLocal(CollectModel *collect, CollectModel *load, Collect
     m_pCollect  = collect;
     m_pDownload = load;
     m_pHistory  = history;
+
+    m_pDownLoadChip->setChipHandler(kl::DownloadManage::instance());
+    m_pCollectChip->setChipHandler(kl::CollectManage::instance());
+    m_pHistoryChip->setChipHandler(kl::RecordManage::instance());
 
     kl::CollectManage::instance()->setCallBack(collectDataStatus);
     kl::DownloadManage::instance()->setCallBack(downloadDataStatus);
@@ -139,7 +149,7 @@ void LocalDataProc::collectItemPlay(int index)
         GEN_Printf(LOG_WARN, "Collect List, index=%d, size=%d out of range", index, vec.size());
         return;
     }
-    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, kl::CollectManage::instance());
+    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_COLLECT_LIST, index, m_pCollectChip);
 }
 
 void LocalDataProc::collectItemEnable(int index)
@@ -157,7 +167,7 @@ void LocalDataProc::downLoadItemPlay(int index)
         return;
     }
 
-    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_DOWNLOAD_LIST, index, kl::DownloadManage::instance());
+    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_DOWNLOAD_LIST, index, m_pDownLoadChip);
 }
 
 void LocalDataProc::historyItemPlay(int index)
@@ -170,7 +180,7 @@ void LocalDataProc::historyItemPlay(int index)
         return;
     }
 
-    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, kl::RecordManage::instance());
+    KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST, index, m_pHistoryChip);
 }
 
 void LocalDataProc::historyClearAll()

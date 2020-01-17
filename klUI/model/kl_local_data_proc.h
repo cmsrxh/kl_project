@@ -6,6 +6,7 @@
 
 class CollectNode;
 class CollectModel;
+class ChipItemUnion;
 class LocalDataProc : public QObject
 {
     Q_OBJECT
@@ -118,6 +119,10 @@ Q_SIGNALS:
     void historyStatus(int st, long ptr);
 
 private:
+    ChipItemUnion    *m_pDownLoadChip;
+    ChipItemUnion    *m_pCollectChip;
+    ChipItemUnion    *m_pHistoryChip;
+
     //collect
     CollectModel      *m_pCollect;
     CollectModel      *m_pDownload;

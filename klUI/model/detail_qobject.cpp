@@ -20,12 +20,13 @@ void DetailQobject::onLoadOver(long ptr)
     DetailUnion *unionPtr = reinterpret_cast<DetailUnion *> (ptr);
 
     unionPtr->getDetail(mDetail);
+    qDebug() << "detail info load over, loadaction=" << unionPtr->getLoadAction() << ptr;
 
     switch (unionPtr->getLoadAction())
     {
     case DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW:
     {
-        Q_ASSERT(PLAY_CHIP_TYPE_ALBUM == unionPtr->getChipType());
+        // Q_ASSERT(PLAY_CHIP_TYPE_ALBUM == unionPtr->getChipType());
         if (unionPtr == m_pUnion)
         {
             QList<QString> keyWords;
@@ -68,12 +69,20 @@ void DetailQobject::loadDetail(int type, const ByteString &id, int loadAction)
     DetailUnion *&pUnion = mMap[detailId];
     if (pUnion)
     {
-        pUnion->getDetail(mDetail);
-        KLDataProc::instance()->enterAlbumView();
+        if (loadAction == DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW)
+        {
+            m_pUnion = pUnion;
+        }
+        onLoadOver((long)pUnion);
     } else
     {
         pUnion = new DetailUnion(type);
+        qDebug() << "loaddetail action=" << loadAction << (long)pUnion;
         pUnion->loadDetail(detailId, loadAction);
+        if (loadAction == DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW)
+        {
+            m_pUnion = pUnion;
+        }
         clearAlbumDetail();
     }
 }

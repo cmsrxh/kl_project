@@ -36,11 +36,7 @@ public:
 
 KLDataProc::KLDataProc()
     : mCurrentIsCollect(false)
-    , m_pPlayManage(new ChipPlayManage)
-    , m_pDownLoadChip(new ChipItemUnion(PLAY_CHIP_TYPE_LOCAL_LOAD))
-    , m_pCollectChip(new ChipItemUnion(PLAY_CHIP_TYPE_COLLECT_RECORD))
-    , m_pHistoryChip(new ChipItemUnion(PLAY_CHIP_TYPE_HISTROY_RECORD))
-    , m_pSearchChip(new ChipItemUnion(PLAY_CHIP_TYPE_SEARCH_LOAD))
+    , m_pPlayManage(new ChipPlayManage)  
 {    
     m_pCurPlayUnion = nullptr;
 }
@@ -67,6 +63,12 @@ void KLDataProc::playSubItem(MusicChipItemUnion *chip)
     case PLAY_CHIP_TYPE_ALBUM        :    // 专辑二级标签item
         // 用于收藏,历史记录和搜索列表中的播放
         // 直接播放专辑，但是专辑不是直接播放的实体，子集下面是节目列表需要下载然后才能播
+    case PLAY_CHIP_TYPE_BROADCAST    :    // 电台二级标签item
+        // 用于收藏,历史记录和搜索列表中的播放
+        // 直接播放电台，但是电台不是直接播放的实体，子集下面是节目列表需要下载然后才能播
+    case PLAY_CHIP_TYPE_TYPE_RADIO   :    // 智能电台二级标签item
+        // 用于收藏,历史记录和搜索列表中的播放
+        // 直接播放智能电台，但是智能电台不是直接播放的实体，子集下面是节目列表需要下载然后才能播
     {
         ByteString id = ByteString::allocString(chip->parentId);
         ChipItemUnion *&chip_item = mChipMap[id];
@@ -82,20 +84,6 @@ void KLDataProc::playSubItem(MusicChipItemUnion *chip)
         }
         break;
     }
-    case PLAY_CHIP_TYPE_BROADCAST    :    // 电台二级标签item
-        // 用于收藏,历史记录和搜索列表中的播放
-        // 直接播放电台，但是电台不是直接播放的实体，子集下面是节目列表需要下载然后才能播
-    {
-
-        break;
-    }
-    case PLAY_CHIP_TYPE_TYPE_RADIO   :    // 智能电台二级标签item
-        // 用于收藏,历史记录和搜索列表中的播放
-        // 直接播放智能电台，但是智能电台不是直接播放的实体，子集下面是节目列表需要下载然后才能播
-    {
-
-        break;
-    }
     case PLAY_CHIP_TYPE_AUDIO_CHIP   :    // 专辑音乐节目碎片三级标签item
     {
         DetailQobject::instance()->loadDetail(PLAY_CHIP_TYPE_AUDIO_CHIP, chip->chipId,
@@ -107,6 +95,18 @@ void KLDataProc::playSubItem(MusicChipItemUnion *chip)
         assert(0);
         break;
     }
+}
+
+bool KLDataProc::playCurSubItemSubNext(MusicChipItemUnion *)
+{
+    MusicChipItemUnion info;
+    if (m_pCurPlayUnion
+            && m_pCurPlayUnion->getUnionInfo(info, mPlayPath.chip_item_sub_index))
+    {
+        gInstance->setSourceUrl(info.playUrl.string());
+        return true;
+    }
+    return false;
 }
 
 void KLDataProc::setPlayInfo(MusicChipItemUnion &chip)
@@ -156,7 +156,6 @@ KLDataProc::~KLDataProc()
         {
             delete it3->value;
         }
-
     }
 
     delete m_pCateData;
@@ -209,6 +208,11 @@ void KLDataProc::initBroadcast(CategoryModel *bdcTab, CategoryModel *bdcArea, Ca
     m_pBDCAreaData->loadCategory(CategoryUnion::BDC_AREA_CATE, 0);
 }
 
+void KLDataProc::detailLoadAlbumInfo()
+{
+   albumFirstClick( getAlbumFirstIndex());
+}
+
 enum {
     CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO,
     CURRENT_VIEW_IN_ALBUM_INFO_LIST,
@@ -219,6 +223,7 @@ enum {
     CURRENT_VIEW_IN_VOICE_GUIDANCE,
     CURRENT_VIEW_IN_SETTING,
 };
+
 int KLDataProc::getCurrentShowView()
 {
     if (0 == mSwitch.mainTabIndex) //表示在精品界面
@@ -270,7 +275,7 @@ void KLDataProc::albumFirstClick(int index)
     ByteString cid = m_pCate->getCID(index);
     if (cid.empty())
     {
-        qWarning() << "index is invalid" << index;
+        GEN_Printf(LOG_WARN, "index: %d is invalid", index);
     } else
     {
         int cid_num = atoi(cid.string());
@@ -286,20 +291,18 @@ void KLDataProc::albumFirstClick(int index)
             return;
         }
 
-        qDebug() << "cid = " << cid.string() << cid_num;
+        GEN_Printf(LOG_DEBUG, "cid = %s, cid num = %s", cid.string(), cid.string());
 
         m_pCateItem->clear();
 
         CateItemUnion *& tmp = mCidMap[cid_num];
         if (tmp)
-        {
-            qDebug() << "CateItemUnion created.";
+        {            
             m_pCateItem->setCateItemUnion(tmp);
             tmp->onLoadOver(m_pCateItem);
             m_pCateItem->resetAll();
         } else
         {
-            qDebug() << "CateItemUnion new Create.";
             tmp = new CateItemUnion(cid_type, m_pCateItem);
 
             m_pCateItem->setCateItemUnion(tmp);
@@ -343,7 +346,6 @@ void KLDataProc::albumSecondClick(int index)
         m_pChipItem->resetAll();
     } else
     {
-        qDebug() << "type=" << type << "id=" << id.string();
         chip_item = new ChipItemUnion(type);
         m_pChipItem->setChipItemUnion(chip_item);
         chip_item->loadChipList(id);
@@ -385,7 +387,7 @@ void KLDataProc::chipAudioThirdChick(int index)
     }
 }
 
-void KLDataProc::chipPlayThirdClick(int index)
+void KLDataProc::chipPlayThirdClick(int index, bool isKeyPress)
 {
     VectorTable<MusicChipItemUnion *> &vec = m_pChipItemPlay->vec();
 
@@ -397,7 +399,6 @@ void KLDataProc::chipPlayThirdClick(int index)
 
     if (mPlayPath.chip_item_index != index)
     {
-        mPlayPath.setChipItemIndex(index);
         GEN_Printf(LOG_INFO, "play list click, play type=%d", vec[index]->type);
         switch(vec[index]->type)
         {
@@ -411,13 +412,27 @@ void KLDataProc::chipPlayThirdClick(int index)
         case PLAY_CHIP_TYPE_COLLECT_RECORD:   // 加载收藏
         case PLAY_CHIP_TYPE_HISTROY_RECORD:   // 加载历史记录
         case PLAY_CHIP_TYPE_SEARCH_LOAD:      // 加载搜索列表
-            playSubItem(vec[index]);
+        {
+            int curIndex = mPlayPath.chip_item_index;
+            if (isKeyPress || curIndex < 0 || curIndex >= vec.size())
+            {
+                playSubItem(vec[index]);
+            } else
+            {
+                if (!playCurSubItemSubNext(vec[curIndex]))
+                {
+                    playSubItem(vec[index]);
+                }
+            }
             break;
+        }
         default:
             GEN_Printf(LOG_ERROR, "play type: %d out of range", vec[index]->type);
             assert(0);
             break;
         }
+
+        mPlayPath.setChipItemIndex(index);
     } else
     {
         GEN_Printf(LOG_DEBUG, "index: %d was setted.", index);
@@ -583,7 +598,6 @@ void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
             id.clear();
         } else
         {
-            qDebug() << "type=" << type << "id=" << id.string();
             chip_item = new ChipItemUnion(type);
             m_pChipItemPlay->setChipItemUnion(chip_item);
             chip_item->loadChipList(id, true, ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW);
@@ -687,7 +701,10 @@ void KLDataProc::showPlayingInfo()
     case PLAY_CHIP_TYPE_LOCAL_LOAD   :    // 下载的音频碎片（专辑音乐碎片）
         break;
     case PLAY_CHIP_TYPE_COLLECT_RECORD:   // 加载收藏
+        break;
     case PLAY_CHIP_TYPE_HISTROY_RECORD:   // 加载历史记录
+        needRecord = false;
+        break;
     case PLAY_CHIP_TYPE_SEARCH_LOAD:      // 加载搜索列表
         break;
     default:
@@ -768,7 +785,7 @@ int KLDataProc::getAlbumSecondIndex()
 
     if (index2 < 0 || index2 >= vec2.size())
     {
-        GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index2, vec2.size());
+        // GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index2, vec2.size());
         return -1;
     }
     if (index >= 0 && index < vec.size())
@@ -805,7 +822,7 @@ int KLDataProc::getBDCSecondIndex()
 
     if (index2 < 0 || index2 >= vec2.size())
     {
-        GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index2, vec2.size());
+        // GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index2, vec2.size());
         return -1;
     }
 
@@ -880,7 +897,7 @@ int KLDataProc::getPlayThirdIndex(ChipItemModel *model)
     }
 }
 
-void KLDataProc::playNext()
+void KLDataProc::playNext(bool isKeyPress)
 {
     if (m_pChipItemPlay->isEmpty()
             || -1 == mPlayPath.chip_item_index)
@@ -891,7 +908,7 @@ void KLDataProc::playNext()
 
     int index = 1 + mPlayPath.chip_item_index;
 
-    chipPlayThirdClick(index);
+    chipPlayThirdClick(index, isKeyPress);
 
     // 需要后台加载数据了
     if (index + 2 >= m_pChipItemPlay->size())
@@ -947,13 +964,12 @@ bool KLDataProc::getCurrentPlayInfo(ByteString &parentId, ByteString &id)
     return true;
 }
 
-void KLDataProc::localItemPlay(int type, int index, UIChipItemList *ptr)
+void KLDataProc::localItemPlay(int type, int index, ChipItemUnion *pUnion)
 {
     mSwitch.local.table_type = type;
     mSwitch.local.table_list_item_index = index;
 
-    m_pDownLoadChip->setChipHandler(ptr);
-    m_pChipItemPlay->chipLocalLoad(m_pDownLoadChip);
+    m_pChipItemPlay->chipLocalLoad(pUnion);
 
     mPlayPath = mSwitch;
     mPlayPath.current_play_source = type;
@@ -965,7 +981,8 @@ void KLDataProc::playDefaultItem(ChipItemUnion *pUnion)
 {
     MusicChipItemUnion info;
     m_pCurPlayUnion = pUnion;
-    if (pUnion->getUnionLatestInfo(info))
+    mPlayPath.chip_item_sub_index = -1;
+    if (pUnion->getUnionInfo(info, mPlayPath.chip_item_sub_index))
     {
         gInstance->setSourceUrl(info.playUrl.string());
     }
@@ -973,6 +990,7 @@ void KLDataProc::playDefaultItem(ChipItemUnion *pUnion)
 
 void KLDataProc::audioDetailLoadOver(MusicDetail &detail)
 {
+    m_pCurPlayUnion = nullptr;
     gInstance->setSourceUrl(detail.playUrl.string());
 }
 

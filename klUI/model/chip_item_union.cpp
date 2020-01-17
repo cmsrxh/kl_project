@@ -229,83 +229,134 @@ bool ChipItemUnion::loadNextPage(int loadAction)
     return false;
 }
 
-bool ChipItemUnion::getUnionLatestInfo(MusicChipItemUnion &info)
-{    
+bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
+{
+    int newIndex;
     switch (mChipType)
     {
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
     {
         ListTable<kl::AudioItem> &nodes = ((kl::ChipAudioList *)m_pChip)->nodes();
-        if (nodes.empty())
+        ListTable<kl::AudioItem>::iterator it = nodes.begin();
+        if (-1 == index)
+        {
+            index = 0;
+        } else
+        {
+            newIndex = index;
+            for (; it != nodes.end() && newIndex; ++it, newIndex--);
+            ++index;
+        }
+        if (it != nodes.end())
+        {
+            info.type       = PLAY_CHIP_TYPE_AUDIO_CHIP;
+            info.parentId   = it->albumId;
+            info.chipId     = it->audioId;
+            info.parentName = it->albumName;
+            info.name       = it->audioName;
+            info.image      = it->audioPic;
+            info.playUrl    = it->mp3PlayUrl64;
+            info.desc       = it->audioDes;
+            return true;
+        } else
         {
             return false;
         }
-        kl::AudioItem &item = nodes.front();
-
-        info.type       = PLAY_CHIP_TYPE_AUDIO_CHIP;
-        info.parentId   = item.albumId;
-        info.chipId     = item.audioId;
-        info.parentName = item.albumName;
-        info.name       = item.audioName;
-        info.image      = item.audioPic;
-        info.playUrl    = item.mp3PlayUrl64;
-        info.desc       = item.audioDes;
-        return true;
     }
     case PLAY_CHIP_TYPE_RADIO_CHIP:
     {
         ListTable<kl::RadioItem> &nodes = ((kl::ChipRadioList *)m_pChip)->nodes();
-        if (nodes.empty())
+        ListTable<kl::RadioItem>::iterator it = nodes.begin();
+        if (-1 == index)
+        {
+            index = 0;
+        } else
+        {
+            newIndex = index;
+            for (; it != nodes.end() && newIndex; ++it, newIndex--);
+            ++index;
+        }
+        if (it != nodes.end())
+        {
+            info.type       = PLAY_CHIP_TYPE_RADIO_CHIP;
+            info.parentId   = it->albumId;
+            info.chipId     = it->audioId;
+            info.parentName = it->albumName;
+            info.image      = it->audioPic;
+            info.playUrl    = it->mp3PlayUrl64;
+            info.desc       = it->audioDes;
+            return true;
+        } else
         {
             return false;
         }
-        kl::RadioItem &item = nodes.front();
-
-        info.type       = PLAY_CHIP_TYPE_RADIO_CHIP;
-        info.parentId   = item.albumId;
-        info.chipId     = item.audioId;
-        info.parentName = item.albumName;
-        info.image      = item.audioPic;
-        info.playUrl    = item.mp3PlayUrl64;
-        info.desc       = item.audioDes;
-        return true;
     }
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
     {
         ListTable<kl::BDCastProgramItem> &nodes = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes();
-        if (nodes.empty())
+        ListTable<kl::BDCastProgramItem>::iterator it = nodes.begin();
+        if (-1 == index)
+        {
+            newIndex = 0;
+            for (; it != nodes.end(); ++it, ++newIndex);
+            --it;
+            index = newIndex;
+        } else
+        {
+            newIndex = index;
+            for (; it != nodes.end() && newIndex; ++it, newIndex--);
+            if (it == nodes.end())
+            {
+                it    = nodes.begin();
+                index = 0;
+            } else
+            {
+                ++index;
+            }
+        }
+        if (it != nodes.end())
+        {
+            info.type       = PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP;
+            info.parentId   = it->broadcastId;
+            info.chipId     = it->programId;
+            info.parentName = it->broadcastName;
+            info.name       = it->title;
+            info.image      = it->broadcastImg;
+            info.playUrl    = it->playUrl;
+            info.desc       = it->desc;
+            return true;
+        } else
         {
             return false;
         }
-        kl::BDCastProgramItem &item = nodes.back();
-
-        info.type       = PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP;
-        info.parentId   = item.broadcastId;
-        info.chipId     = item.programId;
-        info.parentName = item.broadcastName;
-        info.name       = item.title;
-        info.image      = item.broadcastImg;
-        info.playUrl    = item.playUrl;
-        info.desc       = item.desc;
-        return true;
     }
     case PLAY_CHIP_TYPE_LOCAL_LOAD:
     {
         ListTable<kl::RecordItem> &nodes = ((kl::DownloadManage *)m_pChip)->nodes();
-        if (nodes.empty())
+        ListTable<kl::RecordItem>::iterator it = nodes.begin();
+        if (-1 == index)
+        {
+            index = 0;
+        } else
+        {
+            newIndex = index;
+            for (; it != nodes.end() && newIndex; ++it, newIndex--);
+            ++index;
+        }
+        if (it != nodes.end())
+        {
+            info.type       = PLAY_CHIP_TYPE_LOCAL_LOAD;
+            info.parentId   = it->parentId;
+            info.chipId     = it->id;
+            info.parentName = it->parentName;
+            info.name       = it->name;
+            info.image      = it->image;
+            info.playUrl    = it->playUrl;
+            return true;
+        } else
         {
             return false;
         }
-        kl::RecordItem &item = nodes.front();
-
-        info.type       = PLAY_CHIP_TYPE_LOCAL_LOAD;
-        info.parentId   = item.parentId;
-        info.chipId     = item.id;
-        info.parentName = item.parentName;
-        info.name       = item.name;
-        info.image      = item.image;
-        info.playUrl    = item.playUrl;
-        return true;
     }
     default:
         GEN_Printf(LOG_ERROR, "chip type=%d is out of range.", mChipType);
@@ -402,7 +453,7 @@ void ChipItemUnion::genCatesByLocalLoadItem(ListTable<kl::RecordItem> &nodes, Ve
         tmp->parentId   = it->parentId;
         tmp->chipId     = it->id;
         tmp->parentName = it->parentName;
-        tmp->name       = it->name;
+        tmp->name       = (it->name.empty()) ? it->name : it->parentName;
         tmp->image      = it->image;
         tmp->playUrl    = it->playUrl;
 
@@ -423,7 +474,7 @@ void ChipItemUnion::genCatesByCollectItem(ListTable<kl::RecordItem> &nodes, Vect
         tmp->parentId   = it->parentId;
         tmp->chipId     = it->id;
         tmp->parentName = it->parentName;
-        tmp->name       = it->name;
+        tmp->name       = (it->name.empty()) ? it->name : it->parentName;
         tmp->image      = it->image;
         tmp->playUrl    = it->playUrl;
 
@@ -444,7 +495,7 @@ void ChipItemUnion::genCatesByHistroyItem(ListTable<kl::RecordItem> &nodes, Vect
         tmp->parentId   = it->parentId;
         tmp->chipId     = it->id;
         tmp->parentName = it->parentName;
-        tmp->name       = it->name;
+        tmp->name       = (it->name.empty()) ? it->name : it->parentName;
         tmp->image      = it->image;
         tmp->playUrl    = it->playUrl;
 
@@ -459,7 +510,6 @@ void ChipItemUnion::genCatesBySearchItem(ListTable<kl::SearchItem> &nodes, Vecto
     for ( ; it != nodes.end(); ++it)
     {
         MusicChipItemUnion *tmp = new MusicChipItemUnion;
-
 
         /* 0：专辑, 1：碎片, 3：智能电台, 11：传统电台 */
         switch (it->type.toInt())
@@ -485,7 +535,7 @@ void ChipItemUnion::genCatesBySearchItem(ListTable<kl::SearchItem> &nodes, Vecto
         tmp->parentId   = it->id;
         tmp->chipId     = it->id;
         tmp->parentName = it->albumName;
-        tmp->name       = it->name;
+        tmp->name       = (it->name.empty()) ? it->name : it->albumName;
         tmp->image      = it->img;
         tmp->playUrl    = it->playUrl;
 

@@ -113,10 +113,11 @@ void ChipItemModel::chipLoadOver(long ptr)
 
 void ChipItemModel::chipLocalLoad(ChipItemUnion *pUnion)
 {
-    qDebug() << "local chip load over";
+    qDebug() << "local chip load over, chip type" << pUnion->getChipType();
     mVec.clearPtr();
     m_pUnion = pUnion;
     m_pUnion->onLoadOver(this);
+    qDebug() << "LoadOver Size=" << mVec.size();
 
     beginResetModel();
     endResetModel();
@@ -174,6 +175,7 @@ int ChipItemModel::playingIndex()
 
 int ChipItemModel::itemCount() const
 {
+    qDebug() << "itemCount: " << (long) m_pUnion;
     return m_pUnion->itemCount();
 }
 

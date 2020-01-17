@@ -6,6 +6,7 @@
 #include "model/kl_data_proc.h"
 #include "model/kl_local_data_proc.h"
 #include "kl_ui_proc.h"
+#include "model/chip_item_union.h"
 #include "../klIface/kl_service_notify.h"
 
 extern KLUIProc *gInstance;
@@ -23,6 +24,7 @@ static void searchNotify(kl::VoiceSearchAll *obj, bool res)
 
 kl::SearchManage::SearchManage()
     : m_pDeleteSearch(nullptr)
+    , m_pSearchChip(new ChipItemUnion(PLAY_CHIP_TYPE_SEARCH_LOAD))
 {
 }
 
@@ -52,9 +54,17 @@ void kl::SearchManage::playSearchItem(const char *id, kl::SearchManage::SearchSt
             item->playState    = 1;
             item->currentIndex = start;
             /* 0：专辑, 1：碎片, 3：智能电台, 11：传统电台 */
-            Q_EMIT gInstance->searchProc(1, index, (long)item->search);
+            GEN_Printf(LOG_DEBUG, "Search by index: %d", start);
+            if (item->search == m_pDeleteSearch)
+            {
+                Q_EMIT gInstance->searchProc(4, start, 0);
+            } else
+            {
+                Q_EMIT gInstance->searchProc(1, start, (long)item->search);
+            }
             mPlaySearch = *item;
             strncpy(mPlayId, id, 31);
+            return;
         }
     }
 }
@@ -69,10 +79,7 @@ kl::SearchManage::~SearchManage()
         delete it->search;
     }
 
-    if (m_pDeleteSearch)
-    {
-        delete m_pDeleteSearch;
-    }
+    delete m_pSearchChip;
 }
 
 void kl::SearchManage::searchKeyword(const char *id, const char *keyWord)
@@ -95,6 +102,9 @@ void kl::SearchManage::searchKeyword(const char *id, const char *keyWord)
         {
             search->search(keyWord);
             return;
+        } else
+        {
+            mList.remove(it);
         }
     }
 
@@ -152,9 +162,17 @@ void kl::SearchManage::playSearchName(const char *id, const char *name)
                 state->playState    = 1;
                 state->currentIndex = index;
                 /* 0：专辑, 1：碎片, 3：智能电台, 11：传统电台 */
-                Q_EMIT gInstance->searchProc(1, index, (long)state->search);
+                GEN_Printf(LOG_DEBUG, "Search by name: %s, index: %d", name, index);
+                if (state->search == m_pDeleteSearch)
+                {
+                    Q_EMIT gInstance->searchProc(4, index, 0);
+                } else
+                {
+                    Q_EMIT gInstance->searchProc(1, index, (long)state->search);
+                }
                 mPlaySearch = *state;
                 strncpy(mPlayId, id, 31);
+                return;
             }
         }
     } else
@@ -250,4 +268,10 @@ void kl::SearchManage::setCurSearch(kl::VoiceSearchAll *seach)
         delete m_pDeleteSearch;
     }
     m_pDeleteSearch = seach;
+}
+
+ChipItemUnion *kl::SearchManage::genUnion(kl::VoiceSearchAll *seach)
+{
+    m_pSearchChip->setChipHandler(seach);
+    return m_pSearchChip;
 }

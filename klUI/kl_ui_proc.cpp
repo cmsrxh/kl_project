@@ -22,7 +22,7 @@ KLUIProc::KLUIProc()
     , m_pViewStack(new ViewSwitchStack)
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
-    connect(this, SIGNAL(searchProc(int,int,long)), this, SLOT(onSearchProc(int,int,long)));
+    connect(this, SIGNAL(searchProc(int,int,long)), this, SLOT(onSearchProc(int,int,long)), Qt::QueuedConnection);
 }
 
 KLUIProc::~KLUIProc()
@@ -48,6 +48,7 @@ void KLUIProc::init(QQmlContext *ctx)
     m_pChipItem     = new ChipItemModel();
     m_pChipItemPlay = new ChipItemModel();
 
+    connect(m_pCate, SIGNAL(dataLoadOver(long)), this, SLOT(onAlbumTabLoadOver(long)));
     KLDataProc::instance()->initAlbum(m_pCate, m_pCateItem, m_pChipItem, m_pChipItemPlay);
 
     m_pBDCTab       = new CategoryModel;
@@ -148,7 +149,7 @@ void KLUIProc::qmlPlayPrev()
 
 void KLUIProc::qmlPlayNext()
 {
-    KLDataProc::instance()->playNext();
+    KLDataProc::instance()->playNext(true);
 }
 
 void KLUIProc::qmlMainTabClick(int index)
@@ -221,22 +222,35 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
 
 void KLUIProc::onSearchProc(int type, int index, long searchPtr)
 {
+    qDebug() << "search proc" << type << index << searchPtr;
     switch (type)
     {
     case 1:
+    {
         KLDataProc::instance()->localItemPlay(CURREN_PLAY_SOURCE_CLIENT_SEARCH_LIST,
-                                              index, reinterpret_cast<UIChipItemList *>(searchPtr));
+                                              index, kl::SearchManage::instance()->genUnion(reinterpret_cast<kl::VoiceSearchAll *>(searchPtr)));
+
         kl::SearchManage::instance()->setCurSearch(reinterpret_cast<kl::VoiceSearchAll *>(searchPtr));
         break;
+    }
     case 2:
         KLDataProc::instance()->playNext();
         break;
     case 3:
         KLDataProc::instance()->playPrev();
         break;
+    case 4:
+        KLDataProc::instance()->chipPlayThirdClick(index);
+        break;
     default:
         break;
     }
+}
+
+void KLUIProc::onAlbumTabLoadOver(long pUnion)
+{
+    qDebug() << "album tab load over, and need load first " << pUnion;
+    KLDataProc::instance()->detailLoadAlbumInfo();
 }
 
 QString KLUIProc::numToTimeStr(int num)

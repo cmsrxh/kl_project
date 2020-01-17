@@ -14,6 +14,7 @@ void KLServicePriser::cmdPriser(IPCDataPackage *in, IPCDataPackage *out)
 {
     out->setCmdType(ipc::SERVICE_REPLY_OK);
 
+    GEN_Printf(LOG_DUMP, "KLServicePriser CMD: %d", in->getCmd());
     switch (in->getCmd())
     {
     case CLIENT_CALL_SEARCH_KEY_WORD:
@@ -71,6 +72,7 @@ void KLServicePriser::cmdPriser(IPCDataPackage *in, IPCDataPackage *out)
     }
     default:
     {
+        out->setCmdType(ipc::SERVICE_REPLY_ERROR);
         GEN_Printf(LOG_DEBUG, "UNKown Cmd: %d", in->getCmd());
         break;
     }

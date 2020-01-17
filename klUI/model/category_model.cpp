@@ -98,7 +98,6 @@ void CategoryModel::onLoadOver(long ptr)
 
     m_pCateUnion->onLoadOver(mVec);
 
-
     beginResetModel();
     endResetModel();
 }

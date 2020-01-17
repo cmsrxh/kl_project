@@ -79,10 +79,10 @@ void kl::CategoryBroadcast::genResult(NetBuffer *data)
         if (mNodes.empty())
         {
             GEN_Printf(LOG_WARN, "load category broadcast list is empty");
-        } else
+        }/* else
         {
             profile();
-        }
+        }*/
     } else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());

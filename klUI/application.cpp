@@ -22,7 +22,9 @@
 Application::Application()
     : m_pKLInit(NULL), m_pKLActive(NULL)
 {
+#ifdef USE_MPV_API_INTERFACE
     setlocale(LC_NUMERIC, "C");
+#endif
 }
 
 void Application::initialize()
@@ -41,7 +43,7 @@ void Application::initialize()
     KLDataProc::instance()->initSockService();
 
     // 启动收数据线程，并连接播放服务端socket
-    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    // postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }
@@ -145,6 +147,7 @@ bool Application::postKlEvent(int cmd, long ext1, long ext2, const char *str)
 
 void Application::klInitActiveManage(GeneralQEvt *evt)
 {
+    GEN_Printf(LOG_DEBUG, "klInitActiveManage type: %ld", evt->wParam);
     switch (evt->wParam)
     {
     case 1: // 考拉调用init，加载OpenId信息的json解析有错

@@ -45,6 +45,7 @@ public:
             , cate_tab_sub_index(-1)
             , cate_item_index(-1)
             , chip_item_index(-1)
+            , chip_item_sub_index(-1)
             , current_play_source(-1)
             , bdc {-1, -1, -1}
             , local{-1, 0, -1}
@@ -83,6 +84,7 @@ public:
         int cate_tab_sub_index;
         int cate_item_index;
         int chip_item_index;
+        int chip_item_sub_index;
         int current_play_source;
 
         struct {
@@ -117,6 +119,12 @@ public:
     void initBroadcast(CategoryModel *bdcTab,
                        CategoryModel *bdcArea,
                        CateItemModel *bdcItem);
+
+    /**
+     * @brief detailLoadAlbumInfo
+     * @details 界面启动后，专辑标签数据加载完毕后，需要加载默认一页
+     */
+    void detailLoadAlbumInfo();
 
     /**
      * @brief getCurrentShowView
@@ -163,7 +171,7 @@ public:
      * @param index
      * @details 当前主页上，正在播放的节目列表ID点击，有可能跟audio碎片相等
      */
-    void chipPlayThirdClick(int index);
+    void chipPlayThirdClick(int index, bool isKeyPress = false);
 
     void bdcFirstCateTabClick(int index);
 
@@ -234,7 +242,7 @@ public:
      */
     int  getBDCFirstAreaIndex();
 
-    void playNext();
+    void playNext(bool isKeyPress = false);
     void playPrev();
 
     /**
@@ -272,7 +280,7 @@ public:
      * @param main_index
      * @details 根据本地信息（收藏 历史记录 或者下载记录），进行播放处理
      */
-    void localItemPlay(int type, int index, UIChipItemList *ptr) ;
+    void localItemPlay(int type, int index, ChipItemUnion *pUnion) ;
 
     /**
      * @brief playDefaultItem
@@ -291,14 +299,10 @@ private:
     KLDataProc();
     void enterBroadcastView();
     void playSubItem(MusicChipItemUnion *chip);
+    bool playCurSubItemSubNext(MusicChipItemUnion *);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
-    //local op
-    ChipItemUnion    *m_pDownLoadChip;
-    ChipItemUnion    *m_pCollectChip;
-    ChipItemUnion    *m_pHistoryChip;
-    ChipItemUnion    *m_pSearchChip;
 
     // album
     CategoryUnion    *m_pCateData;
