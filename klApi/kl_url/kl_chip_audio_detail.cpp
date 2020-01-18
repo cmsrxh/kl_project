@@ -72,8 +72,9 @@ void kl::ChipAudioDetail::profile()
     GEN_Printf(LOG_DUMP, "hasNextPage: %s", mItem.hasNextPage.string());
 }
 
-void kl::ChipAudioDetail::genResult(NetBuffer *data)
+int kl::ChipAudioDetail::genResult(NetBuffer *data)
 {
+    int ret = KL_DATA_PRISER_OK;
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
 
@@ -84,7 +85,9 @@ void kl::ChipAudioDetail::genResult(NetBuffer *data)
     } else
     {
         GEN_Printf(LOG_ERROR, "Priser result failed.");
+        ret = KL_DATA_PRISER_JSOC_ERROR;
     }
 
     cJSON_Delete(root);
+    return ret;
 }

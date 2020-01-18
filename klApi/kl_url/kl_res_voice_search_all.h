@@ -19,7 +19,7 @@ public:
 
     void search(const ByteString &query);
 
-    void genResult(NetBuffer *data);
+    int genResult(NetBuffer *data);
     void loadErrorInfo(int type, const char *str);
 
     NetBuffer *pData() const

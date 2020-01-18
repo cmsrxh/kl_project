@@ -23,12 +23,12 @@ public:
     {
         mItem.clear();
     }
-    void loadData (NetBuffer *data)
+    int loadData (NetBuffer *data)
     {        
-        genResult(data);
+        return genResult(data);
     }
 
-    virtual void genResult(NetBuffer */*data*/) {}
+    virtual int genResult(NetBuffer */*data*/) { return KL_DATA_PRISER_OK; }
 
     item_node &item()
     {

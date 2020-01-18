@@ -295,6 +295,27 @@ public:
      */
     void audioDetailLoadOver(MusicDetail &detail);
 
+    /**
+     * @brief klLoadDataExportEmpty
+     * @details  kl下载的数据，是空列表
+     */
+    void klLoadDataExportEmpty();
+
+    /**
+     * @brief klLoadDataPriserExcept
+     * @param str
+     * @details  kl下载的数据，json格式数据解析失败了（大多都是传递 了错误的参数，或者服务器那边出现问题）
+     */
+    void klLoadDataPriserExcept(const ByteString &str);
+
+    /**
+     * @brief sysNetLoadApiExcept
+     * @param type
+     * @param str
+     * @details 调用libcurl下载kl数据失败，一般时本地网络出现问题
+     *          例如：下载超时、网络断开等等原因。
+     */
+    void sysNetLoadApiExcept(int type, const char *str);
 private:
     KLDataProc();
     void enterBroadcastView();

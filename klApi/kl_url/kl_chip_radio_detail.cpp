@@ -39,8 +39,9 @@ void kl::ChipRadioDetail::profile()
     GEN_Printf(LOG_DUMP, "type: %s", mItem.type.string());
 }
 
-void kl::ChipRadioDetail::genResult(NetBuffer *data)
+int kl::ChipRadioDetail::genResult(NetBuffer *data)
 {
+    int ret = KL_DATA_PRISER_OK;
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
     if (result)
@@ -50,7 +51,9 @@ void kl::ChipRadioDetail::genResult(NetBuffer *data)
     } else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());
+        ret = KL_DATA_PRISER_JSOC_ERROR;
     }
 
     cJSON_Delete(root);
+    return ret;
 }

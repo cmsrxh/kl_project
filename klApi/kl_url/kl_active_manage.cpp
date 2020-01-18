@@ -51,9 +51,10 @@ NetUrl &kl::ActiveManage::genQueryUrl()
     return mUrl;
 }
 
-void kl::ActiveManage::loadData(NetBuffer *data)
+int kl::ActiveManage::loadData(NetBuffer *data)
 {
     GEN_Printf(LOG_INFO, "device active data: \n%s", data->buffer());
+    return KL_DATA_PRISER_OK;
 }
 
 void kl::ActiveManage::loadErrorInfo(int type, const char *str)

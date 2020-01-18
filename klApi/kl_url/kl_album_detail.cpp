@@ -53,8 +53,9 @@ void kl::AlbumDetail::profile()
     GEN_Printf(LOG_DUMP, "isSubscribe: %s", mItem.isSubscribe.string());
 }
 
-void kl::AlbumDetail::genResult(NetBuffer *data)
+int kl::AlbumDetail::genResult(NetBuffer *data)
 {
+    int ret = KL_DATA_PRISER_OK;
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *resultArray = cJSON_GetObjectItem(root, "result");
 
@@ -106,7 +107,9 @@ void kl::AlbumDetail::genResult(NetBuffer *data)
     } else
     {
         GEN_Printf(LOG_ERROR, "Priser result failed.");
+        ret = KL_DATA_PRISER_JSOC_ERROR;
     }
 
     cJSON_Delete(root);
+    return ret;
 }

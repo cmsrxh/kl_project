@@ -98,7 +98,7 @@ void kl::VoiceSearchAll::search(const ByteString &query)
     obtain();
 }
 
-void kl::VoiceSearchAll::genResult(NetBuffer *data)
+int kl::VoiceSearchAll::genResult(NetBuffer *data)
 {
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
@@ -154,6 +154,7 @@ void kl::VoiceSearchAll::genResult(NetBuffer *data)
     }
 
     cJSON_Delete(root);
+    return KL_DATA_PRISER_OK;
 }
 
 void kl::VoiceSearchAll::loadErrorInfo(int type, const char *str)

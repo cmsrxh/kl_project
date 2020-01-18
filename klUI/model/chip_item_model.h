@@ -83,15 +83,6 @@ public:
      */
     bool isCollect();
 
-    ByteString &getDefaultId()
-    {
-        return mDefaultId;
-    }
-    void setDefaultId(const ByteString &defaultId)
-    {
-        mDefaultId.clear();
-        mDefaultId = ByteString::allocString(defaultId);
-    }
     /**
      * @brief chipLoadOver
      * @param ptr [in] ChipItemUnion 实例指针
@@ -129,12 +120,29 @@ Q_SIGNALS:
 
     // collect current
     void isCollectChanged(bool isCollect);
+
+    /**
+     * @brief loadStartNewPage
+     * @details 用于消息弹框，表示下载第一次开始
+     */
+    void loadStartNewPage();
+
+    /**
+     * @brief loadStartNextPage
+     * @details  用于消息弹框，表示下载下一页开始
+     */
+    void loadStartNextPage();
+
+    /**
+     * @brief loadOver
+     * @details 下载完成，取消弹框
+     */
+    void loadOver();
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
     ChipItemUnion                    *m_pUnion;
-    ByteString                        mDefaultId;
     QHash<int, QByteArray>            roles;
     VectorTable<MusicChipItemUnion *> mVec;
 };

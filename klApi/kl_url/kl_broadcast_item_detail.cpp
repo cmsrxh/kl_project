@@ -51,8 +51,9 @@ void kl::BroadcastItemDetail::profile()
     GEN_Printf(LOG_DUMP, "areaCode: %s", mItem.mAreaCode.string());
 }
 
-void kl::BroadcastItemDetail::genResult(NetBuffer *data)
+int kl::BroadcastItemDetail::genResult(NetBuffer *data)
 {
+    int ret = KL_DATA_PRISER_OK;
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
 
@@ -70,8 +71,9 @@ void kl::BroadcastItemDetail::genResult(NetBuffer *data)
     } else
     {
         GEN_Printf(LOG_ERROR, "Priser result failed.");
+        ret = KL_DATA_PRISER_JSOC_ERROR;
     }
 
     cJSON_Delete(root);
-
+    return ret;
 }

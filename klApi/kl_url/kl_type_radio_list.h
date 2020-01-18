@@ -19,7 +19,7 @@ public:
 
     void profile();
 
-    void genResult(NetBuffer *data);
+    int genResult(NetBuffer *data);
 
     bool loadNextPage();
 

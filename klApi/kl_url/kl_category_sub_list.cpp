@@ -75,8 +75,9 @@ void kl::CategorySublist::profile()
     }
 }
 
-void kl::CategorySublist::genResult(NetBuffer *data)
+int kl::CategorySublist::genResult(NetBuffer *data)
 {
+    int ret = KL_DATA_PRISER_OK;
     GEN_Printf(LOG_DEBUG, "size: %lu\n%s", data->size(), data->buffer());
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
     cJSON *result = cJSON_GetObjectItem(root, "result");
@@ -97,6 +98,7 @@ void kl::CategorySublist::genResult(NetBuffer *data)
         if (mNodes.empty())
         {
             GEN_Printf(LOG_WARN, "load sub list is empty");
+            ret = KL_DATA_PRISER_EMPTY;
         }/* else
         {
             profile();
@@ -104,8 +106,10 @@ void kl::CategorySublist::genResult(NetBuffer *data)
     } else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());
+        ret = KL_DATA_PRISER_JSOC_ERROR;
     }
 
     cJSON_Delete(root);
+    return ret;
 }
 

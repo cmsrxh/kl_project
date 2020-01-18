@@ -29,6 +29,9 @@ enum {
     SIG_KL_RECORD_CURRENT_PLAY, // 记录当前播放项，并把它放入历史记录
     SIG_KL_HISTORY_CLEAR_APP,   // 清空 历史记录 所有项
     SIG_KL_SEARCH_RESULT_PROC,  // kl搜索结果处理
+
+    SIG_KL_LOAD_DATA_EXCEPT,    // 下载kl数据异常处理等析
+    SIG_SYS_NET_LOAD_API_EXCEPT,// 调用libcurl下载kl数据失败，一般时本地网络出现问题
 };
 
 

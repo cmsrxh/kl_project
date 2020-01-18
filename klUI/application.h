@@ -48,6 +48,7 @@ protected:
 
     void klInitGetOpenId();
 
+    void klLoadDataExceptProc(GeneralQEvt *evt);
 private:
     Application();
     Application(Application &);

@@ -116,10 +116,21 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
     switch (status)
     {
     case OP_CURL_STATUS_LOAD_ALL_OVER:      // 表示数据下载全部一次性返回了
-        static_cast<kl::KLObject *>(arg)->loadData(static_cast<NetBuffer *>(data));
+    {
+        int ret = static_cast<kl::KLObject *>(arg)->loadData(static_cast<NetBuffer *>(data));
+        if (KL_DATA_PRISER_OK != ret)
+        {
+            NetBuffer *buf = NetBuffer::ref(static_cast<NetBuffer *>(data));
+            if (!Application::instance()->postKlEvent(SIG_KL_LOAD_DATA_EXCEPT, ret, 0,
+                                                      reinterpret_cast<char *>(buf)))
+            {
+                NetBuffer::unref(buf);
+            }
+        }
         static_cast<kl::KLObject *>(arg)->loadOver();
         static_cast<kl::KLObject *>(arg)->uiNotifyOver();
         break;
+    }
     case OP_CURL_STATUS_LOAD_ONE_FRAME:     // 表示数据下载方式按照块来计算，有多少数据就来多少
         static_cast<kl::KLObject *>(arg)->loadData(static_cast<NetBuffer *>(data));
         break;
@@ -133,6 +144,7 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
         static_cast<kl::KLObject *>(arg)->loadErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         GEN_Printf(LOG_ERROR, "Load Error: %d. %s", status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
+        Application::instance()->postKlEvent(SIG_SYS_NET_LOAD_API_EXCEPT, status - OP_CURL_STATUS_ERROR_TYPE, 0, (char *)data);
         break;
     }
 }

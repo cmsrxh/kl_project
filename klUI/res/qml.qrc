@@ -25,5 +25,6 @@
         <file>self/KlHistoryRecord.qml</file>
         <file>self/KlVioceGuide.qml</file>
         <file>self/KlSettingView.qml</file>
+        <file>BusyIndicator.qml</file>
     </qresource>
 </RCC>

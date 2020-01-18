@@ -161,6 +161,9 @@ void Application::runLoop()
         case SIG_KL_INIT_ERROR:
             klInitActiveManage((GeneralQEvt *)evt);
             break;
+        case SIG_KL_LOAD_DATA_EXCEPT:
+            klLoadDataExceptProc((GeneralQEvt *)evt);
+            break;
         case SIG_USER_UNUSED:
         default:
             GEN_Printf(LOG_WARN, "[%d] is UNKOWN.", evt->sig);
@@ -175,10 +178,9 @@ void Application::runLoop()
     exit(EXIT_SUCCESS);
 }
 
-
-
-void Application::postKlEvent(int cmd, int ext1, int ext2, const char *str)
+bool Application::postKlEvent(int cmd, int ext1, int ext2, const char *str)
 {
+    bool ret = false;
     GeneralQEvt *e = (GeneralQEvt *)newEvt(cmd, sizeof(GeneralQEvt));
 
     if (e)
@@ -186,11 +188,12 @@ void Application::postKlEvent(int cmd, int ext1, int ext2, const char *str)
         e->wParam = ext1;
         e->lParam = ext2;
         e->pHander = (void *)str;
-        post(e);
+        ret = post(e);
     } else
     {
         GEN_Printf(LOG_ERROR, "Post Kl Cmd failed.");
     }
+    return ret;
 }
 
 void Application::klInitActiveManage(GeneralQEvt *evt)
@@ -223,6 +226,21 @@ void Application::klInitGetOpenId()
     {
         (*it)->obtain();
     }
+}
+
+void Application::klLoadDataExceptProc(GeneralQEvt *evt)
+{
+    NetBuffer *buf = reinterpret_cast<NetBuffer *>(evt->pHander);
+    switch (evt->wParam) {
+    case kl::KL_DATA_PRISER_EMPTY:
+        break;
+    case kl::KL_DATA_PRISER_JSOC_ERROR:
+        break;
+    default:
+        break;
+    }
+    GEN_Printf(LOG_DEBUG, "%s", buf->buffer());
+    NetBuffer::unref(buf);
 }
 
 

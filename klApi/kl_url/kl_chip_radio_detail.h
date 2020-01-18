@@ -14,7 +14,7 @@ public:
 
     void profile();
 
-    void genResult(NetBuffer *data);
+    int genResult(NetBuffer *data);
 
 private:
     ByteString mRID;

@@ -115,6 +115,14 @@ void Application::runLoop()
                                                          ((GeneralQEvt *)evt)->wParam);
             break;
 
+        case SIG_KL_LOAD_DATA_EXCEPT:
+            klLoadDataExceptProc((GeneralQEvt *)evt);
+            break;
+
+        case SIG_SYS_NET_LOAD_API_EXCEPT:
+            KLDataProc::instance()->sysNetLoadApiExcept(((GeneralQEvt *)evt)->wParam, reinterpret_cast<char *>(((GeneralQEvt *)evt)->pHander));
+            break;
+
         case SIG_USER_UNUSED:
         default:
             GEN_Printf(LOG_WARN, "[%d] is UNKOWN.", evt->sig);
@@ -178,5 +186,23 @@ void Application::klInitGetOpenId()
     }
 }
 
-
+void Application::klLoadDataExceptProc(GeneralQEvt *evt)
+{
+    NetBuffer *buf = reinterpret_cast<NetBuffer *>(evt->pHander);
+    switch (evt->wParam)
+    {
+    case kl::KL_DATA_PRISER_EMPTY:
+        KLDataProc::instance()->klLoadDataExportEmpty();
+        break;
+    case kl::KL_DATA_PRISER_JSOC_ERROR:
+        KLDataProc::instance()->klLoadDataPriserExcept(ByteString(reinterpret_cast<char *>(buf->buffer()),
+                                                                  buf->size()));
+        break;
+    default:
+        GEN_Printf(LOG_ERROR, "Invalid except: %ld", evt->wParam);
+        assert(0);
+        break;
+    }
+    NetBuffer::unref(buf);
+}
 

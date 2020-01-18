@@ -73,7 +73,11 @@ Q_SIGNALS:
     void bdcTabIndexChanged(int bdcTabIndex);
 
     void bdcAreaIndexChanged(int bdcAreaIndex);
-
+    /**
+     * @brief loadStart
+     * @details 用于消息弹框，表示下载第一次开始
+     */
+    void loadStart();
 protected:
     QHash<int, QByteArray> roleNames() const;
 

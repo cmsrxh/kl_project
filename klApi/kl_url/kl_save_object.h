@@ -30,9 +30,9 @@ public:
         }
     }
 
-    void loadData (NetBuffer *data)
+    int loadData (NetBuffer *data)
     {        
-        genResult(data);
+        int ret = genResult(data);
 
         if (mSaveFile)
         {
@@ -51,6 +51,8 @@ public:
                 GEN_Printf(LOG_ERROR, "%s open failed, %s", mSaveFile, strerror(errno));
             }
         }
+
+        return ret;
     }
 
     void loadNodesFile()
@@ -99,7 +101,7 @@ public:
         return mNodes.empty();
     }
 
-    virtual void genResult(NetBuffer */*data*/) {}
+    virtual int genResult(NetBuffer */*data*/) { return KL_DATA_PRISER_OK; }
 
     void setSaveFile(const char *saveFile)
     {

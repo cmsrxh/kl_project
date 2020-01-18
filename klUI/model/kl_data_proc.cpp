@@ -214,14 +214,14 @@ void KLDataProc::detailLoadAlbumInfo()
 }
 
 enum {
-    CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO,
-    CURRENT_VIEW_IN_ALBUM_INFO_LIST,
-    CURRENT_VIEW_IN_BROADCAST,
-    CURRENT_VIEW_IN_COLLECT,
-    CURRENT_VIEW_IN_DOWNLOAD,
-    CURRENT_VIEW_IN_HISTROY,
-    CURRENT_VIEW_IN_VOICE_GUIDANCE,
-    CURRENT_VIEW_IN_SETTING,
+    CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO,   //CategoryView.qml --> CateItemInfoView.qml
+    CURRENT_VIEW_IN_ALBUM_INFO_LIST,            // CategoryView.qml --> CateItemListView.qml
+    CURRENT_VIEW_IN_BROADCAST,                  // CategoryView.qml --> bdc/KlInlineBroadcast.qml
+    CURRENT_VIEW_IN_COLLECT,            // self/KlDlgOptionView.qml --> KlCollectView.qml
+    CURRENT_VIEW_IN_DOWNLOAD,           // self/KlDlgOptionView.qml --> KlLoadView.qml
+    CURRENT_VIEW_IN_HISTROY,            // self/KlDlgOptionView.qml --> KlHistoryRecord.qml
+    CURRENT_VIEW_IN_VOICE_GUIDANCE,     // self/KlDlgOptionView.qml --> KlVioceGuide.qml
+    CURRENT_VIEW_IN_SETTING,            // self/KlDlgOptionView.qml --> KlSettingView.qml
 };
 
 int KLDataProc::getCurrentShowView()
@@ -749,14 +749,14 @@ void KLDataProc::showPlayingInfo()
         assert(0);
     }
 
-    switch (mPlayPath.current_play_source)
-    {
-    case CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST:     // 从历史记录列表中开始播放
-        needRecord = false;
-        break;    
-    default:        
-        break;
-    }
+//    switch (mPlayPath.current_play_source)
+//    {
+//    case CURREN_PLAY_SOURCE_HISTORY_RECORD_LIST:     // 从历史记录列表中开始播放
+//        needRecord = false;
+//        break;
+//    default:
+//        break;
+//    }
 
     // 显示当前播放信息
     Q_EMIT gInstance->playingInfo(QStringFromByteString(vec[index]->name),
@@ -992,5 +992,62 @@ void KLDataProc::audioDetailLoadOver(MusicDetail &detail)
 {
     m_pCurPlayUnion = nullptr;
     gInstance->setSourceUrl(detail.playUrl.string());
+}
+
+void KLDataProc::klLoadDataExportEmpty()
+{
+    int viewType = getCurrentShowView();
+    switch (viewType)
+    {
+    case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
+    case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
+    case CURRENT_VIEW_IN_BROADCAST:
+    case CURRENT_VIEW_IN_COLLECT:
+    case CURRENT_VIEW_IN_DOWNLOAD:
+    case CURRENT_VIEW_IN_HISTROY:
+    case CURRENT_VIEW_IN_VOICE_GUIDANCE:
+    case CURRENT_VIEW_IN_SETTING:
+        break;
+    default:
+        break;
+    }
+}
+
+void KLDataProc::klLoadDataPriserExcept(const ByteString &str)
+{
+    int viewType = getCurrentShowView();
+    switch (viewType)
+    {
+    case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
+    case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
+    case CURRENT_VIEW_IN_BROADCAST:
+    case CURRENT_VIEW_IN_COLLECT:
+    case CURRENT_VIEW_IN_DOWNLOAD:
+    case CURRENT_VIEW_IN_HISTROY:
+    case CURRENT_VIEW_IN_VOICE_GUIDANCE:
+    case CURRENT_VIEW_IN_SETTING:
+        break;
+    default:
+        break;
+    }
+}
+
+void KLDataProc::sysNetLoadApiExcept(int type, const char *str)
+{
+    int viewType = getCurrentShowView();
+    switch (viewType)
+    {
+    case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
+    case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
+    case CURRENT_VIEW_IN_BROADCAST:
+    case CURRENT_VIEW_IN_COLLECT:
+    case CURRENT_VIEW_IN_DOWNLOAD:
+    case CURRENT_VIEW_IN_HISTROY:
+    case CURRENT_VIEW_IN_VOICE_GUIDANCE:
+    case CURRENT_VIEW_IN_SETTING:
+        break;
+    default:
+        break;
+    }
 }
 

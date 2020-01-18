@@ -48,7 +48,7 @@ public:
         runLoop();
     }
 #endif
-    void postKlEvent(int cmd, int ext1 = 0, int ext2 = 0, const char *str = 0);
+    bool postKlEvent(int cmd, int ext1 = 0, int ext2 = 0, const char *str = 0);
 
     void collectObject(kl::KLObject *obj)
     {
@@ -57,6 +57,7 @@ public:
 protected:
     void klInitActiveManage(GeneralQEvt *evt);
     void klInitGetOpenId();
+    void klLoadDataExceptProc(GeneralQEvt *evt);
 private:
     Application();
     Application(Application &);

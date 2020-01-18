@@ -9,7 +9,11 @@
 
 namespace kl
 {
-
+enum {
+    KL_DATA_PRISER_OK,          // 分析数据正确
+    KL_DATA_PRISER_EMPTY,       // 分析数据正确，但是得到的数据是空
+    KL_DATA_PRISER_JSOC_ERROR,  // 不能正确解析json数据
+};
 class KLObject
 {
 public:
@@ -24,7 +28,7 @@ public:
 
     virtual NetUrl &genQueryUrl() = 0;
 
-    virtual void loadData (NetBuffer *data) = 0;
+    virtual int  loadData (NetBuffer *data) = 0;
     virtual void loadErrorInfo(int /*type*/, const char */*str*/) {}
 
     void loadOver()

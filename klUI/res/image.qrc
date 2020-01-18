@@ -8,5 +8,6 @@
         <file>image/collect_hl.png</file>
         <file>image/collect_clk.png</file>
         <file>image/collect.png</file>
+        <file>image/busy.png</file>
     </qresource>
 </RCC>

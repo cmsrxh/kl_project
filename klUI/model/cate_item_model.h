@@ -67,6 +67,18 @@ Q_SIGNALS:
     void currenIndexChanged(int currentIndex);
     void currenBDCIndexChanged(int currenBDCIndex);
 
+    /**
+     * @brief loadStartNewPage
+     * @details 用于消息弹框，表示下载第一次开始
+     */
+    void loadStartNewPage();
+
+    /**
+     * @brief loadStartNextPage
+     * @details 用于消息弹框，表示下载下一页开始
+     */
+    void loadStartNextPage();
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 

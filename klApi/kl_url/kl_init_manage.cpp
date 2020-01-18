@@ -53,10 +53,10 @@ NetUrl &kl::InitManage::genQueryUrl()
     return mUrl;
 }
 
-void kl::InitManage::loadData(NetBuffer *data)
+int  kl::InitManage::loadData(NetBuffer *data)
 {
     // GEN_Printf(LOG_INFO, "app init data: \n%s", (char *)data);
-
+    int ret = KL_DATA_PRISER_OK;
     cJSON *root = cJSON_Parse((char *)data->buffer(), data->size());
 
     cJSON *openid = json_items_proc(root, "result", "openid", NULL);
@@ -69,9 +69,12 @@ void kl::InitManage::loadData(NetBuffer *data)
     } else
     {
         Application::instance()->postKlEvent(SIG_KL_INIT_ERROR, 1);
+        ret = KL_DATA_PRISER_JSOC_ERROR;
     }
 
     cJSON_Delete(root);
+
+    return ret;
 }
 
 void kl::InitManage::loadErrorInfo(int type, const char *str)
