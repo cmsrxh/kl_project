@@ -26,5 +26,6 @@
         <file>self/KlVioceGuide.qml</file>
         <file>self/KlSettingView.qml</file>
         <file>BusyIndicator.qml</file>
+        <file>KlMsgTipBox.qml</file>
     </qresource>
 </RCC>

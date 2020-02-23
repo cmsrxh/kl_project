@@ -44,5 +44,6 @@ int main(int argc, char *argv[])
     int res = app.exec();
 
     Application::uninit_all();
+
     return res;
 }
