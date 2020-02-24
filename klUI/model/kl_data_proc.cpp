@@ -210,11 +210,12 @@ void KLDataProc::initBroadcast(CategoryModel *bdcTab, CategoryModel *bdcArea, Ca
 
 void KLDataProc::detailLoadAlbumInfo()
 {
-   albumFirstClick( getAlbumFirstIndex());
+   albumFirstClick(getAlbumFirstIndex());
 }
 
+// 当前的界面汇总分配ID
 enum {
-    CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO,   //CategoryView.qml --> CateItemInfoView.qml
+    CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO,   // CategoryView.qml --> CateItemInfoView.qml
     CURRENT_VIEW_IN_ALBUM_INFO_LIST,            // CategoryView.qml --> CateItemListView.qml
     CURRENT_VIEW_IN_BROADCAST,                  // CategoryView.qml --> bdc/KlInlineBroadcast.qml
     CURRENT_VIEW_IN_COLLECT,            // self/KlDlgOptionView.qml --> KlCollectView.qml

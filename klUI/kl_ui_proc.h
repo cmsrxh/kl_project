@@ -59,12 +59,14 @@ public Q_SLOTS:
     void qmlPlayNext();
     void qmlMainTabClick(int index);
     void qmlSelfTabClick(int index);
-    //
+
+    // 播放控制反馈回来的处理信息
     void onRecvNotify(int msg, int ext1, int ext2, const QString &str);
 
+    // 搜索服务端接收同步处理的事件类型
     void onSearchProc(int type, int index, long searchPtr);
 
-    // 专辑标签下载完毕
+    // 首页专辑标签下载完毕，表示要自动下载默认标签页下面的信息
     void onAlbumTabLoadOver(long pUnion);
 Q_SIGNALS:
     void recvNotify(int msg, int ext1, int ext2, const QString &str);
