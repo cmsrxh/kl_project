@@ -32,6 +32,7 @@ kl::BroadcastItemProgramlist::BroadcastItemProgramlist(const ByteString &bid)
     : SaveObject<BDCastProgramItem> ("http://open.kaolafm.com/v2/broadcast/programlist", NetUrl::NET_HTTP_METHOD_GET)
     , mBID(bid)
 {
+    setObjectName(OBJECT_BDC_ITEM_PROGRAM);
 }
 
 kl::BroadcastItemProgramlist::~BroadcastItemProgramlist()

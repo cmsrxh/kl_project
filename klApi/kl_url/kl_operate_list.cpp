@@ -33,6 +33,7 @@ kl::OperateList::OperateList(int pagenum, int pagesize)
     , mPageNum(ByteString::allocLong(pagenum))
     , mPageSize(ByteString::allocLong(pagesize))
 {
+    setObjectName(OBJECT_OPERATE_LIST);
 }
 
 kl::OperateList::~OperateList()

@@ -7,6 +7,7 @@
 kl::KLObject::KLObject(const ByteString &baseUrl, int methodType)
     : mUrl(baseUrl, methodType)
     , mLoad(true), m_pUINotify(nullptr)
+    , mObjectName(-1)
 {
     mUrl.append("appid", LocalConfig::instance()->appID());
     mUrl.append("deviceid", LocalConfig::instance()->deviceID());
@@ -42,7 +43,9 @@ void kl::KLObject::obtain()
         mLoad.cancel();
     }
 
-    mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
+    bool ret = mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
+
+    Application::instance()->postKlEvent(SIG_KL_OBJECT_OBTAIN_START, ret, (long)this);
 }
 
 #if 1
@@ -121,11 +124,14 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
         if (KL_DATA_PRISER_OK != ret)
         {
             NetBuffer *buf = NetBuffer::ref(static_cast<NetBuffer *>(data));
-            if (!Application::instance()->postKlEvent(SIG_KL_LOAD_DATA_EXCEPT, ret, 0,
+            if (!Application::instance()->postKlEvent(SIG_KL_LOAD_DATA_EXCEPT, ret, (long)arg,
                                                       reinterpret_cast<char *>(buf)))
             {
                 NetBuffer::unref(buf);
             }
+        } else
+        {
+            Application::instance()->postKlEvent(SIG_KL_OBJECT_OBTAIN_OVER, 0, (long)arg);
         }
         static_cast<kl::KLObject *>(arg)->loadOver();
         static_cast<kl::KLObject *>(arg)->uiNotifyOver();
@@ -144,7 +150,7 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
         static_cast<kl::KLObject *>(arg)->loadErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
         GEN_Printf(LOG_ERROR, "Load Error: %d. %s", status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
-        Application::instance()->postKlEvent(SIG_SYS_NET_LOAD_API_EXCEPT, status - OP_CURL_STATUS_ERROR_TYPE, 0, (char *)data);
+        Application::instance()->postKlEvent(SIG_SYS_NET_LOAD_API_EXCEPT, status - OP_CURL_STATUS_ERROR_TYPE, (long)arg, (char *)data);
         break;
     }
 }
@@ -209,4 +215,3 @@ void kl::KLObject::jsonGenTypeRadio(kl::TypeRadio &tmp, cJSON *result)
         }
     }
 }
-

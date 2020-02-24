@@ -22,6 +22,7 @@ kl::TypeRadioList::TypeRadioList(int cid)
     : SaveObject<TypeRadio> ("http://open.kaolafm.com/v2/typeradio/list", NetUrl::NET_HTTP_METHOD_GET)
     , mCID(ByteString::allocLong(cid))
 {
+    setObjectName(OBJECT_TYPERADIO_LIST);
 }
 
 kl::TypeRadioList::~TypeRadioList()

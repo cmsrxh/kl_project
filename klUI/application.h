@@ -62,6 +62,12 @@ private:
      * @brief mKlBack
      */
     ListTable<kl::KLObject *>    mKlBack;
+
+    /**
+     * @brief mErrObj
+     * @details 记录当前对象，发生网络错误的时候需要重新加载
+     */
+    ListTable<kl::KLObject *>    mErrObj;
 };
 
 #define sfApp (Application::instance())

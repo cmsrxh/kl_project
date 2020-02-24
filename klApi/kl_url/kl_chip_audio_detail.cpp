@@ -18,6 +18,7 @@ kl::ChipAudioDetail::ChipAudioDetail(const ByteString &aid)
     : ItemObject<AudioItem>("http://open.kaolafm.com/v2/audio/detail", NetUrl::NET_HTTP_METHOD_GET)
     , mAudioId(ByteString::allocString(aid))
 {
+    setObjectName(OBJECT_CHIP_AUDIO_DETAIL);
 }
 
 kl::ChipAudioDetail::~ChipAudioDetail()

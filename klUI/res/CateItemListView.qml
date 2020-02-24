@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import Hongjing.HMI.KL 1.0 as KL
 
 GridView {
     property bool isLoad: false
@@ -26,7 +27,18 @@ GridView {
         if(isLoad)
         {
             isLoad = false
-            cateItemModel.qmlCtgNextPage();
+            var isHaveNext = cateItemModel.qmlCtgNextPage();
+            if (!isHaveNext)
+            {
+                msgBox.boxType = 4
+                msgBox.msgContent = qsTr("已经加载到末尾了")
+                msgTimer.running = true
+                msgTimer.interval = 1500
+            }/* else
+            {
+                msgBox.boxType = 2
+                msgBox.msgContent = qsTr("数据加载中……")
+            }*/
         }
     }
     onContentYChanged: {
@@ -50,13 +62,38 @@ GridView {
         clip: true
         Text {
             anchors.centerIn: parent
-            text: qsTr("上拉加载……")
+            text: qsTr("上拉加载…")
+            color: "white"
+            font.pixelSize: 24
+        }
+    }
+
+    Connections {
+        target: KL.Controller
+        onMsgTipCateItem: {
+            msgBox.boxType    = boxType
+            msgBox.msgContent = msgContent
         }
     }
 
     KlMsgTipBox {
+        id: msgBox
         anchors.fill: parent
-        boxType: 4
-        msgContent: "sdnfsjkfn"
+//        boxType: 0
+//        msgContent: qsTr("数据加载中…")
+        onFailClick: {
+            KL.Controller.qmlReloadErrObject()
+        }
+    }
+
+    Timer {
+        id: msgTimer
+        repeat: false
+        running: false
+        interval: 2000
+        onTriggered: {
+            msgBox.boxType = 0
+            msgBox.msgContent = ""
+        }
     }
 }

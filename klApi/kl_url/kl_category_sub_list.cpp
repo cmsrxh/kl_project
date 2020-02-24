@@ -43,12 +43,14 @@ kl::CategorySublist::CategorySublist(int cid)
     : SaveObject<CateSub> ("http://open.kaolafm.com/v2/category/sublist", NetUrl::NET_HTTP_METHOD_GET)
     , mCid(ByteString::allocLong(cid))
 {
+    setObjectName(OBJECT_CATEGORY_SUB_LIST);
 }
 
 kl::CategorySublist::CategorySublist(const ByteString &cid)
     : SaveObject<CateSub> ("http://open.kaolafm.com/v2/category/sublist", NetUrl::NET_HTTP_METHOD_GET)
     , mCid(ByteString::allocString(cid))
 {
+    setObjectName(OBJECT_CATEGORY_SUB_LIST);
 }
 
 kl::CategorySublist::~CategorySublist()

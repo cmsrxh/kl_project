@@ -78,10 +78,10 @@ void CateItemModel::onLoadOver(long ptr)
     }
 }
 
-void CateItemModel::qmlCtgNextPage()
+bool CateItemModel::qmlCtgNextPage()
 {
     qDebug() << "Category Next Page";
-    m_pUnion->loadNextPage();
+    return m_pUnion->loadNextPage();
 }
 
 void CateItemModel::qmlClickCategory(int index)

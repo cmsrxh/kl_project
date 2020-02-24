@@ -13,6 +13,7 @@ kl::AlbumDetail::AlbumDetail(const ByteString &albumId)
     : ItemObject<AlbDetail>("http://open.kaolafm.com/v2/album/detail", NetUrl::NET_HTTP_METHOD_GET)
     , mAlbumId(ByteString::allocString(albumId))
 {
+    setObjectName(OBJECT_ALBUM_DETAIL);
 }
 
 kl::AlbumDetail::~AlbumDetail()

@@ -171,6 +171,11 @@ void KLUIProc::qmlSelfTabClick(int index)
     KLDataProc::instance()->selfTabClick(index);
 }
 
+void KLUIProc::qmlReloadErrObject()
+{
+    KLDataProc::instance()->reloadErrObject();
+}
+
 void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
 {
     switch (msg)

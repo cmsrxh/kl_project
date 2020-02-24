@@ -56,6 +56,7 @@ kl::BroadcastItemList::BroadcastItemList(int type, int classfyid, int code, int 
     , needPage(ByteString::allocLong(page))
     , needPageSize(ByteString::allocLong(pagesize))
 {
+    setObjectName(OBJECT_BDC_ITEM_LIST);
 //    GEN_Printf(LOG_DEBUG, "[%s] size=%d", this->code.string(), this->code.size());
 }
 

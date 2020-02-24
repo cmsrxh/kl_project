@@ -25,7 +25,9 @@ HTTP/1.1
 */
 kl::ActiveManage::ActiveManage()
     : KLObject ("http://open.kaolafm.com/v2/app/active", NetUrl::NET_HTTP_METHOD_POST)
-{}
+{
+    setObjectName(OBJECT_ACTIVE_MANAGE);
+}
 
 void kl::ActiveManage::obtain()
 {   

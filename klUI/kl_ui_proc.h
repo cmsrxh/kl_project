@@ -16,6 +16,22 @@ class KLUIProc : public QObject
 
     Q_PROPERTY(bool canSeek READ canSeek WRITE setCanSeek NOTIFY canSeekChanged)
 public:
+    enum MsgTipBoxType
+    {
+//        case 0: return nullEmpty;
+        nullEmpty,
+//        case 1: return generalBox;
+        generalBox,
+//        case 2: return msgBufferring;
+        msgBufferring,
+//        case 3: return twoBtnBox;
+        twoBtnBox,
+//        case 4: return bottomTip;
+        bottomTip,
+//        case 5: return failTip;
+        failTip,
+    };
+
     KLUIProc();
     ~KLUIProc();
 
@@ -60,6 +76,8 @@ public Q_SLOTS:
     void qmlMainTabClick(int index);
     void qmlSelfTabClick(int index);
 
+    void qmlReloadErrObject();
+
     // 播放控制反馈回来的处理信息
     void onRecvNotify(int msg, int ext1, int ext2, const QString &str);
 
@@ -80,7 +98,17 @@ Q_SIGNALS:
     // qml
     void durationChanged(int duration, QString const &durStr);
     void positionChanged(QString const &curPos);
-    void playingInfo(QString const &name, QString const &desc);    
+    void playingInfo(QString const &name, QString const &desc);
+
+    /**
+     * @brief msgTipCateItem
+     * @param boxType [in] enum MsgTipBoxType 消息框的种类
+     * @param msgContent [in] 消息文本
+     * @details CateItemListView.qml界面消息弹框处理
+     */
+    void msgTipCateItem(int boxType, QString const &msgContent);
+    // main.qml
+    void msgTipGlobal(int boxType, QString const &msgContent);
 private:
     QString numToTimeStr(int num);
 

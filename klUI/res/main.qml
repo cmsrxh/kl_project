@@ -21,8 +21,7 @@ ApplicationWindow {
         id: bg
         anchors.fill: parent
 
-        LinearGradient
-        {
+        LinearGradient {
             anchors.fill: parent
             start: Qt.point(0, parent.height)
             end: Qt.point(0, 0)
@@ -76,5 +75,21 @@ ApplicationWindow {
         id: playListLab
         visible: false
         anchors.fill: parent
+    }
+
+    Connections {
+        target: KL.Controller
+        onMsgTipGlobal: {
+            msgBox.boxType    = boxType
+            msgBox.msgContent = msgContent
+        }
+    }
+
+    KlMsgTipBox {
+        id: msgBox
+        anchors.fill: parent
+        onFailClick: {
+            KL.Controller.qmlReloadErrObject()
+        }
     }
 }

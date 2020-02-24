@@ -20,6 +20,7 @@ kl::ChipRadioList::ChipRadioList(const ByteString &rid)
     : SaveObject<RadioItem> ("http://open.kaolafm.com/v2/radio/list", NetUrl::NET_HTTP_METHOD_GET)
     , mRID(ByteString::allocString(rid))
 {
+    setObjectName(OBJECT_CHIP_RADIO_LIST);
 }
 
 kl::ChipRadioList::~ChipRadioList()

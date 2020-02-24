@@ -10,6 +10,7 @@
 #include "kl_data_proc.h"
 #include "chip_item_play_manage.h"
 #include "kl_ui_proc.h"
+#include "events/app_timer.h"
 #include "kl_local_data_proc.h"
 #include "kl_download_manage.h"
 #include "kl_collect_manage.h"
@@ -38,6 +39,11 @@ KLDataProc::KLDataProc()
     : mCurrentIsCollect(false)
     , m_pPlayManage(new ChipPlayManage)  
 {    
+    m_pMsgPopDelayTimer = new ATimer;
+    m_pMsgPopDelayTimer->setHandler(KLDataProc::msgTipTimer, this);
+    m_pMsgPopDelayTimer->setRepeat(false);
+    m_pMsgPopDelayTimer->setInternal(0, 800);
+
     m_pCurPlayUnion = nullptr;
 }
 
@@ -995,14 +1001,110 @@ void KLDataProc::audioDetailLoadOver(MusicDetail &detail)
     gInstance->setSourceUrl(detail.playUrl.string());
 }
 
-void KLDataProc::klLoadDataExportEmpty()
+void KLDataProc::msgTipTimer(ATimer *that, void *ptr)
+{
+    that->setRunning(false);
+    ((KLDataProc *)ptr)->showDelayMsgBox();
+}
+
+void KLDataProc::showDelayMsgBox()
+{
+    switch (mCurrenObjectName)
+    {
+    case kl::OBJECT_ACTIVE_MANAGE:
+    case kl::OBJECT_INIT_MANAGE:
+         Q_EMIT gInstance->msgTipGlobal(KLUIProc::msgBufferring, "");
+        break;
+    case kl::OBJECT_ALBUM_DETAIL:
+    case kl::OBJECT_ALBUM_LIST:
+    case kl::OBJECT_BDC_AREA_LIST:
+    case kl::OBJECT_BDC_ITEM_DETAIL:
+    case kl::OBJECT_BDC_ITEM_LIST:
+    case kl::OBJECT_BDC_ITEM_PROGRAM:
+    case kl::OBJECT_CATEGORY_ALL:
+    case kl::OBJECT_CATEGORY_BDC:
+    case kl::OBJECT_CATEGORY_SUB_LIST:
+    case kl::OBJECT_CHIP_AUDIO_DETAIL:
+    case kl::OBJECT_CHIP_AUDIO_LIST:
+    case kl::OBJECT_CHIP_RADIO_DETAIL:
+    case kl::OBJECT_CHIP_RADIO_LIST:
+    case kl::OBJECT_OPERATE_LIST:
+//    case kl::OBJECT_SUGGESTION_WORD:
+//    case kl::OBJECT_VOICE_SEARCH_ALL:
+    case kl::OBJECT_TYPERADIO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::msgBufferring, "Data Loading...");
+        break;
+    default:
+        GEN_Printf(LOG_ERROR, "Invalid objectName: %d", mCurrenObjectName);
+        break;
+    }
+}
+
+void KLDataProc::klObjectObtainState(bool state, int objectName)
+{
+    GEN_Printf(LOG_DEBUG, "objectName: %d, state=%d", objectName, state);
+    if (state)
+    {
+        mCurrenObjectName = objectName;
+        m_pMsgPopDelayTimer->restart(700);
+    } else
+    {
+        GEN_Printf(LOG_ERROR, "objectName: %d obtain start failed.", objectName);
+    }
+}
+
+void KLDataProc::klObjectObtainOver(int objectName)
+{
+    GEN_Printf(LOG_DEBUG, "ObjectName: %d load over.", objectName);
+    if (m_pMsgPopDelayTimer->isRunning())
+    {
+        GEN_Printf(LOG_DEBUG, "Timer is running.");
+        m_pMsgPopDelayTimer->stop();
+        return;
+    }
+    // close pop box
+    switch (objectName)
+    {
+    case kl::OBJECT_ACTIVE_MANAGE:
+    case kl::OBJECT_INIT_MANAGE:
+        Q_EMIT gInstance->msgTipGlobal(KLUIProc::nullEmpty, "");
+        break;
+    case kl::OBJECT_ALBUM_DETAIL:
+    case kl::OBJECT_ALBUM_LIST:
+    case kl::OBJECT_BDC_AREA_LIST:
+    case kl::OBJECT_BDC_ITEM_DETAIL:
+    case kl::OBJECT_BDC_ITEM_LIST:
+    case kl::OBJECT_BDC_ITEM_PROGRAM:
+    case kl::OBJECT_CATEGORY_ALL:
+    case kl::OBJECT_CATEGORY_BDC:
+    case kl::OBJECT_CATEGORY_SUB_LIST:
+    case kl::OBJECT_CHIP_AUDIO_DETAIL:
+    case kl::OBJECT_CHIP_AUDIO_LIST:
+    case kl::OBJECT_CHIP_RADIO_DETAIL:
+    case kl::OBJECT_CHIP_RADIO_LIST:
+    case kl::OBJECT_OPERATE_LIST:
+//    case kl::OBJECT_SUGGESTION_WORD:
+//    case kl::OBJECT_VOICE_SEARCH_ALL:
+    case kl::OBJECT_TYPERADIO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::nullEmpty, "");
+        break;
+    default:
+        GEN_Printf(LOG_ERROR, "Invalid objectName: %d", mCurrenObjectName);
+        break;
+    }
+}
+
+void KLDataProc::klLoadDataExportEmpty(int objectName)
 {
     int viewType = getCurrentShowView();
+    GEN_Printf(LOG_DEBUG, "objectName: %d load empty data.", objectName);
     switch (viewType)
     {
     case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
     case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
     case CURRENT_VIEW_IN_BROADCAST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::failTip, "Load Empty Data.");
+        break;
     case CURRENT_VIEW_IN_COLLECT:
     case CURRENT_VIEW_IN_DOWNLOAD:
     case CURRENT_VIEW_IN_HISTROY:
@@ -1014,14 +1116,17 @@ void KLDataProc::klLoadDataExportEmpty()
     }
 }
 
-void KLDataProc::klLoadDataPriserExcept(const ByteString &str)
+void KLDataProc::klLoadDataPriserExcept(int objectName, const ByteString &str)
 {
     int viewType = getCurrentShowView();
+    GEN_Printf(LOG_DEBUG, "objectName: %d data priser failed.", objectName);
     switch (viewType)
     {
     case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
     case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
     case CURRENT_VIEW_IN_BROADCAST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::failTip, QObject::tr(str.string()));
+        break;
     case CURRENT_VIEW_IN_COLLECT:
     case CURRENT_VIEW_IN_DOWNLOAD:
     case CURRENT_VIEW_IN_HISTROY:
@@ -1033,14 +1138,17 @@ void KLDataProc::klLoadDataPriserExcept(const ByteString &str)
     }
 }
 
-void KLDataProc::sysNetLoadApiExcept(int type, const char *str)
+void KLDataProc::sysNetLoadApiExcept(int objectName, int type, const char *str)
 {
     int viewType = getCurrentShowView();
+    GEN_Printf(LOG_DEBUG, "objectName: %d load api except.", objectName);
     switch (viewType)
     {
     case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
     case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
     case CURRENT_VIEW_IN_BROADCAST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::failTip, QObject::tr(str));
+        break;
     case CURRENT_VIEW_IN_COLLECT:
     case CURRENT_VIEW_IN_DOWNLOAD:
     case CURRENT_VIEW_IN_HISTROY:
@@ -1050,5 +1158,11 @@ void KLDataProc::sysNetLoadApiExcept(int type, const char *str)
     default:
         break;
     }
+}
+
+void KLDataProc::reloadErrObject()
+{
+    GEN_Printf(LOG_DEBUG, "reload error object");
+    Application::instance()->postCmd(SIG_KL_RELOAD_ERR_OBJECT);
 }
 

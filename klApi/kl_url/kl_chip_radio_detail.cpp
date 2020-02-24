@@ -13,6 +13,7 @@ kl::ChipRadioDetail::ChipRadioDetail(const ByteString &rid)
     : ItemObject<RadioDetail>("http://open.kaolafm.com/v2/radio/detail", NetUrl::NET_HTTP_METHOD_GET)
     , mRID(rid)
 {
+    setObjectName(OBJECT_CHIP_RADIO_DETAIL);
 }
 
 NetUrl &kl::ChipRadioDetail::genQueryUrl()
