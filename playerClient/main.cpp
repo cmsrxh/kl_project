@@ -77,7 +77,9 @@ int main(int , char *[])
             MediaServiceIFace::instance()->playPause();
         }  else if (0 == strcmp(cmd, "setFile"))
         {
-            MediaServiceIFace::instance()->setFile("/mnt/hgfs/shareToUbuntu/videos/MP4/1-1080p-MP4.MP4");
+//            MediaServiceIFace::instance()->setFile("/mnt/hgfs/shareToUbuntu/videos/MP4/1-1080p-MP4.MP4");
+            MediaServiceIFace::instance()->setFile("http://stream.iqilu.com/vod_bag_2016//2020/02/16/903BE158056C44fcA9524B118A5BF230/903BE158056C44fcA9524B118A5BF230_H264_mp4_500K.mp4");
+
         }  else if (0 == strcmp(cmd, "isPlaying"))
         {
             GEN_Printf(LOG_DEBUG, "is Playing: %s", MediaServiceIFace::instance()->isPlaying() ? "true" : "false" );

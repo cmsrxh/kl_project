@@ -60,8 +60,12 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
     my_curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYPEER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYHOST, 0L);
-    my_curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, 15L);
-    my_curl_easy_setopt(m_pCurl, CURLOPT_CONNECTTIMEOUT, 10L);
+    /**
+     * @note 下面两个属性，时间不能设置太小(eg: 设置15时)，就会导致退出时调用curl_multi_remove_handle
+     *  或curl_easy_cleanup 阻塞一段时间（发生在系统没有网络时）
+     */
+    my_curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, 20L); //接收数据时超时设置，如果10秒内数据未接收完，直接退出
+    my_curl_easy_setopt(m_pCurl, CURLOPT_CONNECTTIMEOUT, 20L); //连接超时，这个数值如果设置太短可能导致数据请求不到就断开了
 
     return;
 err:

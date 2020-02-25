@@ -160,6 +160,17 @@ void MediaNotify::notifySlider(int cur, int dur)
     UNUSED(dur);
 }
 
+void MediaNotify::notifyCacheDuration(int dur)
+{
+    GEN_Printf(LOG_WARN, "NOT USED, Cache Duration: %d", dur);
+}
+
+void MediaNotify::notifyCacheTime(int cur)
+{
+//    GEN_Printf(LOG_DEBUG, "Cache time: %d", cur);
+    notify(MEDIA_CACHE_TIME, cur);
+}
+
 void MediaNotify::notifyScanStart()
 {    
 

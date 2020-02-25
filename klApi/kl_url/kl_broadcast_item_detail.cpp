@@ -18,6 +18,7 @@ kl::BroadcastItemDetail::BroadcastItemDetail(ByteString const &broadcastId)
     : ItemObject<BDCastDetail>("http://open.kaolafm.com/v2/broadcast/detail", NetUrl::NET_HTTP_METHOD_GET)
     , mBroadcastId(broadcastId)
 {
+    setObjectName(OBJECT_BDC_ITEM_DETAIL);
 }
 
 kl::BroadcastItemDetail::~BroadcastItemDetail()

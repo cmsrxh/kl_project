@@ -34,6 +34,7 @@
 kl::CategoryBroadcast::CategoryBroadcast()
     : SaveObject<CateBCast> ("http://open.kaolafm.com/v2/category/broadcast", NetUrl::NET_HTTP_METHOD_GET)
 {
+    setObjectName(OBJECT_CATEGORY_BDC);
     setSaveFile(NET_KL_BDC_CATE_LIST_FILE);
 }
 

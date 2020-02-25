@@ -53,7 +53,7 @@ kl::VoiceSearchAll::VoiceSearchAll(const ByteString &query)
     ByteString box(buffer, len);
 
     HttpUtil::urlEncoding(box, mQuery);
-
+    setObjectName(OBJECT_VOICE_SEARCH_ALL);
     // GEN_Printf(LOG_DEBUG, "%s", genQueryUrl().genUrl().string());
 }
 

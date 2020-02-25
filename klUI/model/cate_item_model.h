@@ -48,7 +48,7 @@ public:
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
-    void qmlCtgNextPage();
+    bool qmlCtgNextPage();
 
     // album info item click
     void qmlClickCategory(int index);

@@ -13,6 +13,7 @@ kl::SuggestionWord::SuggestionWord(const ByteString &suggestWord, int limit)
     : SaveObject<SuggestItem> ("http://open.kaolafm.com/v2/resource/suggestionword", NetUrl::NET_HTTP_METHOD_GET)
     , mLimit(ByteString::allocLong(limit))
 {
+    setObjectName(OBJECT_SUGGESTION_WORD);
     HttpUtil::urlEncoding(suggestWord, mSuggestWord);
 }
 

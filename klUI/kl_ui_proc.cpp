@@ -134,12 +134,13 @@ int KLUIProc::qmlGetCurrentPosition()
 
     Q_EMIT positionChanged(numToTimeStr(cur + mPositionBase));
 
-    return cur;
+    return cur < 0 ? 0 : cur;
 }
 
 int KLUIProc::qmlGetDuration()
 {
-    return mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
+    int val =  mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
+    return val < 1 ? 1 : val;
 }
 
 void KLUIProc::qmlPlayPrev()
@@ -171,6 +172,11 @@ void KLUIProc::qmlSelfTabClick(int index)
     KLDataProc::instance()->selfTabClick(index);
 }
 
+void KLUIProc::qmlReloadErrObject()
+{
+    KLDataProc::instance()->reloadErrObject();
+}
+
 void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
 {
     switch (msg)
@@ -199,6 +205,10 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         break;
     case MEDIA_PAUSED:
         setPlayState(2);
+        break;
+    case MEDIA_CACHE_TIME:
+        qDebug() << "cache position: " << ext1;
+        Q_EMIT cacheDataChanged(ext1);
         break;
     case MEDIA_NOTIFY_TIME:
     {
@@ -326,7 +336,13 @@ void KLUIProc::viewBDCItemAreaSwicth(const QString &url)
     m_pViewStack->setBdcSource(url);
 }
 
+bool KLUIProc::isAudioView()
+{
+    return m_pViewStack->source() == "qrc:/CateItemInfoView.qml";
+}
+
 void KLUIProc::setSourceUrl(const char *url)
 {
+    qDebug() << url;
     MediaServiceIFace::instance()->setFile(url);
 }

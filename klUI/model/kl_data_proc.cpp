@@ -10,6 +10,7 @@
 #include "kl_data_proc.h"
 #include "chip_item_play_manage.h"
 #include "kl_ui_proc.h"
+#include "events/app_timer.h"
 #include "kl_local_data_proc.h"
 #include "kl_download_manage.h"
 #include "kl_collect_manage.h"
@@ -38,6 +39,11 @@ KLDataProc::KLDataProc()
     : mCurrentIsCollect(false)
     , m_pPlayManage(new ChipPlayManage)  
 {    
+    m_pMsgPopDelayTimer = new ATimer;
+    m_pMsgPopDelayTimer->setHandler(KLDataProc::msgTipTimer, this);
+    m_pMsgPopDelayTimer->setRepeat(false);
+    m_pMsgPopDelayTimer->setInternal(0, 800);
+
     m_pCurPlayUnion = nullptr;
 }
 
@@ -231,8 +237,8 @@ int KLDataProc::getCurrentShowView()
     {
         if (MEDIA_TYPE_ALBUMINFO == mSwitch.media_type)
         {
-            return (mSwitch.chip_item_index > 0) ? CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO
-                                                 : CURRENT_VIEW_IN_ALBUM_INFO_LIST;
+            return (gInstance->isAudioView()) ? CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO
+                                              : CURRENT_VIEW_IN_ALBUM_INFO_LIST;
         } else if (MEDIA_TYPE_BROADCAST == mSwitch.media_type)
         {
             return CURRENT_VIEW_IN_BROADCAST;
@@ -259,6 +265,7 @@ int KLDataProc::getCurrentShowView()
         GEN_Printf(LOG_ERROR, "is Not invalid view tab");
         assert(0);
     }
+    return -1;
 }
 
 void KLDataProc::mainTabClick(int index)
@@ -300,7 +307,14 @@ void KLDataProc::albumFirstClick(int index)
         if (tmp)
         {            
             m_pCateItem->setCateItemUnion(tmp);
-            tmp->onLoadOver(m_pCateItem);
+            if (tmp->isEmpty())
+            {
+                tmp->loadCateItem();
+            } else
+            {
+                tmp->onLoadOver(m_pCateItem);
+                msgBoxLocalLoadOver(kl::OBJECT_ALBUM_LIST);
+            }
             m_pCateItem->resetAll();
         } else
         {
@@ -340,10 +354,18 @@ void KLDataProc::albumSecondClick(int index)
     DetailQobject::instance()->setDetailName(vec[index]->name);
 
     ChipItemUnion *&chip_item = mChipMap[id];
+
     if (chip_item)
     {
         m_pChipItem->setChipItemUnion(chip_item);
-        chip_item->onLoadOver(m_pChipItem);
+        if (chip_item->isEmpty())
+        {
+            chip_item->loadChipList(ByteString());
+        } else
+        {
+            chip_item->onLoadOver(m_pChipItem);
+            msgBoxLocalLoadOver(kl::OBJECT_CHIP_AUDIO_LIST);
+        }
         m_pChipItem->resetAll();
     } else
     {
@@ -351,6 +373,8 @@ void KLDataProc::albumSecondClick(int index)
         m_pChipItem->setChipItemUnion(chip_item);
         chip_item->loadChipList(id);
     }
+    // 现在改成提前显示这个界面
+    gInstance->pushNew("qrc:/CateItemInfoView.qml");
     DetailQobject::instance()->loadDetail(type, id, DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW);
 }
 
@@ -498,7 +522,14 @@ void KLDataProc::bdcFirstCateTabClick(int index)
         if (tmp)
         {
             m_pBDCItem->setCateItemUnion(tmp);
-            tmp->onLoadOver(m_pBDCItem);
+            if (tmp->isEmpty())
+            {
+                tmp->loadCateItem();
+            } else
+            {
+                tmp->onLoadOver(m_pBDCItem);
+                msgBoxLocalLoadOver(kl::OBJECT_BDC_ITEM_LIST);
+            }
             m_pBDCItem->resetAll();
         } else
         {
@@ -771,10 +802,10 @@ void KLDataProc::showPlayingInfo()
     GEN_Printf(LOG_DEBUG, "Show Over, %d", vec.size());
 }
 
-void KLDataProc::enterAlbumView()
-{
-    gInstance->pushNew("qrc:/CateItemInfoView.qml");
-}
+//void KLDataProc::enterAlbumView()
+//{
+//    gInstance->pushNew("qrc:/CateItemInfoView.qml");
+//}
 
 int KLDataProc::getAlbumSecondIndex()
 {
@@ -995,14 +1026,131 @@ void KLDataProc::audioDetailLoadOver(MusicDetail &detail)
     gInstance->setSourceUrl(detail.playUrl.string());
 }
 
-void KLDataProc::klLoadDataExportEmpty()
+void KLDataProc::msgTipTimer(ATimer *that, void *ptr)
 {
+    GEN_Printf(LOG_DEBUG, "Msg Box delay show.");
+    that->setRunning(false);
+    ((KLDataProc *)ptr)->showDelayMsgBox();
+}
+
+void KLDataProc::showDelayMsgBox()
+{
+    switch (mCurrenObjectName)
+    {
+    case kl::OBJECT_ACTIVE_MANAGE:
+    case kl::OBJECT_INIT_MANAGE:
+         Q_EMIT gInstance->msgTipGlobal(KLUIProc::msgBufferring, "");
+        break;    
+    case kl::OBJECT_ALBUM_LIST:
+    case kl::OBJECT_BDC_AREA_LIST:
+    case kl::OBJECT_BDC_ITEM_DETAIL:
+    case kl::OBJECT_BDC_ITEM_LIST:
+    case kl::OBJECT_BDC_ITEM_PROGRAM:
+    case kl::OBJECT_CATEGORY_ALL:
+    case kl::OBJECT_CATEGORY_BDC:
+    case kl::OBJECT_CATEGORY_SUB_LIST:
+    case kl::OBJECT_CHIP_AUDIO_DETAIL:    
+    case kl::OBJECT_CHIP_RADIO_DETAIL:
+    case kl::OBJECT_CHIP_RADIO_LIST:
+    case kl::OBJECT_OPERATE_LIST:
+//    case kl::OBJECT_SUGGESTION_WORD:
+//    case kl::OBJECT_VOICE_SEARCH_ALL:
+    case kl::OBJECT_TYPERADIO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::msgBufferring, "Data Loading...");
+        break;
+    case kl::OBJECT_ALBUM_DETAIL:
+    case kl::OBJECT_CHIP_AUDIO_LIST:
+        Q_EMIT gInstance->msgTipAudioList(KLUIProc::msgBufferring, "Data Loading...");
+        break;
+    default:
+        GEN_Printf(LOG_ERROR, "Invalid objectName: %d", mCurrenObjectName);
+        break;
+    }
+}
+
+void KLDataProc::msgBoxLocalLoadOver(int objectName)
+{
+    switch (objectName)
+    {
+    case kl::OBJECT_ACTIVE_MANAGE:
+    case kl::OBJECT_INIT_MANAGE:
+         Q_EMIT gInstance->msgTipGlobal(KLUIProc::nullEmpty, "");
+        break;
+    case kl::OBJECT_ALBUM_LIST:
+    case kl::OBJECT_BDC_AREA_LIST:
+    case kl::OBJECT_BDC_ITEM_DETAIL:
+    case kl::OBJECT_BDC_ITEM_LIST:
+    case kl::OBJECT_BDC_ITEM_PROGRAM:
+    case kl::OBJECT_CATEGORY_ALL:
+    case kl::OBJECT_CATEGORY_BDC:
+    case kl::OBJECT_CATEGORY_SUB_LIST:
+    case kl::OBJECT_CHIP_AUDIO_DETAIL:
+    case kl::OBJECT_CHIP_RADIO_DETAIL:
+    case kl::OBJECT_CHIP_RADIO_LIST:
+    case kl::OBJECT_OPERATE_LIST:
+//        case kl::OBJECT_SUGGESTION_WORD:
+//        case kl::OBJECT_VOICE_SEARCH_ALL:
+    case kl::OBJECT_TYPERADIO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::nullEmpty, "");
+        break;
+    case kl::OBJECT_ALBUM_DETAIL:
+    case kl::OBJECT_CHIP_AUDIO_LIST:
+        Q_EMIT gInstance->msgTipAudioList(KLUIProc::nullEmpty, "");
+        break;
+    default:
+        GEN_Printf(LOG_ERROR, "Invalid objectName: %d", mCurrenObjectName);
+        break;
+    }
+}
+
+void KLDataProc::klObjectObtainState(bool state, int objectName)
+{
+    GEN_Printf(LOG_DEBUG, "objectName: %d, state=%d", objectName, state);
+    if (state)
+    {
+        mCurrenObjectName = objectName;
+        m_pMsgPopDelayTimer->restart(700);
+
+        msgBoxLocalLoadOver(mCurrenObjectName);
+    } else
+    {
+        GEN_Printf(LOG_ERROR, "objectName: %d obtain start failed.", objectName);
+    }
+}
+
+void KLDataProc::klObjectObtainOver(int objectName)
+{
+    GEN_Printf(LOG_DEBUG, "ObjectName: %d load over.", objectName);
+    if (m_pMsgPopDelayTimer->isRunning())
+    {
+        GEN_Printf(LOG_DEBUG, "Timer is running.");
+        m_pMsgPopDelayTimer->stop();
+        return;
+    }
+    // close pop box
+    msgBoxLocalLoadOver(objectName);
+}
+
+void KLDataProc::klLoadDataExportEmpty(int objectName)
+{
+    if (m_pMsgPopDelayTimer->isRunning())
+    {
+        m_pMsgPopDelayTimer->stop();
+    }
+
     int viewType = getCurrentShowView();
+    GEN_Printf(LOG_DEBUG, "viewType: %d, objectName: %d load empty data.", viewType, objectName);
     switch (viewType)
     {
     case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
+        Q_EMIT gInstance->msgTipAudioList(KLUIProc::emptyData, "Load Empty Data.");
+        break;
     case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::emptyData, "Load Empty Data.");
+        break;
     case CURRENT_VIEW_IN_BROADCAST:
+        Q_EMIT gInstance->msgTipBroadcast(KLUIProc::emptyData, "Load Empty Data.");
+        break;
     case CURRENT_VIEW_IN_COLLECT:
     case CURRENT_VIEW_IN_DOWNLOAD:
     case CURRENT_VIEW_IN_HISTROY:
@@ -1014,14 +1162,25 @@ void KLDataProc::klLoadDataExportEmpty()
     }
 }
 
-void KLDataProc::klLoadDataPriserExcept(const ByteString &str)
+void KLDataProc::klLoadDataPriserExcept(int objectName, const ByteString &str)
 {
+    if (m_pMsgPopDelayTimer->isRunning())
+    {
+        m_pMsgPopDelayTimer->stop();
+    }
     int viewType = getCurrentShowView();
+    GEN_Printf(LOG_DEBUG, "viewType: %d, objectName: %d data priser failed.", viewType, objectName);
     switch (viewType)
     {
     case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
+        Q_EMIT gInstance->msgTipAudioList(KLUIProc::failTip, QObject::tr(str.string()));
+        break;
     case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::failTip, QObject::tr(str.string()));
+        break;
     case CURRENT_VIEW_IN_BROADCAST:
+        Q_EMIT gInstance->msgTipBroadcast(KLUIProc::failTip, QObject::tr(str.string()));
+        break;
     case CURRENT_VIEW_IN_COLLECT:
     case CURRENT_VIEW_IN_DOWNLOAD:
     case CURRENT_VIEW_IN_HISTROY:
@@ -1033,14 +1192,21 @@ void KLDataProc::klLoadDataPriserExcept(const ByteString &str)
     }
 }
 
-void KLDataProc::sysNetLoadApiExcept(int type, const char *str)
+void KLDataProc::sysNetLoadApiExcept(int objectName, int /*type*/, const char *str)
 {
     int viewType = getCurrentShowView();
+    GEN_Printf(LOG_DEBUG, "viewType: %d, objectName: %d load api except.", viewType, objectName);
     switch (viewType)
     {
     case CURRENT_VIEW_IN_ALBUM_AUDIOLIST_AND_INFO:
+        Q_EMIT gInstance->msgTipAudioList(KLUIProc::failTip, QObject::tr(str));
+        break;
     case CURRENT_VIEW_IN_ALBUM_INFO_LIST:
+        Q_EMIT gInstance->msgTipCateItem(KLUIProc::failTip, QObject::tr(str));
+        break;
     case CURRENT_VIEW_IN_BROADCAST:
+        Q_EMIT gInstance->msgTipBroadcast(KLUIProc::failTip, QObject::tr(str));
+        break;
     case CURRENT_VIEW_IN_COLLECT:
     case CURRENT_VIEW_IN_DOWNLOAD:
     case CURRENT_VIEW_IN_HISTROY:
@@ -1050,5 +1216,11 @@ void KLDataProc::sysNetLoadApiExcept(int type, const char *str)
     default:
         break;
     }
+}
+
+void KLDataProc::reloadErrObject()
+{
+    GEN_Printf(LOG_DEBUG, "reload error object");
+    Application::instance()->postCmd(SIG_KL_RELOAD_ERR_OBJECT);
 }
 

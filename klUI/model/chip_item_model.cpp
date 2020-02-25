@@ -139,10 +139,10 @@ void ChipItemModel::chipItemClick(int index)
     KLDataProc::instance()->chipAudioThirdChick(index);
 }
 
-void ChipItemModel::needNextPage()
+bool ChipItemModel::needNextPage()
 {
     qDebug() << "Chip Need Next Page";
-    m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW);
+    return m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW);
 }
 
 void ChipItemModel::playNeedNextPage()

@@ -4,6 +4,7 @@
 #include "util/map_table.h"
 #include "kl_ui_data_union.h"
 
+class ATimer;
 enum
 {
     CURREN_PLAY_SOURCE_ALBUM_AUDIO_LIST,        // 专辑碎片列表点击播放
@@ -197,7 +198,7 @@ public:
      * @brief enterAlbumView
      * @details 进入专辑信息界面
      */
-    void enterAlbumView();
+    void enterAlbumView() {}
 
     /**
      * @brief getAlbumFirstIndex
@@ -296,17 +297,35 @@ public:
     void audioDetailLoadOver(MusicDetail &detail);
 
     /**
+     * @brief klObjectObtainState
+     * @param state [in] 调用下载函数的返回状态
+     * @param objectName [in] 对象名字
+     * @details 基于KlObject派生类开始调用obtain函数，获取kl数据
+     * @note 在App事件循环子线程中执行
+     */
+    void klObjectObtainState(bool state, int objectName);
+
+    /**
+     * @brief klObjectObtainOver
+     * @param objectName
+     * @details 基于KlObject派生类, 数据下载完成
+     */
+    void klObjectObtainOver(int objectName);
+
+    /**
      * @brief klLoadDataExportEmpty
      * @details  kl下载的数据，是空列表
+     * @note 在App事件循环子线程中执行
      */
-    void klLoadDataExportEmpty();
+    void klLoadDataExportEmpty(int objectName);
 
     /**
      * @brief klLoadDataPriserExcept
      * @param str
      * @details  kl下载的数据，json格式数据解析失败了（大多都是传递 了错误的参数，或者服务器那边出现问题）
+     * @note 在App事件循环子线程中执行
      */
-    void klLoadDataPriserExcept(const ByteString &str);
+    void klLoadDataPriserExcept(int objectName, const ByteString &str);
 
     /**
      * @brief sysNetLoadApiExcept
@@ -314,13 +333,25 @@ public:
      * @param str
      * @details 调用libcurl下载kl数据失败，一般时本地网络出现问题
      *          例如：下载超时、网络断开等等原因。
+     * @note 在App事件循环子线程中执行
      */
-    void sysNetLoadApiExcept(int type, const char *str);
+    void sysNetLoadApiExcept(int objectName, int type, const char *str);
+
+    /**
+     * @brief reloadErrObject
+     * @details 重新加载错误的对象
+     */
+    void reloadErrObject();
+
 private:
     KLDataProc();
     void enterBroadcastView();
     void playSubItem(MusicChipItemUnion *chip);
     bool playCurSubItemSubNext(MusicChipItemUnion *);
+    static void msgTipTimer(ATimer *that, void *ptr);
+    void showDelayMsgBox();
+    //加载本地数据时，关闭弹框
+    void msgBoxLocalLoadOver(int objectName);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
@@ -341,6 +372,9 @@ private:
     CategoryModel    *m_pBDCTab;
     CategoryModel    *m_pBDCArea;
     CateItemModel    *m_pBDCItem;
+
+    ATimer           *m_pMsgPopDelayTimer;
+    int               mCurrenObjectName;
 
     SwitchPath        mSwitch;
     SwitchPath        mPlayPath;

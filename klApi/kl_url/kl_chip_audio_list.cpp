@@ -31,6 +31,7 @@ kl::ChipAudioList::ChipAudioList(const ByteString &aid, int sorttype, int pagenu
     , needPage(ByteString::allocLong(pagenum))
     , needPageSize(ByteString::allocLong(pagesize))
 {
+    setObjectName(OBJECT_CHIP_AUDIO_LIST);
 }
 
 kl::ChipAudioList::~ChipAudioList()

@@ -22,6 +22,9 @@ Item{
         onPositionChanged: {
              leftTime.text  = curPos
         }
+        onCacheDataChanged: {
+            cacheData.cacheValue = curPos
+        }
     }
 
     Timer {
@@ -52,6 +55,24 @@ Item{
             width: parent.width
             height: parent.height
             source: "qrc:/image/slider_bg.png"
+        }
+        Rectangle {
+            id: cacheData
+            property int cacheValue: 0
+            height: parent.height
+            radius: parent.height / 2
+            color: "gray"
+            opacity: 0.6
+            width: {
+                // console.log(slider.currentValue, slider.maxValue, slider.maxValue - slider.currentValue, slot.width, slider.currentValue * slot.width / slider.maxValue)
+                if (cacheValue <= slider.maxValue && slider.maxValue > 0 && slot.width > 0)
+                {
+                    return cacheValue * slot.width / slider.maxValue
+                } else
+                {
+                    return 0;
+                }
+            }
         }
 
         BorderImage{

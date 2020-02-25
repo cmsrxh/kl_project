@@ -103,7 +103,7 @@ public Q_SLOTS:
 
     void chipItemClick(int index);
 
-    void needNextPage();
+    bool needNextPage();
 
     void playNeedNextPage();
 

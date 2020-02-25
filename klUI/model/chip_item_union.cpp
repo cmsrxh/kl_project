@@ -181,6 +181,39 @@ void ChipItemUnion::onLoadOver(ChipItemModel *parent)
     }
 }
 
+bool ChipItemUnion::isEmpty()
+{
+    bool res = true;
+    switch (mChipType)
+    {
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
+        res = ((kl::ChipAudioList *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
+        res = ((kl::ChipRadioList *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
+        res = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+        res = ((kl::DownloadManage *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_COLLECT_RECORD:
+        res = ((kl::CollectManage *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_HISTROY_RECORD:
+        res = ((kl::RecordManage *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_SEARCH_LOAD:
+        res = ((kl::VoiceSearchAll *)m_pChip)->nodes().empty();
+        break;
+    default:
+        break;
+    }
+
+    return res;
+}
+
 int ChipItemUnion::itemCount()
 {
     int count = 0;

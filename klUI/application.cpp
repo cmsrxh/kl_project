@@ -40,10 +40,10 @@ void Application::initialize()
         stateMache->initialize();
 #endif
     }
-    // KLDataProc::instance()->initSockService();
+    KLDataProc::instance()->initSockService();
 
     // 启动收数据线程，并连接播放服务端socket
-    // postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }
@@ -115,13 +115,36 @@ void Application::runLoop()
                                                          ((GeneralQEvt *)evt)->wParam);
             break;
 
+        case SIG_KL_OBJECT_OBTAIN_START:
+            KLDataProc::instance()->klObjectObtainState(((GeneralQEvt *)evt)->wParam,
+                                                        reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam)->objectName());
+            break;
+
+        case SIG_KL_OBJECT_OBTAIN_OVER:
+            KLDataProc::instance()->klObjectObtainOver(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam)->objectName());
+            break;
+
         case SIG_KL_LOAD_DATA_EXCEPT:
             klLoadDataExceptProc((GeneralQEvt *)evt);
             break;
 
         case SIG_SYS_NET_LOAD_API_EXCEPT:
-            KLDataProc::instance()->sysNetLoadApiExcept(((GeneralQEvt *)evt)->wParam, reinterpret_cast<char *>(((GeneralQEvt *)evt)->pHander));
+            mErrObj.push_back(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam));
+            KLDataProc::instance()->sysNetLoadApiExcept(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam)->objectName(),
+                                                        ((GeneralQEvt *)evt)->wParam,
+                                                        reinterpret_cast<char *>(((GeneralQEvt *)evt)->pHander));
             break;
+
+        case SIG_KL_RELOAD_ERR_OBJECT:
+        {
+            ListTable<kl::KLObject *>::iterator it = mErrObj.begin();
+            for ( ; it != mErrObj.end(); ++it)
+            {
+                (*it)->obtain();
+            }
+            mErrObj.clear();
+            break;
+        }
 
         case SIG_USER_UNUSED:
         default:
@@ -184,6 +207,7 @@ void Application::klInitGetOpenId()
     {
         (*it)->obtain();
     }
+    mKlBack.clear();
 }
 
 void Application::klLoadDataExceptProc(GeneralQEvt *evt)
@@ -192,11 +216,12 @@ void Application::klLoadDataExceptProc(GeneralQEvt *evt)
     switch (evt->wParam)
     {
     case kl::KL_DATA_PRISER_EMPTY:
-        KLDataProc::instance()->klLoadDataExportEmpty();
+        KLDataProc::instance()->klLoadDataExportEmpty(reinterpret_cast<kl::KLObject *> (evt->lParam)->objectName());
         break;
     case kl::KL_DATA_PRISER_JSOC_ERROR:
-        KLDataProc::instance()->klLoadDataPriserExcept(ByteString(reinterpret_cast<char *>(buf->buffer()),
-                                                                  buf->size()));
+        mErrObj.push_back(reinterpret_cast<kl::KLObject *> (evt->lParam));
+        KLDataProc::instance()->klLoadDataPriserExcept(reinterpret_cast<kl::KLObject *> (evt->lParam)->objectName(),
+                                                       ByteString(reinterpret_cast<char *>(buf->buffer()), buf->size()));
         break;
     default:
         GEN_Printf(LOG_ERROR, "Invalid except: %ld", evt->wParam);

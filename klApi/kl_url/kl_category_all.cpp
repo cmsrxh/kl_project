@@ -18,6 +18,7 @@ kl::CategoryAll::CategoryAll()
     : SaveObject<CateMain> ("http://open.kaolafm.com/v2/category", NetUrl::NET_HTTP_METHOD_GET)
 {
     setSaveFile(NET_KL_CATE_ALL_LIST_FILE);
+    setObjectName(OBJECT_CATEGORY_ALL);
 }
 
 NetUrl &kl::CategoryAll::genQueryUrl()

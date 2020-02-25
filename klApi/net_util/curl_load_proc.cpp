@@ -23,11 +23,12 @@ void CurlLoadProc::run()
     int res, M = 0, U = -1;
     fd_set R, W, E;
     struct timeval T;
-
+    GEN_Printf(LOG_DEBUG, "enter load thread.");
     while (1)
     {
+        //GEN_Printf(LOG_DEBUG, "--------------");
         CurlGlobal::instance()->perform(&U);
-//        GEN_Printf(LOG_DEBUG, "U: %d, L: %ld, M: %d", U, L, M);
+        //GEN_Printf(LOG_DEBUG, "U: %d, L: %ld, M: %d", U, L, M);
         if (0 == U)
         {
             GEN_Printf(LOG_INFO, "Load exec over !!!");
@@ -44,14 +45,14 @@ void CurlLoadProc::run()
                 GEN_Printf(LOG_ERROR, "curl_multi_fdset failed, %s", curl_multi_strerror(ret));
                 break;
             }
-
+            //GEN_Printf(LOG_DEBUG, "U: %d, L: %ld, M: %d", U, L, M);
             ret = CurlGlobal::instance()->timeout(&L);
             if (CURLM_OK != ret)
             {
                 GEN_Printf(LOG_ERROR, "E: curl_multi_timeout, %s", curl_multi_strerror(ret));
                 break;
             }
-
+            // GEN_Printf(LOG_DEBUG, "U: %d, L: %ld, M: %d", U, L, M);
             if (L == -1)
             {
                 L = 1000;
@@ -64,13 +65,14 @@ void CurlLoadProc::run()
             {
                 T.tv_sec = L/1000;
                 T.tv_usec = (L%1000)*1000;
+
                 res = select(M + 1, &R, &W, &E, &T);
                 if (res < 0)
                 {
                     GEN_Printf(LOG_DEBUG, "E: select(%i,,,,%li): %i: %s", M + 1, L, errno, strerror(errno));
                     break;
                 }
-                cleanCurlMsg();
+                cleanCurlMsg();                
 //                GEN_Printf(LOG_DEBUG, "%d, %d,  %s", res, errno, strerror(errno));
             }
         }
@@ -86,6 +88,8 @@ void CurlLoadProc::run()
         delete static_cast<CurlLoadItem *>(tmp);
     }
     mMtx.unlock();
+
+    GEN_Printf(LOG_DEBUG, "exit load thread.");
 }
 
 void CurlLoadProc::addItem(CurlLoadItem *item)
@@ -151,6 +155,7 @@ void CurlLoadProc::cleanCurlMsg()
                 }
 
                 CurlGlobal::instance()->clean(e);
+
                 // CurlLoadItem 析构函数中做释放cleanup
                 delete cur_load;
             } else

@@ -22,6 +22,7 @@ result:
 kl::InitManage::InitManage()
     : KLObject ("http://open.kaolafm.com/v2/app/init", NetUrl::NET_HTTP_METHOD_GET)
 {
+    setObjectName(OBJECT_INIT_MANAGE);
 }
 
 kl::InitManage::~InitManage()

@@ -52,11 +52,25 @@ public:
         m_pUINotify = pUINotify;
     }
 
+    int objectName() const
+    {
+        return mObjectName;
+    }
+
+    void setObjectName(int objectName)
+    {
+        mObjectName = objectName;
+    }
+
 protected:
     NetUrl         mUrl;
     LoadItem       mLoad;
     UINotifyIface *m_pUINotify;
-
+    /**
+     * @brief mObjectName
+     * @details 基于KlObject派生类的名字，使用枚举表示，用各种异常处理
+     */
+    int            mObjectName;
 };
 
 }

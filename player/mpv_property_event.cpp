@@ -17,6 +17,9 @@ static struct
     { "ao-mute",    MPV_FORMAT_INT64,      MpvPropertyEvent::mutePriser },
     { "ao-volume",  MPV_FORMAT_INT64,      MpvPropertyEvent::volumePriser },
 //    { "track-list", MPV_FORMAT_OSD_STRING, MpvPropertyEvent::tracklistPriser},
+//    { "demuxer-cache-duration", MPV_FORMAT_DOUBLE,    MpvPropertyEvent::cacheDurationPriser },
+    { "demuxer-cache-time",     MPV_FORMAT_DOUBLE,    MpvPropertyEvent::cacheTimePosPriser },
+
 };
 
 MpvPropertyEvent::MpvPropertyEvent(mpv_event_property *prop)
@@ -105,6 +108,18 @@ void MpvPropertyEvent::timePosPriser(void *data)
 {
     double time = *(double *)data;
     MediaNotify::instance()->notifySlider((int)time, (int)time);
+}
+
+void MpvPropertyEvent::cacheDurationPriser(void *data)
+{
+    double time = *(double *)data;
+    MediaNotify::instance()->notifyCacheDuration((int)time);
+}
+
+void MpvPropertyEvent::cacheTimePosPriser(void *data)
+{
+    double time = *(double *)data;
+    MediaNotify::instance()->notifyCacheTime((int)time);
 }
 
 void MpvPropertyEvent::mutePriser(void *data)

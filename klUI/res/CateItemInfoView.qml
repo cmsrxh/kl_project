@@ -4,8 +4,7 @@ import Hongjing.HMI.KL 1.0 as KL
 
 Item {
 
-    Column
-    {
+    Column {
         id: topLab
         width: parent.width / 4
         height: parent.height
@@ -101,14 +100,12 @@ Item {
         }
     }
 
-    AudioList
-    {
+    AudioList {
         id: bottomBar
         anchors.left: topLab.right
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
     }
-
 }
 

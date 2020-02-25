@@ -5,13 +5,25 @@ Item
 {
     id: msgBox
     property int msgArg: 0
-    property int boxType: 4
+    property int boxType: 0
     property string msgContent: ""
     property string msgTitle: ""
+    property alias running: msgTimer.running
+    property alias interval: msgTimer.interval
     signal noClick()
     signal yesClick()
     signal failClick()
 
+    Timer {
+        id: msgTimer
+        repeat: false
+        running: false
+        interval: 2000
+        onTriggered: {
+            msgBox.boxType = 0
+            msgBox.msgContent = ""
+        }
+    }
     Loader
     {
         anchors.fill: parent
@@ -23,6 +35,8 @@ Item
                 case 2: return msgBufferring;
                 case 3: return twoBtnBox;
                 case 4: return bottomTip;
+                case 5: return failTip;
+                case 6: return emptyData;
             }
         }
     }
@@ -65,23 +79,22 @@ Item
 
             Rectangle {
                 id: box
-                width: 400
-                height: 250
+                width: parent.width / 3
+                height: parent.height / 3
                 anchors.centerIn: parent
                 radius: 5
-                visible: false
-                color: "transparent"//"#414141"
+                //visible: false
+                color: "#414141"
 
                 Image {
                     id: busy
-                    anchors.bottom: text.top
-                    anchors.bottomMargin: 20
+                    anchors.bottom: text.top                    
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     source: "qrc:/image/busy.png";
 
                     NumberAnimation on rotation {
-                        running: container.visible
+                        running: busy.visible
                         from: 0; to: 360;
                         loops: Animation.Infinite;
                         duration: 1700
@@ -184,27 +197,29 @@ Item
     Component {
         id: bottomTip
 
-        Rectangle {
-            id: box
-            width: parent.width
-            height: parent.height / 10
-            anchors.bottom: parent.bottom
+        Item {
+            Rectangle {
+                id: box
+                width: parent.width
+                height: parent.height / 10
+                anchors.bottom: parent.bottom
 
-            // visible: false
-            color: "#414141"
+                // visible: false
+                color: "#414141"
 
-            Text {
-                id: text
+                Text {
+                    id: text
 
-                anchors.fill: parent
+                    anchors.fill: parent
 
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                wrapMode: Text.Wrap
+                    horizontalAlignment: Qt.AlignHCenter
+                    verticalAlignment: Qt.AlignVCenter
+                    wrapMode: Text.Wrap
 
-                text: msgContent
-                color: "white"
-                font.pixelSize: 24
+                    text: msgContent
+                    color: "white"
+                    font.pixelSize: 24
+                }
             }
         }
     }
@@ -220,11 +235,13 @@ Item
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
                 wrapMode: Text.Wrap
+                textFormat: Text.RichText
 
                 text: msgContent
-                color: "white"
+                color: "#414141"
                 font.pixelSize: 24
             }
+
 
             MouseArea {
                 anchors.fill: parent
@@ -232,4 +249,29 @@ Item
             }
         }
     }
+
+    Component {
+        id: emptyData
+        Item {
+            Text {
+                id: text
+
+                anchors.fill: parent
+
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                wrapMode: Text.Wrap
+                textFormat: Text.RichText
+
+                text: msgContent
+                color: "#414141"
+                font.pixelSize: 24
+            }
+
+            MouseArea {
+                anchors.fill: parent
+            }
+        }
+    }
+
 }

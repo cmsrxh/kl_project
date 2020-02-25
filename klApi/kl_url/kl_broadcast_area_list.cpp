@@ -28,6 +28,7 @@ kl::BroadcastAreaList::BroadcastAreaList()
     : SaveObject<AreaItem> ("http://open.kaolafm.com/v2/broadcast/arealist", NetUrl::NET_HTTP_METHOD_GET)
 {
     setSaveFile(NET_KL_BDC_AREA_LIST_FILE);
+    setObjectName(OBJECT_BDC_AREA_LIST);
 }
 
 NetUrl &kl::BroadcastAreaList::genQueryUrl()

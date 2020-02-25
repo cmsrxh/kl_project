@@ -31,6 +31,7 @@ kl::AlbumList::AlbumList(int cid, int sorttype, int pagenum, int pagesize)
     , needPage(ByteString::allocLong(pagenum))
     , needPageSize(ByteString::allocLong(pagesize))
 {
+    setObjectName(OBJECT_ALBUM_LIST);
 }
 
 kl::AlbumList::AlbumList(const ByteString &cid, int sorttype, int pagenum, int pagesize)
@@ -40,6 +41,7 @@ kl::AlbumList::AlbumList(const ByteString &cid, int sorttype, int pagenum, int p
     , needPage(ByteString::allocLong(pagenum))
     , needPageSize(ByteString::allocLong(pagesize))
 {
+    setObjectName(OBJECT_ALBUM_LIST);
 }
 
 kl::AlbumList::~AlbumList()
