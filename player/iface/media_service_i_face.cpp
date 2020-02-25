@@ -199,6 +199,7 @@ bool MediaServiceIFace::initClientIface(MediaServiceCallback *callback)
         MEDIA_PAUSED            + ipc::SERVICE_NOTIFY_Method_Base,
         MEDIA_STOPPED           + ipc::SERVICE_NOTIFY_Method_Base,
         MEDIA_SKIPPED           + ipc::SERVICE_NOTIFY_Method_Base,
+        MEDIA_CACHE_TIME        + ipc::SERVICE_NOTIFY_Method_Base,
         MEDIA_NOTIFY_TIME       + ipc::SERVICE_NOTIFY_Method_Base,
         MEDIA_TIMED_TEXT        + ipc::SERVICE_NOTIFY_Method_Base,
         MEDIA_ERROR             + ipc::SERVICE_NOTIFY_Method_Base,

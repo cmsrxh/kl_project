@@ -30,6 +30,8 @@ public:
         bottomTip,
 //        case 5: return failTip;
         failTip,
+//        case 6: return emptyData;
+        emptyData,
     };
 
     KLUIProc();
@@ -49,6 +51,8 @@ public:
     // qrc:/bdc/KlInlineChannelView.qml
     // qrc:/bdc/KlInlineAreaView.qml
     void viewBDCItemAreaSwicth(QString const &url);
+
+    bool isAudioView();
 
     void setSourceUrl(const char *url);
     bool canSeek() const;
@@ -98,6 +102,7 @@ Q_SIGNALS:
     // qml
     void durationChanged(int duration, QString const &durStr);
     void positionChanged(QString const &curPos);
+    void cacheDataChanged(int curPos);
     void playingInfo(QString const &name, QString const &desc);
 
     /**
@@ -109,6 +114,12 @@ Q_SIGNALS:
     void msgTipCateItem(int boxType, QString const &msgContent);
     // main.qml
     void msgTipGlobal(int boxType, QString const &msgContent);
+
+    // AudioList.qml
+    void msgTipAudioList(int boxType, QString const &msgContent);
+
+    //KlInlineBroadcast.qml
+    void msgTipBroadcast(int boxType, QString const &msgContent);
 private:
     QString numToTimeStr(int num);
 

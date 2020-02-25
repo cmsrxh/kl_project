@@ -15,6 +15,8 @@ public:
     static void metadataPriser(void *data);
     static void durationPriser(void *data);
     static void timePosPriser(void *data);
+    static void cacheDurationPriser(void *data);
+    static void cacheTimePosPriser(void *data);
     static void mutePriser(void *data);
     static void volumePriser(void *data);
     static void tracklistPriser(void *data);

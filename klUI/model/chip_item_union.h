@@ -34,6 +34,8 @@ public:
 
     void onLoadOver(ChipItemModel *parent);
 
+    bool isEmpty();
+
     int itemCount();
 
     /**

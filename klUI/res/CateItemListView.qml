@@ -32,8 +32,8 @@ GridView {
             {
                 msgBox.boxType = 4
                 msgBox.msgContent = qsTr("已经加载到末尾了")
-                msgTimer.running = true
-                msgTimer.interval = 1500
+                msgBox.running  = true
+                msgBox.interval = 1500
             }/* else
             {
                 msgBox.boxType = 2
@@ -83,17 +83,6 @@ GridView {
 //        msgContent: qsTr("数据加载中…")
         onFailClick: {
             KL.Controller.qmlReloadErrObject()
-        }
-    }
-
-    Timer {
-        id: msgTimer
-        repeat: false
-        running: false
-        interval: 2000
-        onTriggered: {
-            msgBox.boxType = 0
-            msgBox.msgContent = ""
         }
     }
 }

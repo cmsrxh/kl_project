@@ -123,8 +123,9 @@ void CateItemUnion::dataPrepare()
 
     if (isEmpty)
     {
-        GEN_Printf(LOG_DEBUG, "Category Item List is empty.");
-        Q_EMIT m_pParentModel->loadError(0, "Category Item List is empty.");
+//Not Used signal
+//        GEN_Printf(LOG_WARN, "Category Item List is empty.");
+//        Q_EMIT m_pParentModel->loadError(0, "Category Item List is empty.");
     } else
     {
         Q_EMIT m_pParentModel->dataLoadOver((long)this);
@@ -155,6 +156,28 @@ void CateItemUnion::onLoadOver(CateItemModel *model)
     default:
         break;
     }
+}
+
+bool CateItemUnion::isEmpty()
+{
+    bool res = true;
+    switch (mCateItemType) {
+    case CATE_ITEM_ALBUM:
+        res = ((kl::AlbumList *)m_pCateItem)->nodes().empty();
+        break;
+    case CATE_ITEM_OPERATE:
+        res = ((kl::OperateList *)m_pCateItem)->nodes().empty();
+        break;
+    case CATE_ITEM_TYPE_RADIO:
+        res = ((kl::TypeRadioList *)m_pCateItem)->nodes().empty();
+        break;
+    case CATE_ITEM_BDCAST:
+        res = ((kl::BroadcastItemList *)m_pCateItem)->nodes().empty();
+        break;
+    default:
+        break;
+    }
+    return res;
 }
 
 bool CateItemUnion::loadNextPage()

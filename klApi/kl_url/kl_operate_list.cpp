@@ -29,7 +29,7 @@ sign=81230f5ae8db203704271b5c87cc6fbc&channel=linuxwhhj&
 ....
 */
 kl::OperateList::OperateList(int pagenum, int pagesize)
-    : SaveObject<Operate> ("http://open.kaolafm.com/v2/operate", NetUrl::NET_HTTP_METHOD_GET)
+    : SaveObject<Operate> ("http://open.kaolafm.com/v2/operateas", NetUrl::NET_HTTP_METHOD_GET)
     , mPageNum(ByteString::allocLong(pagenum))
     , mPageSize(ByteString::allocLong(pagesize))
 {

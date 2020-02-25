@@ -12,7 +12,7 @@
 #include "events/sf_loop.h"
 #include "app_common.h"
 #include "events/sf_thread.h"
-#include "util/list_table.h"
+#include "util/set_table.h"
 
 namespace kl
 {
@@ -61,13 +61,13 @@ private:
      * @warning 注意这些下载对象不能释放，否则这里记录的指针就是非法
      * @brief mKlBack
      */
-    ListTable<kl::KLObject *>    mKlBack;
+    SetTable<kl::KLObject *>    mKlBack;
 
     /**
      * @brief mErrObj
      * @details 记录当前对象，发生网络错误的时候需要重新加载
      */
-    ListTable<kl::KLObject *>    mErrObj;
+    SetTable<kl::KLObject *>    mErrObj;
 };
 
 #define sfApp (Application::instance())

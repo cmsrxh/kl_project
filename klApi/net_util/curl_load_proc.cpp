@@ -155,6 +155,7 @@ void CurlLoadProc::cleanCurlMsg()
                 }
 
                 CurlGlobal::instance()->clean(e);
+
                 // CurlLoadItem 析构函数中做释放cleanup
                 delete cur_load;
             } else

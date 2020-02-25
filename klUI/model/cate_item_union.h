@@ -28,6 +28,7 @@ public:
 
     void onLoadOver(CateItemModel *model);
 
+    bool isEmpty();
     /**
      * @brief loadNextPage
      * @return 返回是否还有下一页

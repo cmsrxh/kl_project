@@ -49,6 +49,7 @@ enum {
     MEDIA_PAUSED = 7,
     MEDIA_STOPPED = 8,
     MEDIA_SKIPPED = 9,
+    MEDIA_CACHE_TIME = 10,  // 网络下载进度
     MEDIA_NOTIFY_TIME = 98,
     MEDIA_TIMED_TEXT = 99,
     MEDIA_ERROR = 100,

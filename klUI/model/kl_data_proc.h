@@ -198,7 +198,7 @@ public:
      * @brief enterAlbumView
      * @details 进入专辑信息界面
      */
-    void enterAlbumView();
+    void enterAlbumView() {}
 
     /**
      * @brief getAlbumFirstIndex
@@ -350,6 +350,8 @@ private:
     bool playCurSubItemSubNext(MusicChipItemUnion *);
     static void msgTipTimer(ATimer *that, void *ptr);
     void showDelayMsgBox();
+    //加载本地数据时，关闭弹框
+    void msgBoxLocalLoadOver(int objectName);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;

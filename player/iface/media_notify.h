@@ -42,6 +42,10 @@ public:
     //通知当前时间进度条变化值
     void notifySlider(int cur, int dur);
 
+    // 网络播放器的数据缓存进度
+    void notifyCacheDuration(int dur); // 等同或类似于notifyCacheTime
+    void notifyCacheTime(int cur);
+
     void notifyScanStart();
     void notifyScanEnd();
 
