@@ -132,10 +132,10 @@ void CateItemUnion::dataPrepare()
     }
 }
 
-void CateItemUnion::errorInfo(int type, const char *err_str)
+void CateItemUnion::errorInfo(int /*type*/, const char */*err_str*/)
 {
-    GEN_Printf(LOG_DEBUG, "Cate Item List Error, %s", err_str);
-    Q_EMIT m_pParentModel->loadError(type, err_str);
+//    GEN_Printf(LOG_DEBUG, "Cate Item List Error, %s", err_str);
+//    Q_EMIT m_pParentModel->loadError(type, err_str);
 }
 
 void CateItemUnion::onLoadOver(CateItemModel *model)

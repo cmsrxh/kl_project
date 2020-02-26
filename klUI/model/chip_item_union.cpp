@@ -486,7 +486,7 @@ void ChipItemUnion::genCatesByLocalLoadItem(ListTable<kl::RecordItem> &nodes, Ve
         tmp->parentId   = it->parentId;
         tmp->chipId     = it->id;
         tmp->parentName = it->parentName;
-        tmp->name       = (it->name.empty()) ? it->name : it->parentName;
+        tmp->name       = (!it->name.empty()) ? it->name : it->parentName;
         tmp->image      = it->image;
         tmp->playUrl    = it->playUrl;
 
@@ -507,7 +507,7 @@ void ChipItemUnion::genCatesByCollectItem(ListTable<kl::RecordItem> &nodes, Vect
         tmp->parentId   = it->parentId;
         tmp->chipId     = it->id;
         tmp->parentName = it->parentName;
-        tmp->name       = (it->name.empty()) ? it->name : it->parentName;
+        tmp->name       = (!it->name.empty()) ? it->name : it->parentName;
         tmp->image      = it->image;
         tmp->playUrl    = it->playUrl;
 
@@ -528,7 +528,7 @@ void ChipItemUnion::genCatesByHistroyItem(ListTable<kl::RecordItem> &nodes, Vect
         tmp->parentId   = it->parentId;
         tmp->chipId     = it->id;
         tmp->parentName = it->parentName;
-        tmp->name       = (it->name.empty()) ? it->name : it->parentName;
+        tmp->name       = (!it->name.empty()) ? it->name : it->parentName;
         tmp->image      = it->image;
         tmp->playUrl    = it->playUrl;
 
@@ -568,7 +568,7 @@ void ChipItemUnion::genCatesBySearchItem(ListTable<kl::SearchItem> &nodes, Vecto
         tmp->parentId   = it->id;
         tmp->chipId     = it->id;
         tmp->parentName = it->albumName;
-        tmp->name       = (it->name.empty()) ? it->name : it->albumName;
+        tmp->name       = (!it->name.empty()) ? it->name : it->albumName;
         tmp->image      = it->img;
         tmp->playUrl    = it->playUrl;
 

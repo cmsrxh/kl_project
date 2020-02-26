@@ -109,14 +109,14 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
 
 void DetailUnion::dataPrepare()
 {
-    GEN_Printf(LOG_DEBUG, "data prepared, mDetailType=%d", mDetailType);
+    // GEN_Printf(LOG_DEBUG, "data prepared, mDetailType=%d", mDetailType);
     Q_EMIT DetailQobject::instance()->dataLoadOver((long)this);
 }
 
 void DetailUnion::errorInfo(int type, const char *err_str)
 {
     // GEN_Printf(LOG_DEBUG, "Cate Item List Error, %s", err_str);
-    Q_EMIT DetailQobject::instance()->loadError(type, QStringFromCString(err_str));
+    Q_EMIT DetailQobject::instance()->loadError(type, (long)this, QStringFromCString(err_str));
 }
 
 void DetailUnion::getDetail(MusicDetail &detail)

@@ -123,6 +123,18 @@ void ChipItemModel::chipLocalLoad(ChipItemUnion *pUnion)
     endResetModel();
 }
 
+void ChipItemModel::localDataChange(ChipItemUnion *pUnion)
+{
+    //qDebug() << "----------------" << (long)pUnion << (long)m_pUnion;
+    if (pUnion == m_pUnion)
+    {
+        mVec.clearPtr();
+        m_pUnion->onLoadOver(this);
+        beginResetModel();
+        endResetModel();
+    }
+}
+
 int ChipItemModel::getChipType() const
 {
     return m_pUnion->getChipType();
@@ -145,10 +157,10 @@ bool ChipItemModel::needNextPage()
     return m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW);
 }
 
-void ChipItemModel::playNeedNextPage()
+bool ChipItemModel::playNeedNextPage()
 {
     qDebug() << "Player Chip Need Next Page";
-    m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_IN_PLAYVIEW);
+    return m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_IN_PLAYVIEW);
 }
 
 void ChipItemModel::playItemClick(int index)

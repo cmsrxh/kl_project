@@ -75,26 +75,61 @@ Rectangle
         anchors.bottom: parent.bottom
         color: "#373737"
 
-        Loader
-        {
-            id: bcLoad
+        ListView {
+            id: view
+            property bool isLoad: false
             anchors.fill: parent
-            sourceComponent: ListView {
-                id: view
-                width: list.width
-                height: list.height
-                currentIndex: playList.playingIndex
-                model: playList
-                delegate: CurrentDelegate{}
-                spacing: 2
-                clip: true
-                onFlickEnded:
+            currentIndex: playList.playingIndex
+            model: playList
+            delegate: CurrentDelegate{}
+            spacing: 2
+            clip: true
+
+            onDragEnded:
+            {
+                if(isLoad)
                 {
-                    if(atYEnd)
+                    isLoad = false
+                    var isHaveNext = playList.playNeedNextPage();
+                    if (!isHaveNext)
                     {
-                        playList.playNeedNextPage();
+                        msgBox.boxType = 4
+                        msgBox.msgContent = qsTr("已经加载到末尾了")
+                        msgBox.running  = true
+                        msgBox.interval = 1500
                     }
                 }
+            }
+            onContentYChanged: {
+                if (contentHeight < height || contentY <= contentHeight - height)
+                {
+                    upDrag.visible   = false
+                } else
+                {
+                    upDrag.visible = true
+                    upDrag.height  = -(contentHeight - height - contentY)
+                    upDrag.y       = height - upDrag.height
+                    if (upDrag.height > 60) isLoad = true;
+                }
+            }
+            Rectangle {
+                id: upDrag
+                color: "green"
+                width: parent.width
+                height: 0
+                visible: false
+                clip: true
+                Text {
+                    anchors.centerIn: parent
+                    text: qsTr("上拉加载…")
+                    color: "white"
+                    font.pixelSize: 24
+                }
+            }
+
+            KlMsgTipBox {
+                id: msgBox
+                anchors.fill: parent
             }
         }
     }

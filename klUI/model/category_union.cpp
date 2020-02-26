@@ -182,18 +182,18 @@ void CategoryUnion::dataPrepare()
 
     if (isEmpty)
     {
-        qDebug() << "CategoryModel is empty.";
-        Q_EMIT m_pParentModel->loadError(0, "CategoryModel is empty.");
+//        qDebug() << "CategoryModel is empty.";
+//        Q_EMIT m_pParentModel->loadError(0, "CategoryModel is empty.");
     } else
     {
         Q_EMIT m_pParentModel->dataLoadOver((long)this);
     }
 }
 
-void CategoryUnion::errorInfo(int type, const char *err_str)
+void CategoryUnion::errorInfo(int /*type*/, const char */*err_str*/)
 {
-    qDebug() << "CategoryAllModel Error." << err_str;
-    Q_EMIT m_pParentModel->loadError(type, err_str);
+//    qDebug() << "CategoryAllModel Error." << err_str;
+//    Q_EMIT m_pParentModel->loadError(type, err_str);
 }
 
 void CategoryUnion::onLoadOver(VectorTable<MusicCateUnion *> &vec)

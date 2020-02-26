@@ -207,7 +207,7 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         setPlayState(2);
         break;
     case MEDIA_CACHE_TIME:
-        qDebug() << "cache position: " << ext1;
+        //qDebug() << "cache position: " << ext1;
         Q_EMIT cacheDataChanged(ext1);
         break;
     case MEDIA_NOTIFY_TIME:

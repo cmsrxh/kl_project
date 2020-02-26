@@ -102,7 +102,7 @@ public:
 
     void msgPriser(IPCDataPackage *pack)
     {
-        GEN_Printf(LOG_INFO, "CMD: %d, %d, %d, %d", pack->getCmd(), pack->getHeadDataSize(), pack->bufferLen(), pack->dataLen());
+        // GEN_Printf(LOG_INFO, "CMD: %d, %d, %d, %d", pack->getCmd(), pack->getHeadDataSize(), pack->bufferLen(), pack->dataLen());
 
         int cmd = pack->getCmd() - ipc::SERVICE_NOTIFY_Method_Base;
         if (gClientCallback)

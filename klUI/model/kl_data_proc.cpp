@@ -1007,6 +1007,8 @@ void KLDataProc::localItemPlay(int type, int index, ChipItemUnion *pUnion)
     mPlayPath.current_play_source = type;
 
     chipPlayThirdClick(index);
+
+    Q_EMIT m_pChipItemPlay->playingIndexChanged(index);
 }
 
 void KLDataProc::playDefaultItem(ChipItemUnion *pUnion)
@@ -1222,5 +1224,10 @@ void KLDataProc::reloadErrObject()
 {
     GEN_Printf(LOG_DEBUG, "reload error object");
     Application::instance()->postCmd(SIG_KL_RELOAD_ERR_OBJECT);
+}
+
+void KLDataProc::localDataRenderPlaying(ChipItemUnion *pUnion)
+{
+    m_pChipItemPlay->localDataChange(pUnion);
 }
 

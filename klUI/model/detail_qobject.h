@@ -57,11 +57,11 @@ public:
     void clearAlbumDetail();
 public Q_SLOTS:
     void onLoadOver(long ptr); 
-
+    void onLoadError(int type, long ptr, const QString &info);
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
-    void loadError(int type, const QString &info);
+    void loadError(int type, long ptr, const QString &info);
 
 
     void keyWordsChanged();

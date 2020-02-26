@@ -277,8 +277,8 @@ public:
 
     /**
      * @brief localItemPlay
-     * @param local_type
-     * @param main_index
+     * @param type [in] 当前播放源类型 CURREN_PLAY_SOURCE_...
+     * @param index
      * @details 根据本地信息（收藏 历史记录 或者下载记录），进行播放处理
      */
     void localItemPlay(int type, int index, ChipItemUnion *pUnion) ;
@@ -343,6 +343,12 @@ public:
      */
     void reloadErrObject();
 
+    /**
+     * @brief localDataRenderPlaying
+     * @param pUnion [in] 当前播放源类型Local Chip Data
+     * @details 表示本地数据收藏、历史记录等数据发生变化，如果当前播放列表是基于本地数据，则就要同时应用到播放列表
+     */
+    void localDataRenderPlaying(ChipItemUnion *pUnion);
 private:
     KLDataProc();
     void enterBroadcastView();

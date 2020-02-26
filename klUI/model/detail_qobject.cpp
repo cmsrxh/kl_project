@@ -63,6 +63,25 @@ void DetailQobject::onLoadOver(long ptr)
 
 }
 
+void DetailQobject::onLoadError(int /*type*/, long ptr, const QString &info)
+{
+    DetailUnion *unionPtr = reinterpret_cast<DetailUnion *> (ptr);
+    qDebug() << "detail load error" << type << info;
+    switch (unionPtr->getLoadAction())
+    {
+    case DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW:
+    {
+        break;
+    }
+    case DetailUnion::LOAD_DETAIL_AUDIO_PLAYING:
+    {
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void DetailQobject::loadDetail(int type, const ByteString &id, int loadAction)
 {
     ByteString detailId = ByteString::allocString(id);
@@ -97,5 +116,5 @@ void DetailQobject::clearAlbumDetail()
 
 DetailQobject::DetailQobject()
 {
-    connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)), Qt::QueuedConnection);
+    connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
 }

@@ -67,7 +67,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
-    void loadError(int type, const QString &info);
+    // 废弃使用，使用全局通知
+    // void loadError(int type, const QString &info);
 
     //
     void bdcTabIndexChanged(int bdcTabIndex);

@@ -91,6 +91,13 @@ public:
     void chipLoadOver(long ptr);
     void chipLocalLoad(ChipItemUnion *pUnion);
 
+    /**
+     * @brief localDataChange
+     * @param pUnion [in] 当前播放源类型Local Chip Data
+     * @details 表示本地数据收藏、历史记录等数据发生变化，如果当前播放列表是基于本地数据，则就要同时应用到播放列表
+     */
+    void localDataChange(ChipItemUnion *pUnion);
+
     bool isEmpty()
     {
         return mVec.empty();
@@ -105,7 +112,7 @@ public Q_SLOTS:
 
     bool needNextPage();
 
-    void playNeedNextPage();
+    bool playNeedNextPage();
 
     void playItemClick(int index);
 
