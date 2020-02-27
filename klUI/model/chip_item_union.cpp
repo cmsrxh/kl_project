@@ -6,6 +6,7 @@
 #include "kl_collect_manage.h"
 #include "kl_download_manage.h"
 #include "kl_record_manage.h"
+#include "pop_tip_manage.h"
 #include "chip_item_model.h"
 #include "chip_item_union.h"
 #include "chip_item_play_manage.h"
@@ -58,6 +59,7 @@ ChipItemUnion::~ChipItemUnion()
 
 void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAction)
 {
+    int ret = false;
     mLoadAction = loadAction;
 
     switch (mChipType)
@@ -74,7 +76,7 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
             m_pChip = audioList;
         }
         audioList->setUINotify(this);
-        audioList->obtain();
+        ret = audioList->obtain();
         break;
     }
     case PLAY_CHIP_TYPE_RADIO_CHIP:
@@ -90,7 +92,7 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
             m_pChip = radioList;
         }
         radioList->setUINotify(this);
-        radioList->obtain();
+        ret = radioList->obtain();
         break;
     }
     case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
@@ -106,7 +108,7 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
             m_pChip = bdcProgram;
         }
         bdcProgram->setUINotify(this);
-        bdcProgram->obtain();
+        ret = bdcProgram->obtain();
         break;
     }
     default:
@@ -114,41 +116,34 @@ void ChipItemUnion::loadChipList(const ByteString &id, bool sorttype, int loadAc
         assert(0);
         break;
     }
+
+    PopTipManage::instance()->klObjectObtainStart(ret, mChipType, mLoadAction);
 }
 
 void ChipItemUnion::dataPrepare()
 {
-    bool isEmpty = true;
-    switch (mChipType)
-    {
-    case PLAY_CHIP_TYPE_AUDIO_CHIP:
-        isEmpty = ((kl::ChipAudioList *)m_pChip)->nodes().empty();
-        break;
-    case PLAY_CHIP_TYPE_RADIO_CHIP:
-        isEmpty = ((kl::ChipRadioList *)m_pChip)->nodes().empty();
-        break;
-    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
-        isEmpty = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes().empty();
-        break;    
-    default:
-        GEN_Printf(LOG_WARN, "Not exist type=%d", mChipType);
-        assert(0);
-        return;
-    }
-    if (isEmpty)
-    {
-        GEN_Printf(LOG_DEBUG, "Chip Item List is empty.");
-        gPlayInstance->loadError(mLoadAction, 0, "Chip Item List is empty.");
-    } else
-    {
-        Q_EMIT gPlayInstance->dataLoadOver((long)this, mLoadAction);
-    }
+    PopTipManage::instance()->klObjectObtainOver(mChipType, mLoadAction);
+    Q_EMIT gPlayInstance->dataLoadOver((long)this, mLoadAction);
+    
 }
 
-void ChipItemUnion::errorInfo(int type, const char *err_str)
+void ChipItemUnion::errorInfo(int type, const ByteString &err_str)
 {
-    GEN_Printf(LOG_DEBUG, "Chip Item List Error, %s", err_str);
-    gPlayInstance->loadError(mLoadAction, type, QStringFromCString(err_str));
+    switch (type)
+    {
+    case LOAD_EMPTY_DATA:        // 分析数据正确，但是得到的数据是空
+        PopTipManage::instance()->klLoadDataExportEmpty(mChipType, mLoadAction, err_str);
+        break;
+    case LOAD_PRISER_JSOC_ERROR: // 不能正确解析json数据
+        PopTipManage::instance()->klLoadDataPriserExcept(mChipType, mLoadAction, err_str);
+        break;
+    case LOAD_SYS_API_FAILED:    // libcurl下载反馈的错误信息
+        PopTipManage::instance()->sysNetLoadApiExcept(mChipType, mLoadAction, err_str);
+        break;
+    default :
+        assert(0);
+        break;
+    }
 }
 
 void ChipItemUnion::onLoadOver(ChipItemModel *parent)
@@ -249,17 +244,24 @@ int ChipItemUnion::itemCount()
 
 bool ChipItemUnion::loadNextPage(int loadAction)
 {
+    bool ret = false;
     mLoadAction = loadAction;
+
     switch (mChipType)
     {
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
-        return ((kl::ChipAudioList *)m_pChip)->loadNextPage();
+        ret = ((kl::ChipAudioList *)m_pChip)->loadNextPage();
     case PLAY_CHIP_TYPE_RADIO_CHIP:
-        return ((kl::ChipRadioList *)m_pChip)->loadNextPage();
+        ret = ((kl::ChipRadioList *)m_pChip)->loadNextPage();
     default:
         break;
     }
-    return false;
+    if (ret)
+    {
+        PopTipManage::instance()->klObjectObtainStart(true, mChipType, mLoadAction);
+    }
+
+    return ret;
 }
 
 bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)

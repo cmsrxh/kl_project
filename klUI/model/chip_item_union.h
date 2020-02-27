@@ -2,6 +2,7 @@
 #define CHIP_ITEM_UNION_H
 
 #include "kl_ui_data_union.h"
+#include "pop_tip_manage.h"
 
 // ChipAudioList
 // ChipRadioList
@@ -11,10 +12,10 @@ class ChipItemUnion : public kl::UINotifyIface
 public:
     // 下载动作
     enum {
-        LOAD_OVER_ALBUM_NORMAL_SHOW,        // 正常加载数据，并显示出来，应用于专辑相关的界面
-        LOAD_OVER_ALBUM_IN_PLAYVIEW,        // 正常加载的数据，显示在节目列表界面中，用于专辑当前正在播放的列表,发生在当前播放列表已经放完需要后台加载。
-        LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW,   // 显示广播节目，在节目列表界面上, 然后要自动播放最新的电台节目
-        LOAD_OVER_BACK_PLAY_OP,             // 直接播放专辑等二级列表项
+        LOAD_OVER_ALBUM_NORMAL_SHOW = PopTipManage::LOAD_ALBUM_NORMAL_SHOW,        // 正常加载数据，并显示出来，应用于专辑相关的界面
+        LOAD_OVER_ALBUM_IN_PLAYVIEW = PopTipManage::LOAD_ALBUM_IN_PLAYVIEW,        // 正常加载的数据，显示在节目列表界面中，用于专辑当前正在播放的列表,发生在当前播放列表已经放完需要后台加载。
+        LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW = PopTipManage::LOAD_BDCPROGRAM_IN_PLAYVIEW,   // 显示广播节目，在节目列表界面上, 然后要自动播放最新的电台节目
+        LOAD_OVER_BACK_PLAY_OP = PopTipManage::LOAD_BACK_PLAY_OP,             // 直接播放专辑等二级列表项
     };
     // 资源类型 (0:专辑|3:电台:11:传统电台)
     ChipItemUnion(int type);
@@ -30,7 +31,7 @@ public:
 
     void dataPrepare();
 
-    void errorInfo(int, const char *);
+    void errorInfo(int, const ByteString &);
 
     void onLoadOver(ChipItemModel *parent);
 

@@ -9,7 +9,7 @@ public:
     {
         Application::instance()->postKlEvent(Application::SIG_TEST_SEARCH_LOAD_OVER);
     }
-    void errorInfo(int type, const char *str)
+    void errorInfo(int type, const ByteString &str)
     {
         GEN_Printf(LOG_ERROR, "ERROR: %d, %s", type, str);
     }
@@ -22,7 +22,7 @@ public:
     {
         Application::instance()->postKlEvent(Application::SIG_TEST_AUDIO_DETAIL_LOAD_OVER);
     }
-    void errorInfo(int type, const char *str)
+    void errorInfo(int type, const ByteString &str)
     {
         GEN_Printf(LOG_ERROR, "ERROR: %d, %s", type, str);
     }

@@ -5,6 +5,7 @@
 #include "kl_ui_data_union.h"
 
 class ATimer;
+
 enum
 {
     CURREN_PLAY_SOURCE_ALBUM_AUDIO_LIST,        // 专辑碎片列表点击播放
@@ -290,54 +291,6 @@ public:
     void playDefaultItem(ChipItemUnion *pUnion);
 
     /**
-     * @brief audioDetailLoadOver
-     * @param detail
-     * @details 根据专辑audioID号，获取其详情，然后播放，并下载对应的专辑列表
-     */
-    void audioDetailLoadOver(MusicDetail &detail);
-
-    /**
-     * @brief klObjectObtainState
-     * @param state [in] 调用下载函数的返回状态
-     * @param objectName [in] 对象名字
-     * @details 基于KlObject派生类开始调用obtain函数，获取kl数据
-     * @note 在App事件循环子线程中执行
-     */
-    void klObjectObtainState(bool state, int objectName);
-
-    /**
-     * @brief klObjectObtainOver
-     * @param objectName
-     * @details 基于KlObject派生类, 数据下载完成
-     */
-    void klObjectObtainOver(int objectName);
-
-    /**
-     * @brief klLoadDataExportEmpty
-     * @details  kl下载的数据，是空列表
-     * @note 在App事件循环子线程中执行
-     */
-    void klLoadDataExportEmpty(int objectName);
-
-    /**
-     * @brief klLoadDataPriserExcept
-     * @param str
-     * @details  kl下载的数据，json格式数据解析失败了（大多都是传递 了错误的参数，或者服务器那边出现问题）
-     * @note 在App事件循环子线程中执行
-     */
-    void klLoadDataPriserExcept(int objectName, const ByteString &str);
-
-    /**
-     * @brief sysNetLoadApiExcept
-     * @param type
-     * @param str
-     * @details 调用libcurl下载kl数据失败，一般时本地网络出现问题
-     *          例如：下载超时、网络断开等等原因。
-     * @note 在App事件循环子线程中执行
-     */
-    void sysNetLoadApiExcept(int objectName, int type, const char *str);
-
-    /**
      * @brief reloadErrObject
      * @details 重新加载错误的对象
      */
@@ -349,15 +302,28 @@ public:
      * @details 表示本地数据收藏、历史记录等数据发生变化，如果当前播放列表是基于本地数据，则就要同时应用到播放列表
      */
     void localDataRenderPlaying(ChipItemUnion *pUnion);
+
+    /**
+     * @brief getViewSwitchInfo
+     * @param data
+     * @param len
+     * @details 用来保存当前界面切换的数据
+     */
+    void getViewSwitchInfo(char *&data, int &len) const
+    {
+        data = (char *)&mSwitch;
+        len  = sizeof(SwitchPath);
+    }
+    void setViewSwitchInfo(char *data)
+    {
+        mSwitch = *((SwitchPath *)data);
+    }
+
 private:
     KLDataProc();
     void enterBroadcastView();
     void playSubItem(MusicChipItemUnion *chip);
     bool playCurSubItemSubNext(MusicChipItemUnion *);
-    static void msgTipTimer(ATimer *that, void *ptr);
-    void showDelayMsgBox();
-    //加载本地数据时，关闭弹框
-    void msgBoxLocalLoadOver(int objectName);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
@@ -378,9 +344,6 @@ private:
     CategoryModel    *m_pBDCTab;
     CategoryModel    *m_pBDCArea;
     CateItemModel    *m_pBDCItem;
-
-    ATimer           *m_pMsgPopDelayTimer;
-    int               mCurrenObjectName;
 
     SwitchPath        mSwitch;
     SwitchPath        mPlayPath;

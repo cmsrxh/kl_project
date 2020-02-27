@@ -13,6 +13,8 @@
 #include "kl_url/kl_init_manage.h"
 #include "util/config_setting.h"
 #include "model/kl_data_proc.h"
+//#include "model/kl_local_data_proc.h"
+#include "pop_tip_manage.h"
 #include "kl_collect_manage.h"
 #include "kl_download_manage.h"
 #include "kl_record_manage.h"
@@ -40,10 +42,10 @@ void Application::initialize()
         stateMache->initialize();
 #endif
     }
-    KLDataProc::instance()->initSockService();
+    //KLDataProc::instance()->initSockService();
 
     // 启动收数据线程，并连接播放服务端socket
-    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    //postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }
@@ -115,24 +117,8 @@ void Application::runLoop()
                                                          ((GeneralQEvt *)evt)->wParam);
             break;
 
-        case SIG_KL_OBJECT_OBTAIN_START:
-            KLDataProc::instance()->klObjectObtainState(((GeneralQEvt *)evt)->wParam,
-                                                        reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam)->objectName());
-            break;
-
-        case SIG_KL_OBJECT_OBTAIN_OVER:
-            KLDataProc::instance()->klObjectObtainOver(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam)->objectName());
-            break;
-
-        case SIG_KL_LOAD_DATA_EXCEPT:
-            klLoadDataExceptProc((GeneralQEvt *)evt);
-            break;
-
-        case SIG_SYS_NET_LOAD_API_EXCEPT:
-            mErrObj.push_back(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam));
-            KLDataProc::instance()->sysNetLoadApiExcept(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->lParam)->objectName(),
-                                                        ((GeneralQEvt *)evt)->wParam,
-                                                        reinterpret_cast<char *>(((GeneralQEvt *)evt)->pHander));
+        case SIG_KL_COLLECT_ERR_OBJECT:
+            mErrObj.push_back(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->wParam));
             break;
 
         case SIG_KL_RELOAD_ERR_OBJECT:
@@ -140,7 +126,8 @@ void Application::runLoop()
             ListTable<kl::KLObject *>::iterator it = mErrObj.begin();
             for ( ; it != mErrObj.end(); ++it)
             {
-                (*it)->obtain();
+                bool ret = (*it)->obtain();
+                PopTipManage::instance()->errReloadStart(ret, (*it)->objectName());
             }
             mErrObj.clear();
             break;
@@ -176,6 +163,13 @@ bool Application::postKlEvent(int cmd, long ext1, long ext2, const char *str)
     }
 }
 
+void Application::poweroff()
+{
+    kl::DownloadManage::instance()->saveNodesFile();
+    kl::CollectManage::instance()->saveNodesFile();
+    kl::RecordManage::instance()->saveNodesFile();
+}
+
 void Application::klInitActiveManage(GeneralQEvt *evt)
 {
     GEN_Printf(LOG_DEBUG, "klInitActiveManage type: %ld", evt->wParam);
@@ -209,25 +203,3 @@ void Application::klInitGetOpenId()
     }
     mKlBack.clear();
 }
-
-void Application::klLoadDataExceptProc(GeneralQEvt *evt)
-{
-    NetBuffer *buf = reinterpret_cast<NetBuffer *>(evt->pHander);
-    switch (evt->wParam)
-    {
-    case kl::KL_DATA_PRISER_EMPTY:
-        KLDataProc::instance()->klLoadDataExportEmpty(reinterpret_cast<kl::KLObject *> (evt->lParam)->objectName());
-        break;
-    case kl::KL_DATA_PRISER_JSOC_ERROR:
-        mErrObj.push_back(reinterpret_cast<kl::KLObject *> (evt->lParam));
-        KLDataProc::instance()->klLoadDataPriserExcept(reinterpret_cast<kl::KLObject *> (evt->lParam)->objectName(),
-                                                       ByteString(reinterpret_cast<char *>(buf->buffer()), buf->size()));
-        break;
-    default:
-        GEN_Printf(LOG_ERROR, "Invalid except: %ld", evt->wParam);
-        assert(0);
-        break;
-    }
-    NetBuffer::unref(buf);
-}
-

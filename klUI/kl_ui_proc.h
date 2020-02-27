@@ -118,8 +118,9 @@ Q_SIGNALS:
     // AudioList.qml
     void msgTipAudioList(int boxType, QString const &msgContent);
 
-    //KlInlineBroadcast.qml
+    //KlInlineChannelView.qml
     void msgTipBroadcast(int boxType, QString const &msgContent);
+
 private:
     QString numToTimeStr(int num);
 

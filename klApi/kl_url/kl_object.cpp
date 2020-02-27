@@ -30,22 +30,33 @@ kl::KLObject::~KLObject()
  * @brief kl::KLObject::obtain
  * @details 启动下载，获取标签数据
  */
-void kl::KLObject::obtain()
+bool kl::KLObject::obtain()
 {
     if (LocalConfig::instance()->openID().empty())
     {
         Application::instance()->collectObject(this);
-        return;
+        return false;
     }
     if (mLoad.isLoading())
     {
         GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
         mLoad.cancel();
     }
+/*
+    bool ret =
 
-    bool ret = mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
-
-    Application::instance()->postKlEvent(SIG_KL_OBJECT_OBTAIN_START, ret, (long)this);
+    switch (objectName()) {
+    case kl::OBJECT_ACTIVE_MANAGE:
+    case kl::OBJECT_INIT_MANAGE:
+    case kl::OBJECT_SUGGESTION_WORD:
+    case kl::OBJECT_VOICE_SEARCH_ALL:
+        break;
+    default:
+        Application::instance()->postKlEvent(SIG_KL_OBJECT_OBTAIN_START, ret, (long)this);
+        break;
+    }
+*/
+    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
 }
 
 #if 1
@@ -121,6 +132,28 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
     case OP_CURL_STATUS_LOAD_ALL_OVER:      // 表示数据下载全部一次性返回了
     {
         int ret = static_cast<kl::KLObject *>(arg)->loadData(static_cast<NetBuffer *>(data));
+        static_cast<kl::KLObject *>(arg)->loadOver();
+
+        switch (ret)
+        {
+        case KL_DATA_PRISER_OK:          // 分析数据正确
+            static_cast<kl::KLObject *>(arg)->uiNotifyOver();
+            break;
+        case KL_DATA_PRISER_EMPTY:       // 分析数据正确，但是得到的数据是空
+            static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(UINotifyIface::LOAD_EMPTY_DATA, ByteString());
+            break;
+        case KL_DATA_PRISER_JSOC_ERROR:  // 不能正确解析json数据
+            static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(UINotifyIface::LOAD_PRISER_JSOC_ERROR,
+                                                               ByteString((char *)static_cast<NetBuffer *>(data)->buffer(),
+                                                                          static_cast<NetBuffer *>(data)->size()));
+            Application::instance()->postKlEvent(SIG_KL_COLLECT_ERR_OBJECT, (long)arg);
+            break;
+        default:
+            assert(0);
+            break;
+        }
+
+        /*
         if (KL_DATA_PRISER_OK != ret)
         {
             NetBuffer *buf = NetBuffer::ref(static_cast<NetBuffer *>(data));
@@ -133,8 +166,7 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
         {
             Application::instance()->postKlEvent(SIG_KL_OBJECT_OBTAIN_OVER, 0, (long)arg);
         }
-        static_cast<kl::KLObject *>(arg)->loadOver();
-        static_cast<kl::KLObject *>(arg)->uiNotifyOver();
+        */
         break;
     }
     case OP_CURL_STATUS_LOAD_ONE_FRAME:     // 表示数据下载方式按照块来计算，有多少数据就来多少
@@ -146,11 +178,14 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
         break;
     case OP_CURL_STATUS_ERROR_TYPE:         // 往下的枚举表示数据错误的定义
     default:
-        static_cast<kl::KLObject *>(arg)->loadOver();
+        static_cast<kl::KLObject *>(arg)->loadOver();        
         static_cast<kl::KLObject *>(arg)->loadErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
-        static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
+
+        static_cast<kl::KLObject *>(arg)->uiNotifyErrorInfo(UINotifyIface::LOAD_SYS_API_FAILED, (char *)data);
+        Application::instance()->postKlEvent(SIG_KL_COLLECT_ERR_OBJECT, (long)arg);
+
         GEN_Printf(LOG_ERROR, "Load Error: %d. %s", status - OP_CURL_STATUS_ERROR_TYPE, (char *)data);
-        Application::instance()->postKlEvent(SIG_SYS_NET_LOAD_API_EXCEPT, status - OP_CURL_STATUS_ERROR_TYPE, (long)arg, (char *)data);
+        // Application::instance()->postKlEvent(SIG_SYS_NET_LOAD_API_EXCEPT, status - OP_CURL_STATUS_ERROR_TYPE, (long)arg, (char *)data);
         break;
     }
 }

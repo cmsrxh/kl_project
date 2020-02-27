@@ -38,7 +38,6 @@ Item
         id: areaDelegate
         Item {
             id: areaItem
-            x: 0; y: 0
 
             width: areaView.width; height: textRect.height /*+ line.height*/ + childView.height
 
@@ -58,7 +57,13 @@ Item
                     color: "white"
                     font.pixelSize: 18
                 }
-
+                KlLine {
+                    id: line
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: 4
+                    fillColor: "gray"
+                }
                 MouseArea {
                     width: parent.width
                     height: parent.height
@@ -68,22 +73,21 @@ Item
                 }
             }
 
-            KlLine {
-                id: line
-                anchors.bottom: textRect.bottom
-                width: parent.width
-                height: 4
-                fillColor: "gray"
-            }
-
             Loader {
                 id: childView
                 active: bdcArea.bdcAreaIndex === index
                 width: areaItem.width;
                 anchors.bottom: areaItem.bottom
-                height: active == true ? item.contentHight : 0
+                height: active == true ? (item.contentHight < 1 ? 100 : item.contentHight) : 0
                 sourceComponent: KlInlineChannelView {
                     isInArea: true
+                }
+
+                KlLine {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: 4
+                    fillColor: "gray"
                 }
             }
         }

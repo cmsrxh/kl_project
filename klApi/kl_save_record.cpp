@@ -3,6 +3,7 @@
 #include "kl_save_record.h"
 
 kl::SaveRecord::SaveRecord()
+    : mDataStatus(nullptr)
 {
 
 }

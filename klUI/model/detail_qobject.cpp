@@ -54,32 +54,12 @@ void DetailQobject::onLoadOver(long ptr)
     {
         Q_ASSERT(PLAY_CHIP_TYPE_AUDIO_CHIP == unionPtr->getChipType());
         m_pPlayUnion = unionPtr;
-        KLDataProc::instance()->audioDetailLoadOver(mDetail);
         break;
     }
     default:
         break;
     }
 
-}
-
-void DetailQobject::onLoadError(int /*type*/, long ptr, const QString &info)
-{
-    DetailUnion *unionPtr = reinterpret_cast<DetailUnion *> (ptr);
-    qDebug() << "detail load error" << type << info;
-    switch (unionPtr->getLoadAction())
-    {
-    case DetailUnion::LOAD_DETAIL_SHOW_IN_ALBUM_VIEW:
-    {
-        break;
-    }
-    case DetailUnion::LOAD_DETAIL_AUDIO_PLAYING:
-    {
-        break;
-    }
-    default:
-        break;
-    }
 }
 
 void DetailQobject::loadDetail(int type, const ByteString &id, int loadAction)

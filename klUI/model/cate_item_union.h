@@ -11,11 +11,12 @@ class CateItemUnion : public kl::UINotifyIface
 {
 public:
     enum {
-        CATE_ITEM_ALBUM = 1,
-        CATE_ITEM_OPERATE,
-        CATE_ITEM_TYPE_RADIO,
-        CATE_ITEM_BDCAST,
+        CATE_ITEM_ALBUM      = kl::OBJECT_ALBUM_LIST,
+        CATE_ITEM_OPERATE    = kl::OBJECT_OPERATE_LIST,
+        CATE_ITEM_TYPE_RADIO = kl::OBJECT_TYPERADIO_LIST,
+        CATE_ITEM_BDCAST     = kl::OBJECT_BDC_ITEM_LIST,
     };
+
     CateItemUnion(int cid_type, CateItemModel *parent);
     virtual ~CateItemUnion();
 
@@ -24,7 +25,7 @@ public:
 
     void dataPrepare();
 
-    void errorInfo(int, const char *);
+    void errorInfo(int, const ByteString &);
 
     void onLoadOver(CateItemModel *model);
 
@@ -39,6 +40,7 @@ public:
     bool haveNext();
 private:
     const int                           mCateItemType;
+    int                                 mLoadAction;
     UICategoryItemList                 *m_pCateItem;
     CateItemModel                      *m_pParentModel;
 

@@ -20,7 +20,7 @@ public:
     KLObject(const ByteString &baseUrl, int methodType);
     virtual ~KLObject();
 
-    void obtain();
+    bool obtain();
 
     static char *genSign(NetUrl &mUrl);
 
@@ -43,7 +43,7 @@ public:
     {
         if (m_pUINotify) m_pUINotify->dataPrepare();
     }
-    void uiNotifyErrorInfo(int type, const char *str)
+    void uiNotifyErrorInfo(int type, const ByteString &str)
     {
         if (m_pUINotify) m_pUINotify->errorInfo(type, str);
     }

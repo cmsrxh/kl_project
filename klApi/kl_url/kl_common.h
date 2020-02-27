@@ -50,6 +50,10 @@ enum KlObjectName
     OBJECT_VOICE_SEARCH_ALL,
     OBJECT_TYPERADIO_LIST,
 
+    LOCAL_OBJECT_LOAD,
+    LOCAL_OBJECT_COLLECT,
+    LOCAL_OBJECT_HISTROY,
+    LOCAL_OBJECT_SEARCH,
 };
 
 class AreaItem
@@ -547,8 +551,14 @@ public:
 class UINotifyIface
 {
 public:
+    enum ErrorInfoType
+    {
+        LOAD_EMPTY_DATA = 1,        // 分析数据正确，但是得到的数据是空
+        LOAD_PRISER_JSOC_ERROR, // 不能正确解析json数据
+        LOAD_SYS_API_FAILED,    // libcurl下载反馈的错误信息
+    };
     virtual void dataPrepare() = 0;
-    virtual void errorInfo(int , const char *) {}
+    virtual void errorInfo(int /*type*/, const ByteString &) {}
 };
 }
 

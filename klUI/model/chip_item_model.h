@@ -118,7 +118,8 @@ public Q_SLOTS:
 
     void qmlCurrentCollectClick();
 Q_SIGNALS:    
-    void loadError(int type, const QString &info);
+    // NOT USED
+    // void loadError(int type, const QString &info);
 
     // property
     void playingIndexChanged(int playingIndex);
