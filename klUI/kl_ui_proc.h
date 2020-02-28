@@ -60,6 +60,10 @@ public:
 
     void setSliderBase(int cur, int dur);
 
+    int getCurrentPlayingPosition()
+    {
+        return mCurPosition;
+    }
 public Q_SLOTS:
     void qmlStart();
     void qmlPlay();
@@ -129,6 +133,8 @@ private:
     //  两变量用来处理广播时，时间进度问题
     int               mDuringBase;
     int               mPositionBase;
+    int               mCurPosition;
+    int               mCurDuring;
     ViewSwitchStack  *m_pViewStack;
 
     // album

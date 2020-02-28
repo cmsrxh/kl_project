@@ -7,6 +7,7 @@ class ATimer;
 /**
  * @brief The PopTipManage class
  * @details 系统弹框处理
+ * @warning 下载函数中的内容都是发送消息，所以都是线程安全的
  */
 class PopTipManage
 {

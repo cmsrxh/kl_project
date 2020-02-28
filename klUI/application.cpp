@@ -19,6 +19,7 @@
 #include "kl_download_manage.h"
 #include "kl_record_manage.h"
 #include "kl_search_manage.h"
+#include "current_backup.h"
 #include "application.h"
 
 Application::Application()
@@ -42,10 +43,10 @@ void Application::initialize()
         stateMache->initialize();
 #endif
     }
-    //KLDataProc::instance()->initSockService();
+    KLDataProc::instance()->initSockService();
 
     // 启动收数据线程，并连接播放服务端socket
-    //postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
 }
@@ -165,9 +166,11 @@ bool Application::postKlEvent(int cmd, long ext1, long ext2, const char *str)
 
 void Application::poweroff()
 {
+    GEN_Printf(LOG_DEBUG, "Save local record.");
     kl::DownloadManage::instance()->saveNodesFile();
     kl::CollectManage::instance()->saveNodesFile();
     kl::RecordManage::instance()->saveNodesFile();
+    CurrentBackup::instance()->saveCurrent();
 }
 
 void Application::klInitActiveManage(GeneralQEvt *evt)

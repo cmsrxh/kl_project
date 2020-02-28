@@ -64,6 +64,7 @@ public Q_SLOTS:
     // broadcast area 标签ID click
     void qmlBDCAreaTabClick(int index);
 
+    void qmlBDCShowDefaultPage();
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 

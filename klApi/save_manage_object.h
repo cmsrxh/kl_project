@@ -65,7 +65,7 @@ public:
     {
         if (mSaveFile)
         {
-            int fd = open(mSaveFile, O_WRONLY | O_CREAT, 0664);
+            int fd = open(mSaveFile, O_WRONLY | O_TRUNC | O_CREAT, 0664);
             if (fd > 0)
             {
                 char *data = nullptr;
@@ -101,6 +101,11 @@ public:
     }
 
     bool isNeedLoad()
+    {
+        return mNodes.empty();
+    }
+
+    bool isEmpty()
     {
         return mNodes.empty();
     }

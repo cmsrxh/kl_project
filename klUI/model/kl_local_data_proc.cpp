@@ -54,6 +54,22 @@ void LocalDataProc::initLocal(CollectModel *collect, CollectModel *load, Collect
     kl::CollectManage::instance()->setCallBack(collectDataStatus);
     kl::DownloadManage::instance()->setCallBack(downloadDataStatus);
     kl::RecordManage::instance()->setCallBack(historyDataStatus);
+
+    if (!kl::CollectManage::instance()->isEmpty())
+    {
+        kl::CollectManage::instance()->nodes().genVector(m_pCollect->vec());
+        m_pCollect->resetAll();
+    }
+    if (!kl::DownloadManage::instance()->isEmpty())
+    {
+        kl::DownloadManage::instance()->nodes().genVector(m_pDownload->vec());
+        m_pDownload->resetAll();
+    }
+    if (!kl::RecordManage::instance()->isEmpty())
+    {
+        kl::RecordManage::instance()->nodes().genVector(m_pHistory->vec());
+        m_pHistory->resetAll();
+    }
 }
 
 int LocalDataProc::getLocalPlayIndex(ListTable<kl::RecordItem>::vector &vec)

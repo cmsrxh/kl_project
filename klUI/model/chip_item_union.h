@@ -54,6 +54,9 @@ public:
      */
     bool getUnionInfo(MusicChipItemUnion &info, int &index);
 
+    bool getUnionIndex(ByteString const &id, int &index);
+
+    void getUnionSlideBase(int &cur, int &dur, int index);
     /**
      * @brief getChipType
      * @return PLAY_CHIP_TYPE_...

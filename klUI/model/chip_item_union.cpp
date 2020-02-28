@@ -9,6 +9,7 @@
 #include "pop_tip_manage.h"
 #include "chip_item_model.h"
 #include "chip_item_union.h"
+#include "current_backup.h"
 #include "chip_item_play_manage.h"
 
 ChipItemUnion::ChipItemUnion(int type)
@@ -29,6 +30,7 @@ ChipItemUnion::ChipItemUnion(int type)
     case PLAY_CHIP_TYPE_COLLECT_RECORD:
     case PLAY_CHIP_TYPE_HISTROY_RECORD:
     case PLAY_CHIP_TYPE_SEARCH_LOAD:
+    case PLAY_CHIP_TYPE_PREV_PLAYING_RECORD:
         mChipType = type;
         break;
     default:
@@ -171,6 +173,9 @@ void ChipItemUnion::onLoadOver(ChipItemModel *parent)
     case PLAY_CHIP_TYPE_SEARCH_LOAD:
         genCatesBySearchItem(((kl::VoiceSearchAll *)m_pChip)->nodes(), parent->vec());
         break;
+    case PLAY_CHIP_TYPE_PREV_PLAYING_RECORD:
+        CurrentBackup::instance()->pushRecPlayInto(parent->vec());
+        break;
     default:
         break;
     }
@@ -201,6 +206,9 @@ bool ChipItemUnion::isEmpty()
         break;
     case PLAY_CHIP_TYPE_SEARCH_LOAD:
         res = ((kl::VoiceSearchAll *)m_pChip)->nodes().empty();
+        break;
+    case PLAY_CHIP_TYPE_PREV_PLAYING_RECORD:
+        res = ((CurrentBackup *)m_pChip)->empty();
         break;
     default:
         break;
@@ -235,6 +243,8 @@ int ChipItemUnion::itemCount()
     case PLAY_CHIP_TYPE_SEARCH_LOAD:
         count = ((kl::VoiceSearchAll *)m_pChip)->nodes().size();
         break;
+    case PLAY_CHIP_TYPE_PREV_PLAYING_RECORD:
+        count = 1;
     default:
         break;
     }
@@ -399,6 +409,77 @@ bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
         break;
     }
     return false;
+}
+
+bool ChipItemUnion::getUnionIndex(ByteString const &id, int &index)
+{
+    switch (mChipType)
+    {
+    case PLAY_CHIP_TYPE_AUDIO_CHIP:
+    {
+        ListTable<kl::AudioItem> &nodes = ((kl::ChipAudioList *)m_pChip)->nodes();
+        ListTable<kl::AudioItem>::iterator it = nodes.begin();
+        for (; it != nodes.end(); ++it, index++)
+        {
+            if (id == it->audioId) return true;
+        }
+    }
+    case PLAY_CHIP_TYPE_RADIO_CHIP:
+    {
+        ListTable<kl::RadioItem> &nodes = ((kl::ChipRadioList *)m_pChip)->nodes();
+        ListTable<kl::RadioItem>::iterator it = nodes.begin();
+        for (; it != nodes.end(); ++it, index++)
+        {
+            if (id == it->audioId) return true;
+        }
+    }
+    case PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP:
+    {
+        ListTable<kl::BDCastProgramItem> &nodes = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes();
+        ListTable<kl::BDCastProgramItem>::iterator it = nodes.begin();
+        for (; it != nodes.end(); ++it, index++)
+        {
+            if (id == it->programId) return true;
+        }
+    }
+    case PLAY_CHIP_TYPE_LOCAL_LOAD:
+    {
+        ListTable<kl::RecordItem> &nodes = ((kl::DownloadManage *)m_pChip)->nodes();
+        ListTable<kl::RecordItem>::iterator it = nodes.begin();
+        for (; it != nodes.end(); ++it, index++)
+        {
+            if (id == it->id) return true;
+        }
+    }
+    default:
+        GEN_Printf(LOG_ERROR, "chip type=%d is out of range.", mChipType);
+        assert(0);
+        break;
+    }
+    return false;
+}
+
+void ChipItemUnion::getUnionSlideBase(int &cur, int &dur, int index)
+{
+    GEN_Printf(LOG_DEBUG, "chipType=%d, index=%d", mChipType, index);
+    if (mChipType == PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP)
+    {
+        ListTable<kl::BDCastProgramItem> &nodes = ((kl::BroadcastItemProgramlist *)m_pChip)->nodes();
+        ListTable<kl::BDCastProgramItem>::iterator it = nodes.begin();
+        for (; it != nodes.end() && index; ++it, --index);
+//        {
+//            GEN_Printf(LOG_DEBUG, "[%d]startTime=%s, finishTime=%s", index, it->startTime.string(), it->finishTime.string());
+//        }
+        if (it != nodes.end())
+        {
+            GEN_Printf(LOG_DEBUG, "startTime=%s, finishTime=%s", it->startTime.string(), it->finishTime.string());
+            uint64_t start  = strtoull(it->startTime.string(), NULL, 10);
+            uint64_t finish = strtoull(it->finishTime.string(), NULL, 10);
+
+            cur  = (start  / 1000) % (24 * 60 * 60);
+            dur  = (finish / 1000) % (24 * 60 * 60);
+        }
+    }
 }
 
 void ChipItemUnion::genCatesByRadioItem(ListTable<kl::RadioItem> &nodes, VectorTable<MusicChipItemUnion *> &vec)

@@ -1,8 +1,10 @@
 #include "detail_union.h"
 #include "detail_qobject.h"
 #include "kl_data_proc.h"
+#include "kl_ui_proc.h"
 #include <QDebug>
 
+extern KLUIProc *gInstance;
 DetailQobject *DetailQobject::priInstance = NULL;
 
 DetailQobject::~DetailQobject()
@@ -54,6 +56,11 @@ void DetailQobject::onLoadOver(long ptr)
     {
         Q_ASSERT(PLAY_CHIP_TYPE_AUDIO_CHIP == unionPtr->getChipType());
         m_pPlayUnion = unionPtr;
+        // 需要播放当前下载的
+        qDebug() << "Playing from detail, id=" << mDetail.id.string();
+        // qDebug() << mDetail.desc.string();
+
+        gInstance->setSourceUrl(mDetail.playUrl.string());
         break;
     }
     default:

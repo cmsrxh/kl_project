@@ -125,6 +125,7 @@ public:
     /**
      * @brief detailLoadAlbumInfo
      * @details 界面启动后，专辑标签数据加载完毕后，需要加载默认一页
+     * @warning 只有在专辑标签没有的时候才会调用到此处
      */
     void detailLoadAlbumInfo();
 
@@ -175,7 +176,11 @@ public:
      */
     void chipPlayThirdClick(int index, bool isKeyPress = false);
 
-    void bdcFirstCateTabClick(int index);
+    void bdcFirstCateTabClick(int index, bool forceAcqure = false);
+    void bdcFirstCateTabShowDefaultPage()
+    {
+        bdcFirstCateTabClick(mSwitch.bdc.bdc_cate_tab_index, true);
+    }
 
     void bdcFirstAreaTabClick(int index);
 
@@ -314,10 +319,10 @@ public:
         data = (char *)&mSwitch;
         len  = sizeof(SwitchPath);
     }
-    void setViewSwitchInfo(char *data)
-    {
-        mSwitch = *((SwitchPath *)data);
-    }
+    void setViewSwitchInfo(char *data);
+
+    const CollectNode *getPlayInfoIfPlaying() const;
+
 
 private:
     KLDataProc();
