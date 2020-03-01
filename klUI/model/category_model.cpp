@@ -125,6 +125,11 @@ void CategoryModel::qmlBDCAreaTabClick(int index)
     KLDataProc::instance()->bdcFirstAreaTabClick(index);
 }
 
+void CategoryModel::qmlBDCShowDefaultPage()
+{
+    KLDataProc::instance()->bdcFirstCateTabShowDefaultPage();
+}
+
 QHash<int, QByteArray> CategoryModel::roleNames() const
 {
     return roles;

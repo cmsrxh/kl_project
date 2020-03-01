@@ -5,11 +5,13 @@
 #include "kl_url/kl_broadcast_item_list.h"
 #include "kl_url/kl_chip_radio_list.h"
 #include "kl_local_data_proc.h"
+#include "kl_data_proc.h"
+#include "pop_tip_manage.h"
 #include "cate_item_model.h"
 #include "cate_item_union.h"
 
 CateItemUnion::CateItemUnion(int cid_type, CateItemModel *parent)
-    : mCateItemType(cid_type)
+    : mCateItemType(cid_type), mLoadAction(-1)
     , m_pCateItem(nullptr)
     , m_pParentModel(parent)
 {    
@@ -33,6 +35,8 @@ CateItemUnion::~CateItemUnion()
 void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, int area_code)
 {    
     GEN_Printf(LOG_DEBUG, "type: %d, cid=%d, handler: %p", mCateItemType, cid_or_type, m_pCateItem);
+    int ret = false;
+    mLoadAction = PopTipManage::LOAD_MAIN_PAGE;
     switch (mCateItemType) {
     case CATE_ITEM_ALBUM:
     {
@@ -47,7 +51,7 @@ void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, in
         }
 
         album->setUINotify(this);
-        album->obtain();
+        ret = album->obtain();
         break;
     }
     case CATE_ITEM_OPERATE:
@@ -62,7 +66,7 @@ void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, in
             m_pCateItem = operate;
         }
         operate->setUINotify(this);
-        operate->obtain();
+        ret = operate->obtain();
         break;
     }
     case CATE_ITEM_TYPE_RADIO:
@@ -77,7 +81,7 @@ void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, in
             m_pCateItem = typeRadio;
         }
         typeRadio->setUINotify(this);
-        typeRadio->obtain();
+        ret = typeRadio->obtain();
         break;
     }
     case CATE_ITEM_BDCAST:
@@ -92,50 +96,39 @@ void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, in
             m_pCateItem = bdc;
         }
         bdc->setUINotify(this);
-        bdc->obtain();
+        ret = bdc->obtain();
         break;
     }
     default:
         assert(0);
         break;
     }
+    PopTipManage::instance()->klObjectObtainStart(ret, mCateItemType, mLoadAction);
 }
 
 void CateItemUnion::dataPrepare()
 {
-    bool isEmpty = true;
-    switch (mCateItemType) {
-    case CATE_ITEM_ALBUM:
-        isEmpty = ((kl::AlbumList *)m_pCateItem)->nodes().empty();
-        break;
-    case CATE_ITEM_OPERATE:
-        isEmpty = ((kl::OperateList *)m_pCateItem)->nodes().empty();
-        break;
-    case CATE_ITEM_TYPE_RADIO:
-        isEmpty = ((kl::TypeRadioList *)m_pCateItem)->nodes().empty();
-        break;
-    case CATE_ITEM_BDCAST:
-        isEmpty = ((kl::BroadcastItemList *)m_pCateItem)->nodes().empty();
-        break;
-    default:
-        break;
-    }
-
-    if (isEmpty)
-    {
-//Not Used signal
-//        GEN_Printf(LOG_WARN, "Category Item List is empty.");
-//        Q_EMIT m_pParentModel->loadError(0, "Category Item List is empty.");
-    } else
-    {
-        Q_EMIT m_pParentModel->dataLoadOver((long)this);
-    }
+    PopTipManage::instance()->klObjectObtainOver(mCateItemType, mLoadAction);
+    Q_EMIT m_pParentModel->dataLoadOver((long)this);
 }
 
-void CateItemUnion::errorInfo(int type, const char *err_str)
-{
-    GEN_Printf(LOG_DEBUG, "Cate Item List Error, %s", err_str);
-    Q_EMIT m_pParentModel->loadError(type, err_str);
+void CateItemUnion::errorInfo(int type, const ByteString &err_str)
+{    
+    switch (type)
+    {
+    case LOAD_EMPTY_DATA:        // 分析数据正确，但是得到的数据是空
+        PopTipManage::instance()->klLoadDataExportEmpty(mCateItemType, mLoadAction, err_str);
+        break;
+    case LOAD_PRISER_JSOC_ERROR: // 不能正确解析json数据
+        PopTipManage::instance()->klLoadDataPriserExcept(mCateItemType, mLoadAction, err_str);
+        break;
+    case LOAD_SYS_API_FAILED:    // libcurl下载反馈的错误信息
+        PopTipManage::instance()->sysNetLoadApiExcept(mCateItemType, mLoadAction, err_str);
+        break;
+    default :
+        assert(0);
+        break;
+    }
 }
 
 void CateItemUnion::onLoadOver(CateItemModel *model)
@@ -183,6 +176,7 @@ bool CateItemUnion::isEmpty()
 bool CateItemUnion::loadNextPage()
 {
     bool ret = false;
+    mLoadAction = PopTipManage::LOAD_NEXT_PAGE;
     switch (mCateItemType) {
     case CATE_ITEM_ALBUM:
         ret = ((kl::AlbumList *)m_pCateItem)->loadNextPage();
@@ -199,6 +193,11 @@ bool CateItemUnion::loadNextPage()
     default:
         break;
     }
+    if (ret)
+    {
+        PopTipManage::instance()->klObjectObtainStart(true, mCateItemType, mLoadAction);
+    }
+
     return ret;
 }
 

@@ -8,10 +8,10 @@ class CategoryUnion : public kl::UINotifyIface
 {
 public:
     enum {
-        MAIN_CATE = 1,
-        SUB_CATE  = 2,
-        BDC_CATE,
-        BDC_AREA_CATE
+        MAIN_CATE = kl::OBJECT_CATEGORY_ALL,
+        SUB_CATE  = kl::OBJECT_CATEGORY_SUB_LIST,
+        BDC_CATE  = kl::OBJECT_CATEGORY_BDC,
+        BDC_AREA_CATE = kl::OBJECT_BDC_AREA_LIST,
     };
     CategoryUnion(int cate_type, CategoryModel *parent);
     virtual ~CategoryUnion();
@@ -20,7 +20,7 @@ public:
 
     void dataPrepare();
 
-    void errorInfo(int, const char *);
+    void errorInfo(int, const ByteString &);
 
     void onLoadOver(VectorTable<MusicCateUnion *> &vec);
 

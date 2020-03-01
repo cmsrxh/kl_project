@@ -30,12 +30,14 @@ enum {
     SIG_KL_HISTORY_CLEAR_APP,   // 清空 历史记录 所有项
     SIG_KL_SEARCH_RESULT_PROC,  // kl搜索结果处理
 
-    SIG_KL_OBJECT_OBTAIN_START, // 基于KlObject派生类开始调用obtain函数，获取kl数据
-    SIG_KL_OBJECT_OBTAIN_OVER,  // 基于KlObject派生类, 数据下载完成
-    SIG_KL_LOAD_DATA_EXCEPT,    // 下载kl数据异常处理等析
-    SIG_SYS_NET_LOAD_API_EXCEPT,// 调用libcurl下载kl数据失败，一般时本地网络出现问题
+    SIG_KL_OBJECT_OBTAIN_START, // (NOT USED)基于KlObject派生类开始调用obtain函数，获取kl数据
+    SIG_KL_OBJECT_OBTAIN_OVER,  // (NOT USED)基于KlObject派生类, 数据下载完成
+
+    SIG_KL_LOAD_DATA_EXCEPT,    // (NOT USED)下载kl数据异常处理等析
+    SIG_SYS_NET_LOAD_API_EXCEPT,// (NOT USED)调用libcurl下载kl数据失败，一般时本地网络出现问题
 
     SIG_KL_RELOAD_ERR_OBJECT,   // 重新加载错误的对象
+    SIG_KL_COLLECT_ERR_OBJECT,  // 收集kl加载错误的对象
 };
 
 

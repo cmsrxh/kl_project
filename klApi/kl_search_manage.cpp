@@ -119,7 +119,6 @@ void kl::SearchManage::searchKeyword(const char *id, const char *keyWord)
     node.id        = ByteString::allocString(id);
 
     mList.push_back(node);
-
 }
 
 void kl::SearchManage::onSearchResult(kl::VoiceSearchAll *search, bool )

@@ -37,7 +37,9 @@ HEADERS += application.h \
     model/chip_item_play_manage.h \
     model/collect_model.h \
     model/kl_local_data_proc.h \
-    image_frame.h
+    image_frame.h \
+    pop_tip_manage.h \
+    current_backup.h
 
 SOURCES += application.cpp main.cpp \
     kl_ui_proc.cpp \
@@ -54,7 +56,9 @@ SOURCES += application.cpp main.cpp \
     model/chip_item_play_manage.cpp \
     model/collect_model.cpp \
     model/kl_local_data_proc.cpp \
-    image_frame.cpp
+    image_frame.cpp \
+    pop_tip_manage.cpp \
+    current_backup.cpp
 
 RESOURCES += \
     res/qml.qrc \

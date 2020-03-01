@@ -26,22 +26,6 @@ Rectangle {
         width: inline.width * 0.7
         height: inline.height
         source: stack.bdcSource
-
-        Connections {
-            target: KL.Controller
-            onMsgTipBroadcast: {
-                msgBox.boxType    = boxType
-                msgBox.msgContent = msgContent
-            }
-        }
-
-        KlMsgTipBox {
-            id: msgBox
-            anchors.fill: parent
-            onFailClick: {
-                KL.Controller.qmlReloadErrObject()
-            }
-        }
     }
 }
 

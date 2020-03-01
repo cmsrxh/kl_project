@@ -24,27 +24,6 @@ void ChipPlayManage::setPlayModel(ChipItemModel *playModel)
     m_pPlayModel = playModel;
 }
 
-void ChipPlayManage::loadError(int loadAction, int type, const QString &err_str)
-{
-    switch (loadAction) {
-    case ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW:
-        Q_EMIT m_pChipShow->loadError(type, err_str);
-        break;
-    case ChipItemUnion::LOAD_OVER_ALBUM_IN_PLAYVIEW:
-        // 正常加载的数据，显示在节目列表界面中，用于专辑当前正在播放的列表,发生在当前播放列表已经放完需要后台加载。
-
-    case ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW:
-        // 显示广播节目，在节目列表界面上, 然后要自动播放最新的电台节目
-
-    case ChipItemUnion::LOAD_OVER_BACK_PLAY_OP:
-
-    default:
-        Q_EMIT m_pPlayModel->loadError(type, err_str);
-        break;
-    }
-
-}
-
 void ChipPlayManage::onDataLoadOver(long ptr, int loadAction)
 {
     GEN_Printf(LOG_DEBUG, "chip load over, loadAction=%d.", loadAction);

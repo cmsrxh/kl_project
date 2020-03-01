@@ -3,6 +3,7 @@
 #include "kl_url/kl_category_all.h"
 #include "kl_url/kl_broadcast_area_list.h"
 #include "kl_url/kl_category_broadcast.h"
+#include "pop_tip_manage.h"
 #include "category_model.h"
 #include "cate_item_model.h"
 #include "category_union.h"
@@ -39,6 +40,7 @@ CategoryUnion::~CategoryUnion()
 
 void CategoryUnion::loadCategory(int cate_type, int cid)
 {
+    bool ret = false;
     assert(mCateType == cate_type);
 
     switch (cate_type)
@@ -63,7 +65,8 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
             cate->loadNodesFile();
             if (cate->nodes().empty())
             {
-                cate->obtain();
+                ret = cate->obtain();
+                PopTipManage::instance()->klObjectObtainStart(ret, cate_type, PopTipManage::LOAD_MAIN_PAGE);
             }
         }
         if (!cate->nodes().empty())
@@ -90,7 +93,8 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
 
         if (subCate->nodes().empty())
         {
-            subCate->obtain();
+            ret = subCate->obtain();
+            PopTipManage::instance()->klObjectObtainStart(ret, cate_type, PopTipManage::LOAD_MAIN_PAGE);
         }
 
         break;
@@ -114,7 +118,8 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
             bdc->loadNodesFile();
             if (bdc->nodes().empty())
             {
-                bdc->obtain();
+                ret = bdc->obtain();
+                PopTipManage::instance()->klObjectObtainStart(ret, cate_type, PopTipManage::LOAD_MAIN_PAGE);
             }
         }
         if (!bdc->nodes().empty())
@@ -142,7 +147,8 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
             area->loadNodesFile();
             if (area->nodes().empty())
             {
-                area->obtain();
+                ret = area->obtain();
+                PopTipManage::instance()->klObjectObtainStart(ret, cate_type, PopTipManage::LOAD_MAIN_PAGE);
             }
         }
         if (!area->nodes().empty())
@@ -154,46 +160,32 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
     default:
         assert(0);
         break;
-    }
+    }    
 }
 
 void CategoryUnion::dataPrepare()
 {
-    bool isEmpty = false;
+    PopTipManage::instance()->klObjectObtainOver(mCateType, PopTipManage::LOAD_MAIN_PAGE);
+    Q_EMIT m_pParentModel->dataLoadOver((long)this);
+}
 
-    switch (mCateType)
+void CategoryUnion::errorInfo(int type, const ByteString &err_str)
+{
+    switch (type)
     {
-    case MAIN_CATE:
-        isEmpty = ((kl::CategoryAll *)m_pCate)->nodes().empty();
+    case LOAD_EMPTY_DATA:        // 分析数据正确，但是得到的数据是空
+        PopTipManage::instance()->klLoadDataExportEmpty(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
-    case SUB_CATE:
-        isEmpty = ((kl::CategorySublist *) m_pCate)->nodes().empty();
+    case LOAD_PRISER_JSOC_ERROR: // 不能正确解析json数据
+        PopTipManage::instance()->klLoadDataPriserExcept(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
-    case BDC_CATE:
-        isEmpty = ((kl::CategoryBroadcast *)m_pCate)->nodes().empty();
+    case LOAD_SYS_API_FAILED:    // libcurl下载反馈的错误信息
+        PopTipManage::instance()->sysNetLoadApiExcept(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
-    case BDC_AREA_CATE:
-        isEmpty = ((kl::BroadcastAreaList *)m_pCate)->nodes().empty();
-        break;
-    default:
+    default :
         assert(0);
         break;
     }
-
-    if (isEmpty)
-    {
-        qDebug() << "CategoryModel is empty.";
-        Q_EMIT m_pParentModel->loadError(0, "CategoryModel is empty.");
-    } else
-    {
-        Q_EMIT m_pParentModel->dataLoadOver((long)this);
-    }
-}
-
-void CategoryUnion::errorInfo(int type, const char *err_str)
-{
-    qDebug() << "CategoryAllModel Error." << err_str;
-    Q_EMIT m_pParentModel->loadError(type, err_str);
 }
 
 void CategoryUnion::onLoadOver(VectorTable<MusicCateUnion *> &vec)

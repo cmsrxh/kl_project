@@ -8,6 +8,7 @@ Item
     property int boxType: 0
     property string msgContent: ""
     property string msgTitle: ""
+    property bool isWhiteColor: false
     property alias running: msgTimer.running
     property alias interval: msgTimer.interval
     signal noClick()
@@ -238,7 +239,7 @@ Item
                 textFormat: Text.RichText
 
                 text: msgContent
-                color: "#414141"
+                color: msgBox.isWhiteColor ? "white" : "#414141"
                 font.pixelSize: 24
             }
 
@@ -264,7 +265,7 @@ Item
                 textFormat: Text.RichText
 
                 text: msgContent
-                color: "#414141"
+                color: msgBox.isWhiteColor ? "white" : "#414141"
                 font.pixelSize: 24
             }
 

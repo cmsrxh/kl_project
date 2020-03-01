@@ -61,7 +61,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void dataLoadOver(long ptr);
 
-    void loadError(int type, const QString &info);
+    // NOT USED
+    // void loadError(int type, long ptr, const QString &info);
 
 
     void keyWordsChanged();

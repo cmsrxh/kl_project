@@ -42,6 +42,7 @@ DetailUnion::~DetailUnion()
 
 void DetailUnion::loadDetail(const ByteString &id, int loadAction)
 {
+    int ret = false;
     mLoadAction = loadAction;
 
     switch (mDetailType)
@@ -58,13 +59,14 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
             m_pDetail = album;
         }
         album->setUINotify(this);
-        album->obtain();
+        ret = album->obtain();
         break;
     }
     case PLAY_CHIP_TYPE_BROADCAST:
     {
         ((kl::BroadcastItemDetail *)m_pDetail);
         GEN_Printf(LOG_WARN, "Not come true");
+        assert(0);
         break;
     }
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
@@ -80,7 +82,7 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
         }
 
         audio->setUINotify(this);
-        audio->obtain();
+        ret = audio->obtain();
         break;
     }
     case PLAY_CHIP_TYPE_TYPE_RADIO:
@@ -97,7 +99,7 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
         }
 
         radio->setUINotify(this);
-        radio->obtain();
+        ret = radio->obtain();
         break;
     }
     default:
@@ -105,18 +107,35 @@ void DetailUnion::loadDetail(const ByteString &id, int loadAction)
                    loadAction, mDetailType);
         break;
     }
+
+    PopTipManage::instance()->klObjectObtainStart(ret, mDetailType, mLoadAction);
 }
 
 void DetailUnion::dataPrepare()
 {
-    GEN_Printf(LOG_DEBUG, "data prepared, mDetailType=%d", mDetailType);
+    // GEN_Printf(LOG_DEBUG, "data prepared, mDetailType=%d", mDetailType);
+    PopTipManage::instance()->klObjectObtainOver(mDetailType, mLoadAction);
+
     Q_EMIT DetailQobject::instance()->dataLoadOver((long)this);
 }
 
-void DetailUnion::errorInfo(int type, const char *err_str)
+void DetailUnion::errorInfo(int type, const ByteString &err_str)
 {
-    // GEN_Printf(LOG_DEBUG, "Cate Item List Error, %s", err_str);
-    Q_EMIT DetailQobject::instance()->loadError(type, QStringFromCString(err_str));
+    switch (type)
+    {
+    case LOAD_EMPTY_DATA:        // 分析数据正确，但是得到的数据是空
+        PopTipManage::instance()->klLoadDataExportEmpty(mDetailType, mLoadAction, err_str);
+        break;
+    case LOAD_PRISER_JSOC_ERROR: // 不能正确解析json数据
+        PopTipManage::instance()->klLoadDataPriserExcept(mDetailType, mLoadAction, err_str);
+        break;
+    case LOAD_SYS_API_FAILED:    // libcurl下载反馈的错误信息
+        PopTipManage::instance()->sysNetLoadApiExcept(mDetailType, mLoadAction, err_str);
+        break;
+    default :
+        assert(0);
+        break;
+    }
 }
 
 void DetailUnion::getDetail(MusicDetail &detail)

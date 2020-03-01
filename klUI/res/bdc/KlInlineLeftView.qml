@@ -3,8 +3,10 @@ import QtQuick 2.0
 import Hongjing.HMI.KL 1.0 as KL
 
 Item {    
-    ListView
-    {
+    Component.onCompleted: {
+        bdcTab.qmlBDCShowDefaultPage();
+    }
+    ListView {
         id: view
         anchors.fill: parent
         model: bdcTab
@@ -14,8 +16,7 @@ Item {
         delegate: pageDelegate
     }
 
-    Component
-    {
+    Component {
         id: pageDelegate
         Item
         {

@@ -43,12 +43,13 @@ public:
     {
         mKlBack.push_back(obj);
     }
+
+    void poweroff();
 protected:
     void klInitActiveManage(GeneralQEvt *evt);
 
     void klInitGetOpenId();
 
-    void klLoadDataExceptProc(GeneralQEvt *evt);
 private:
     Application();
     Application(Application &);

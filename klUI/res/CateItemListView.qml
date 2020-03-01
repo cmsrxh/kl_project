@@ -42,15 +42,15 @@ GridView {
         }
     }
     onContentYChanged: {
-        if (contentY > contentHeight - height)
+        if (contentHeight < height || contentY <= contentHeight - height)
+        {
+            upDrag.visible   = false
+        } else
         {
             upDrag.visible = true
             upDrag.height  = -(contentHeight - height - contentY)
             upDrag.y       = height - upDrag.height
             if (upDrag.height > 60) isLoad = true;
-        } else
-        {
-            upDrag.visible   = false
         }
     }
     Rectangle {

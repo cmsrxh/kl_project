@@ -9,6 +9,7 @@
 #include "model/detail_qobject.h"
 #include "kl_search_manage.h"
 #include "qml_view_switch_stack.h"
+#include "current_backup.h"
 #include "kl_ui_proc.h"
 #include <QDebug>
 
@@ -19,6 +20,7 @@ KLUIProc::KLUIProc()
     , mPlayState(0)
     , mCanSeek(true)
     , mDuringBase(0), mPositionBase(0)
+    , mCurPosition(0), mCurDuring(0)
     , m_pViewStack(new ViewSwitchStack)
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
@@ -86,6 +88,10 @@ void KLUIProc::init(QQmlContext *ctx)
 
     // view switch
     ctx->setContextProperty("stack", m_pViewStack);    
+
+    qDebug() << "--------Start recovery-------";
+    CurrentBackup::instance()->recoveryCurrent();
+    CurrentBackup::instance()->playPrevRecordInfo();
 }
 
 void KLUIProc::qmlStart()
@@ -130,17 +136,23 @@ void KLUIProc::qmlSeekTo(long msec, int mode)
 
 int KLUIProc::qmlGetCurrentPosition()
 {
-    int cur = MediaServiceIFace::instance()->getCurrentPosition();
+    mCurPosition = MediaServiceIFace::instance()->getCurrentPosition();
 
-    Q_EMIT positionChanged(numToTimeStr(cur + mPositionBase));
+    Q_EMIT positionChanged(numToTimeStr(mCurPosition + mPositionBase));
 
-    return cur < 0 ? 0 : cur;
+    // qDebug() << mCurPosition << mCurDuring;
+    return mCurPosition < 0 ? 0 : mCurPosition;
 }
 
 int KLUIProc::qmlGetDuration()
-{
-    int val =  mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
-    return val < 1 ? 1 : val;
+{    
+    mCurDuring =  mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
+
+    int dur = mCurDuring < 1 ? 1 : mCurDuring;
+
+    Q_EMIT durationChanged(dur, numToTimeStr(mCurDuring));
+
+    return dur;
 }
 
 void KLUIProc::qmlPlayPrev()
@@ -207,7 +219,7 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         setPlayState(2);
         break;
     case MEDIA_CACHE_TIME:
-        qDebug() << "cache position: " << ext1;
+        //qDebug() << "cache position: " << ext1;
         Q_EMIT cacheDataChanged(ext1);
         break;
     case MEDIA_NOTIFY_TIME:
@@ -218,7 +230,7 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
             ext1   = mDuringBase - mPositionBase;
             durStr = mDuringBase;
         }
-        // qDebug() << "Time Base: " << mPositionBase << mDuringBase << ext1;
+        // qDebug() << "Time Base: " << mPositionBase << mDuringBase << "duration=" << ext1;
         Q_EMIT durationChanged(ext1, numToTimeStr(durStr));
         break;    
     }
@@ -244,7 +256,7 @@ void KLUIProc::onSearchProc(int type, int index, long searchPtr)
         break;
     }
     case 2:
-        KLDataProc::instance()->playNext();
+        KLDataProc::instance()->playNext(true);
         break;
     case 3:
         KLDataProc::instance()->playPrev();
@@ -343,6 +355,6 @@ bool KLUIProc::isAudioView()
 
 void KLUIProc::setSourceUrl(const char *url)
 {
-    qDebug() << url;
+    // qDebug() << url;
     MediaServiceIFace::instance()->setFile(url);
 }

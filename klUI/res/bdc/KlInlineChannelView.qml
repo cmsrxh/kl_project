@@ -131,5 +131,21 @@ Item {
         }
     }
 
+    Connections {
+        target: KL.Controller
+        onMsgTipBroadcast: {
+            msgBox.boxType    = boxType
+            msgBox.msgContent = msgContent
+        }
+    }
+
+    KlMsgTipBox {
+        id: msgBox
+        anchors.fill: parent
+        isWhiteColor: true
+        onFailClick: {
+            KL.Controller.qmlReloadErrObject()
+        }
+    }
 }
 

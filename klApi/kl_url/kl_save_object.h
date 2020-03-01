@@ -36,7 +36,7 @@ public:
 
         if (mSaveFile)
         {
-            int fd = open(mSaveFile, O_CREAT | O_WRONLY, 0664);
+            int fd = open(mSaveFile, O_CREAT | O_TRUNC | O_WRONLY, 0664);
             if (fd)
             {
                 int ret = write(fd, data->buffer(), data->size());

@@ -45,5 +45,7 @@ int main(int argc, char *argv[])
 
     Application::uninit_all();
 
+    qDebug() << "Main Thread exit.";
+    Application::instance()->poweroff();
     return res;
 }

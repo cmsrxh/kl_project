@@ -3,6 +3,7 @@
 #include "kl_save_record.h"
 
 kl::SaveRecord::SaveRecord()
+    : mDataStatus(nullptr)
 {
 
 }
@@ -33,14 +34,14 @@ void kl::SaveRecord::genResult(const char *data, unsigned long size)
 
             mNodes.push_back(tmp);
         }
-
+        /*
         if (mNodes.empty())
         {
             GEN_Printf(LOG_WARN, "load broadcast item list is empty.");
         } else
         {
             profile();
-        }
+        }*/
     }else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", size, data);
@@ -62,7 +63,7 @@ bool kl::SaveRecord::genSaveString(char *&data, unsigned long &len)
              ListTable<RecordItem>::iterator it = mNodes.begin();
              for (; it != mNodes.end(); ++it)
              {
-                 GEN_Printf(LOG_DEBUG, "gen string: %s", it->id.string());
+                 // GEN_Printf(LOG_DEBUG, "gen string: %s", it->id.string());
                  cJSON *item = cJSON_CreateObject();
 
                  cJSON_AddItemToArray(dataList, item);
@@ -77,11 +78,11 @@ bool kl::SaveRecord::genSaveString(char *&data, unsigned long &len)
                  cJSON_AddItemToObject(item, "fileSize",  cJSON_CreateString(it->fileSize.string()));
              }
              data = cJSON_PrintUnformatted(root);
-             len  = strlen(data);
+             len  = data ? strlen(data) : 0;
         }
         cJSON_Delete(root);
     }
-    GEN_Printf(LOG_DEBUG, "gen cjson %d, %s", len, data);
+    // GEN_Printf(LOG_DEBUG, "gen cjson %d, %s", len, data);
 
     return (data && len) ? true : false;
 }
