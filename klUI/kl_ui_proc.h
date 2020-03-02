@@ -84,6 +84,8 @@ public Q_SLOTS:
     void qmlMainTabClick(int index);
     void qmlSelfTabClick(int index);
 
+    int  qmlGetSelfTabIndex();
+
     void qmlReloadErrObject();
 
     // 播放控制反馈回来的处理信息
@@ -104,8 +106,8 @@ Q_SIGNALS:
     void canSeekChanged();
 
     // qml
-    void durationChanged(int duration, QString const &durStr);
-    void positionChanged(QString const &curPos);
+    void durationChanged(int duration);
+    void positionChanged(QString const &curPos, QString const &durStr);
     void cacheDataChanged(int curPos);
     void playingInfo(QString const &name, QString const &desc);
 
@@ -135,6 +137,7 @@ private:
     int               mPositionBase;
     int               mCurPosition;
     int               mCurDuring;
+    int               mCacheValue;
     ViewSwitchStack  *m_pViewStack;
 
     // album

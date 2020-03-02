@@ -60,7 +60,11 @@ void CategoryUnion::loadCategory(int cate_type, int cid)
         }
         cate->setUINotify(this);
 
-        if (cate->nodes().empty())
+        if (cate->checkFile())
+        {
+            ret = cate->obtain();
+            PopTipManage::instance()->klObjectObtainStart(ret, cate_type, PopTipManage::LOAD_MAIN_PAGE);
+        } else if (cate->nodes().empty())
         {
             cate->loadNodesFile();
             if (cate->nodes().empty())

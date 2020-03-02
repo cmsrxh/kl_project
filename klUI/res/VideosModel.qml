@@ -5,10 +5,10 @@ import ImageFrameCpp 1.0
 Item
 {
     id: videoItem
-    width: cateItemView.cellWidth
-    height: cateItemView.cellHeight
+    width: GridView.view.cellWidth
+    height: GridView.view.cellHeight
 
-    property bool playing: cateItemModel.currenIndex == index
+    property bool playing: GridView.view.currentIndex === index
     signal clicked()
 
     Rectangle

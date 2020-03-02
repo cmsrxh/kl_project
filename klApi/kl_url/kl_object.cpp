@@ -7,7 +7,7 @@
 kl::KLObject::KLObject(const ByteString &baseUrl, int methodType)
     : mUrl(baseUrl, methodType)
     , mLoad(true), m_pUINotify(nullptr)
-    , mObjectName(-1)
+    , mObjectName(-1)/*, mLoadStatus(STATUS_IDLE)*/
 {
     mUrl.append("appid", LocalConfig::instance()->appID());
     mUrl.append("deviceid", LocalConfig::instance()->deviceID());
@@ -42,9 +42,9 @@ bool kl::KLObject::obtain()
         GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
         mLoad.cancel();
     }
-/*
-    bool ret =
 
+    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
+/*
     switch (objectName()) {
     case kl::OBJECT_ACTIVE_MANAGE:
     case kl::OBJECT_INIT_MANAGE:
@@ -56,7 +56,6 @@ bool kl::KLObject::obtain()
         break;
     }
 */
-    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
 }
 
 #if 1

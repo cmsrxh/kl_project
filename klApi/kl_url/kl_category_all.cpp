@@ -1,3 +1,4 @@
+#include <time.h>
 #include "events/common_log.h"
 #include "net_util/net_common.h"
 #include "config_local_info.h"
@@ -75,4 +76,16 @@ int kl::CategoryAll::genResult(NetBuffer *data)
 
     cJSON_Delete(root);
     return ret;
+}
+
+bool kl::CategoryAll::checkFile()
+{
+    assert(mSaveFile);
+    struct stat st;
+
+    if (stat(mSaveFile, &st) == 0 && (time(NULL) - st.st_mtime) > 7 * 24 * 60 * 60) //1 week
+    {
+        return true;
+    }
+    return false;
 }

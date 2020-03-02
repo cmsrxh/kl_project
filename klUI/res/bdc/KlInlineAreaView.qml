@@ -18,7 +18,7 @@ Item
         model: bdcArea
         delegate: areaDelegate
         boundsBehavior: Flickable.StopAtBounds
-        currentIndex: -1
+        currentIndex: bdcArea.bdcAreaIndex
         cacheBuffer: 61
         spacing: 0
         clip: true;
@@ -44,7 +44,7 @@ Item
             Rectangle {
                 id: textRect
                 width: parent.width; height: 71
-                color: bdcArea.bdcAreaIndex === index ? "#545454" : "#414041"
+                color: areaItem.ListView.view.currentIndex === index ? "#545454" : "#414041"
 
                 Text  {
                     id: chNameText
@@ -75,7 +75,7 @@ Item
 
             Loader {
                 id: childView
-                active: bdcArea.bdcAreaIndex === index
+                active: areaItem.ListView.view.currentIndex === index
                 width: areaItem.width;
                 anchors.bottom: areaItem.bottom
                 height: active == true ? (item.contentHight < 1 ? 100 : item.contentHight) : 0

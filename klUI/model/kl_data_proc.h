@@ -174,7 +174,7 @@ public:
      * @param index
      * @details 当前主页上，正在播放的节目列表ID点击，有可能跟audio碎片相等
      */
-    void chipPlayThirdClick(int index, bool isKeyPress = false);
+    void chipPlayThirdClick(int index);
 
     void bdcFirstCateTabClick(int index, bool forceAcqure = false);
     void bdcFirstCateTabShowDefaultPage()
@@ -249,7 +249,13 @@ public:
      */
     int  getBDCFirstAreaIndex();
 
-    void playNext(bool isKeyPress = false);
+    int  getSelfTabIndex()
+    {
+        return mSwitch.local.self_tab_index;
+    }
+
+    void playNext();
+    void autoPlayNext();
     void playPrev();
 
     /**

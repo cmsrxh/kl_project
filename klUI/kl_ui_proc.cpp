@@ -138,7 +138,12 @@ int KLUIProc::qmlGetCurrentPosition()
 {
     mCurPosition = MediaServiceIFace::instance()->getCurrentPosition();
 
-    Q_EMIT positionChanged(numToTimeStr(mCurPosition + mPositionBase));
+    if (mCurDuring < 1)
+    {
+        qmlGetDuration();
+    }
+    Q_EMIT positionChanged(numToTimeStr(mCurPosition + mPositionBase),
+                           numToTimeStr(mCurDuring + mDuringBase));
 
     // qDebug() << mCurPosition << mCurDuring;
     return mCurPosition < 0 ? 0 : mCurPosition;
@@ -148,11 +153,11 @@ int KLUIProc::qmlGetDuration()
 {    
     mCurDuring =  mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
 
-    int dur = mCurDuring < 1 ? 1 : mCurDuring;
-
-    Q_EMIT durationChanged(dur, numToTimeStr(mCurDuring));
-
-    return dur;
+    if (mCurDuring >= mCacheValue)
+    {
+        Q_EMIT cacheDataChanged(mCacheValue);
+    }
+    return mCurDuring < 1 ? 1 : mCurDuring;
 }
 
 void KLUIProc::qmlPlayPrev()
@@ -162,7 +167,7 @@ void KLUIProc::qmlPlayPrev()
 
 void KLUIProc::qmlPlayNext()
 {
-    KLDataProc::instance()->playNext(true);
+    KLDataProc::instance()->playNext();
 }
 
 void KLUIProc::qmlMainTabClick(int index)
@@ -181,7 +186,13 @@ void KLUIProc::qmlMainTabClick(int index)
 
 void KLUIProc::qmlSelfTabClick(int index)
 {
+    // qDebug() << "------------" << index;
     KLDataProc::instance()->selfTabClick(index);
+}
+
+int KLUIProc::qmlGetSelfTabIndex()
+{
+    return KLDataProc::instance()->getSelfTabIndex();
 }
 
 void KLUIProc::qmlReloadErrObject()
@@ -197,15 +208,19 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         break;
     case MEDIA_ERROR:
         qWarning() << "error info" << ext1 << ext2 << str;
+        KLDataProc::instance()->autoPlayNext();
         break;
     case MEDIA_PLAYBACK_COMPLETE:
         setPlayState(3);
-        KLDataProc::instance()->playNext();
+        Q_EMIT positionChanged("00:00:00", "00:00:00");
+        KLDataProc::instance()->autoPlayNext();
         break;
     case MEDIA_PREPARED:
         qmlStart();
         mPositionBase = 0;
         mDuringBase   = 0;
+        mCurDuring    = 0;
+        Q_EMIT durationChanged(0);
         KLDataProc::instance()->showPlayingInfo();
         // qDebug() << "Time Base: " << mPositionBase << mDuringBase;
         break;
@@ -219,19 +234,18 @@ void KLUIProc::onRecvNotify(int msg, int ext1, int ext2, const QString &str)
         setPlayState(2);
         break;
     case MEDIA_CACHE_TIME:
-        //qDebug() << "cache position: " << ext1;
+        // qDebug() << "cache position: " << ext1;
+        mCacheValue = ext1;
         Q_EMIT cacheDataChanged(ext1);
         break;
     case MEDIA_NOTIFY_TIME:
     {
-        int durStr = ext1;
         if (mDuringBase)
         {
             ext1   = mDuringBase - mPositionBase;
-            durStr = mDuringBase;
         }
         // qDebug() << "Time Base: " << mPositionBase << mDuringBase << "duration=" << ext1;
-        Q_EMIT durationChanged(ext1, numToTimeStr(durStr));
+        Q_EMIT durationChanged(ext1);
         break;    
     }
     case MEDIA_SUBTITLE_DATA:
@@ -256,7 +270,7 @@ void KLUIProc::onSearchProc(int type, int index, long searchPtr)
         break;
     }
     case 2:
-        KLDataProc::instance()->playNext(true);
+        KLDataProc::instance()->playNext();
         break;
     case 3:
         KLDataProc::instance()->playPrev();

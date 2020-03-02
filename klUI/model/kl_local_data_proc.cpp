@@ -79,10 +79,13 @@ int LocalDataProc::getLocalPlayIndex(ListTable<kl::RecordItem>::vector &vec)
 
     if (KLDataProc::instance()->getCurrentPlayInfo(parentId, id))
     {
+        GEN_Printf(LOG_DEBUG, "Check,id: %s, parentId: %s", id.string(), parentId.string());
         for (int i = 0; i < vec.size(); ++i)
         {
+            GEN_Printf(LOG_DEBUG, "id: %s, parentId: %s", vec[i].id.string(), vec[i].parentId.string());
             if (vec[i].id == id && vec[i].parentId == parentId)
             {
+                GEN_Printf(LOG_DEBUG, "correct id: %d", i);
                 return i;
             }
         }

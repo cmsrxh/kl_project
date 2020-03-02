@@ -17,6 +17,13 @@ enum {
 class KLObject
 {
 public:
+    enum LoadStatus
+    {
+        STATUS_IDLE = 0x1,
+        STATUS_LOADING = 0x2,
+        STATUS_LOADOVER = 0x4,
+        STATUS_LOADFAIL = 0x8,
+    };
     KLObject(const ByteString &baseUrl, int methodType);
     virtual ~KLObject();
 
@@ -66,11 +73,17 @@ protected:
     NetUrl         mUrl;
     LoadItem       mLoad;
     UINotifyIface *m_pUINotify;
+
     /**
      * @brief mObjectName
      * @details 基于KlObject派生类的名字，使用枚举表示，用各种异常处理
      */
     int            mObjectName;
+    /**
+     * @brief mLoadStatus
+     * @details 当前对象的下载状态
+     */
+    //int            mLoadStatus;
 };
 
 }

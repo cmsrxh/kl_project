@@ -288,9 +288,8 @@ bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
             index = 0;
         } else
         {
-            newIndex = index;
+            newIndex = ++index;
             for (; it != nodes.end() && newIndex; ++it, newIndex--);
-            ++index;
         }
         if (it != nodes.end())
         {
@@ -317,9 +316,8 @@ bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
             index = 0;
         } else
         {
-            newIndex = index;
+            newIndex = ++index;
             for (; it != nodes.end() && newIndex; ++it, newIndex--);
-            ++index;
         }
         if (it != nodes.end())
         {
@@ -345,19 +343,11 @@ bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
             newIndex = 0;
             for (; it != nodes.end(); ++it, ++newIndex);
             --it;
-            index = newIndex;
+            index = --newIndex;
         } else
         {
-            newIndex = index;
-            for (; it != nodes.end() && newIndex; ++it, newIndex--);
-            if (it == nodes.end())
-            {
-                it    = nodes.begin();
-                index = 0;
-            } else
-            {
-                ++index;
-            }
+            newIndex = ++index;
+            for (; it != nodes.end() && newIndex; ++it, newIndex--);            
         }
         if (it != nodes.end())
         {
@@ -384,9 +374,8 @@ bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
             index = 0;
         } else
         {
-            newIndex = index;
+            newIndex = ++index;
             for (; it != nodes.end() && newIndex; ++it, newIndex--);
-            ++index;
         }
         if (it != nodes.end())
         {

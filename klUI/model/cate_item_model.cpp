@@ -145,3 +145,8 @@ void CateItemModel::isCollectItemContentChange(int i, bool en)
     }
 }
 
+int CateItemModel::getCateType()
+{
+    return m_pUnion->getCateType();
+}
+

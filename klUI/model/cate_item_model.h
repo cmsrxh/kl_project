@@ -45,6 +45,7 @@ public:
 
     void isCollectItemContentChange(int i, bool en);
 
+    int getCateType();
 public Q_SLOTS:
     void onLoadOver(long ptr);
 

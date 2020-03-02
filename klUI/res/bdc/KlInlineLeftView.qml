@@ -12,6 +12,7 @@ Item {
         model: bdcTab
         clip: true
         spacing: 0
+        currentIndex: bdcTab.bdcTabIndex
         //orientation: ListView.Horizontal
         delegate: pageDelegate
     }
@@ -20,6 +21,7 @@ Item {
         id: pageDelegate
         Item
         {
+            id: tabItem
             width: view.width; height: 61
             Item
             {
@@ -30,7 +32,7 @@ Item {
                 {
                     y: 10
                     width: parent.width
-                    fillColor: bdcTab.bdcTabIndex === index ? "#F1C17D" : "white"
+                    fillColor: tabItem.ListView.view.currentIndex === index ? "#F1C17D" : "white"
                 }
                 Canvas
                 {
@@ -71,7 +73,7 @@ Item {
                 anchors.leftMargin: 10
                 text: ctgname
                 clip: true
-                color: bdcTab.bdcTabIndex === index ? "#F1C17D" : "white"
+                color: tabItem.ListView.view.currentIndex === index ? "#F1C17D" : "white"
                 font.pixelSize: 20
             }
             MouseArea

@@ -45,7 +45,7 @@ void kl::ChipRadioList::profile()
 
     for (; it != mNodes.end(); ++it)
     {
-        GEN_Printf(LOG_DUMP, "%s=%s", it->audioName.string(), it->audioId.string());
+        GEN_Printf(LOG_DUMP, "%s=%s,%s", it->audioName.string(), it->audioId.string(), it->albumId.string());
     }
 }
 
@@ -61,6 +61,11 @@ int kl::ChipRadioList::genResult(NetBuffer *data)
             RadioItem tmp;
 
             jsonGenAudioItem(tmp, item);
+            /**
+             * @warning 此处智能电台的碎片的parent ID不等于rid，所有需要在此处更改成RID，
+             * 有利于UI根据当前播放的碎片ID的parent回溯到正确的电台ID
+             */
+            tmp.albumId = mRID;
 
             mNodes.push_back(tmp);
         }
