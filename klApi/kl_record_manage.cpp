@@ -36,15 +36,17 @@ void kl::RecordManage::addHistoryItem(kl::RecordItem *item)
     }
 
     // 当前项是新增项, 同时通知UI
-    mNodes.push_front(*item);
-    execStatus(op);
-    delete item;
+    kl::RecordItem tmp;
+    item->copy(&tmp);
+
+    mNodes.push_front(tmp);
+    execStatus(op, 0, (long)item);
 }
 
 void kl::RecordManage::historyClear()
 {
     clearData();
-    execStatus(LOCAL_RECORD_OP_STATUS_HISTORY_CLEARALL);
+    execStatus(LOCAL_RECORD_OP_STATUS_HISTORY_CLEARALL, 0, 0);
 }
 
 

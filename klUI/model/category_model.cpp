@@ -89,7 +89,7 @@ int CategoryModel::bdcAreaIndex() const
 
 void CategoryModel::onLoadOver(long ptr)
 {
-    if ((long)m_pCateUnion != ptr)
+    if ((long)m_pCateUnion != ptr || !m_pCateUnion)
     {
         qWarning() << "Current is not need.";
         return;

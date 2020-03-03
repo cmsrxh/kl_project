@@ -45,12 +45,9 @@ KLDataProc::KLDataProc()
 
 void KLDataProc::enterBroadcastView()
 {
-    if (mSwitch.media_type != MEDIA_TYPE_BROADCAST)
-    {
-        mSwitch.media_type = MEDIA_TYPE_BROADCAST;
-
-        gInstance->viewAlbumBDCSwitch("bdc/KlInlineBroadcast.qml");
-    }
+    GEN_Printf(LOG_DEBUG, "enter BDC view.");
+    mSwitch.media_type = MEDIA_TYPE_BROADCAST;
+    gInstance->viewAlbumBDCSwitch("bdc/KlInlineBroadcast.qml");
 
     if (-1 == mSwitch.bdc.bdc_cate_tab_index)
     {
@@ -284,6 +281,7 @@ void KLDataProc::selfTabClick(int index)
 
 void KLDataProc::albumFirstClick(int index)
 {
+    GEN_Printf(LOG_DEBUG, "album first click index=%d", index);
     ByteString cid = m_pCate->getCID(index);
     if (cid.empty())
     {
@@ -300,7 +298,7 @@ void KLDataProc::albumFirstClick(int index)
         {
             // enter broadcast view
             enterBroadcastView();
-            // mSwitch.setCateTabIndex(index);
+            mSwitch.setCateTabIndex(index);
             return;
         }
 
@@ -391,7 +389,6 @@ void KLDataProc::chipAudioThirdChick(int index)
         m_pChipItemPlay->assign(m_pChipItem);
         m_pChipItemPlay->resetAll();
         mPlayPath = mSwitch;
-        mPlayPath.current_play_source = CURREN_PLAY_SOURCE_ALBUM_AUDIO_LIST;
     } else
     {
         // 在同样的播放列表中点击, 表明点击的播放列表与当前播放列表是相等的
@@ -606,42 +603,40 @@ void KLDataProc::bdcFirstAreaTabClick(int index)
 
 void KLDataProc::bdcSecondItemClick(int index, bool /*isInArea*/)
 {
-    if (mSwitch.bdc.bdc_item_index != index)
+    VectorTable<MusicCateItemUnion *> &vec = m_pBDCItem->vec();
+
+    if (index < 0 || index >= vec.size())
     {
-        VectorTable<MusicCateItemUnion *> &vec = m_pBDCItem->vec();
+        GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index, vec.size());
+        return;
+    }
 
-        if (index < 0 || index >= vec.size())
+    ByteString id = ByteString::allocString(vec[index]->id);
+    int type = vec[index]->type;
+
+    ChipItemUnion *&chip_item = mChipMap[id];
+    if (chip_item)
+    {
+        if (chip_item->isEmpty())
         {
-            GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index, vec.size());
-            return;
-        }
-
-        ByteString id = ByteString::allocString(vec[index]->id);
-        int type = vec[index]->type;
-
-        ChipItemUnion *&chip_item = mChipMap[id];
-        if (chip_item)
+            chip_item->loadChipList(id, true, ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW);
+        } else if (mSwitch.bdc.bdc_item_index != index)
         {
             m_pChipItemPlay->chipLocalLoad(chip_item);
-            id.clear();
             bdcProgramListAction();
-        } else
-        {
-            chip_item = new ChipItemUnion(type);
-            m_pChipItemPlay->setChipItemUnion(chip_item);
-            chip_item->loadChipList(id, true, ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW);
         }
 
-        mSwitch.bdc.bdc_item_index = index;
-
-        mPlayPath = mSwitch;
-        mPlayPath.current_play_source = CURREN_PLAY_SOURCE_BDC_SECOND_LIST;
-
-        mPlayPath.chip_item_index = index;
+        id.clear();
     } else
     {
-        GEN_Printf(LOG_DEBUG, "index: %d was setted", index);
+        chip_item = new ChipItemUnion(type);
+        m_pChipItemPlay->setChipItemUnion(chip_item);
+        chip_item->loadChipList(id, true, ChipItemUnion::LOAD_OVER_BDCPROGRAM_IN_PLAYVIEW);
     }
+
+    mSwitch.bdc.bdc_item_index = index;
+    mPlayPath = mSwitch;
+    mPlayPath.chip_item_index = index;
 }
 
 void KLDataProc::bdcSecondItemCollectClick(int index, bool isCollect)
@@ -666,7 +661,10 @@ void KLDataProc::bdcSecondItemCollectClick(int index, bool isCollect)
     tmp->image      = ByteString::allocString(vec[index]->img);
     tmp->playUrl    = ByteString::allocString(vec[index]->playUrl);
 
-    LocalDataProc::instance()->bdcTypeRadioCollect(index, tmp);
+    // 表示操作的当前项是否正在播放中
+    int arg = (mPlayInfo.parentId == tmp->parentId) ? 1 : 0;
+
+    LocalDataProc::instance()->bdcTypeRadioCollect((arg << 16) | index, tmp);
 }
 
 void KLDataProc::bdcProgramListAction()
@@ -787,7 +785,7 @@ void KLDataProc::showPlayingInfo()
         break;
     case CURRENT_VIEW_IN_BROADCAST:
         //GEN_Printf(LOG_DEBUG, "----%d-----", mPlayPath.bdc.bdc_item_index);
-        Q_EMIT m_pBDCItem->currenBDCIndexChanged(mPlayPath.bdc.bdc_item_index);
+        Q_EMIT m_pBDCItem->currenIndexChanged(mPlayPath.bdc.bdc_item_index);
         break;
     case CURRENT_VIEW_IN_COLLECT:
         LocalDataProc::instance()->showCollectIndex();
@@ -873,16 +871,16 @@ int KLDataProc::getBDCSecondIndex()
 //    {
 //        return index;
 //    }
-    //GEN_Printf(LOG_DEBUG, "index: %d, %d", index, index2);
+//    GEN_Printf(LOG_DEBUG, "index: %d, %d", index, index2);
     if (index2 < 0 || index2 >= vec2.size())
     {
-        // GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index2, vec2.size());
+//        GEN_Printf(LOG_ERROR, "Index=%d Out of range=%d", index2, vec2.size());
         return -1;
     }
 
     if (index >= 0 && index < vec.size())
     {
-        // GEN_Printf(LOG_DEBUG, "type: %d, id: %s, parentId: %s", vec[index]->type, vec[index]->id.string(), vec2[index2]->parentId.string());
+//        GEN_Printf(LOG_DEBUG, "type: %d, id: %s, parentId: %s", vec[index]->type, vec[index]->id.string(), vec2[index2]->parentId.string());
 
         if (vec[index]->id == vec2[index2]->parentId)
         {
@@ -893,7 +891,7 @@ int KLDataProc::getBDCSecondIndex()
     // 需要通知电台列表，当前播放id，使之显示播放标志
     for (int i = 0; i < vec.size(); ++i)
     {
-        // GEN_Printf(LOG_DEBUG, "id: %s, parentId: %s", vec[i]->id.string(), vec2[index2]->parentId.string());
+//        GEN_Printf(LOG_DEBUG, "id: %s, parentId: %s", vec[i]->id.string(), vec2[index2]->parentId.string());
         if (vec[i]->id == vec2[index2]->parentId)
         {
             mPlayPath.bdc.bdc_item_index = i;
@@ -917,6 +915,18 @@ int KLDataProc::getBDCSecondIndex()
 #endif
 }
 
+int KLDataProc::cateItemCurIndex(CateItemModel *that)
+{
+    if (that == m_pCateItem) //album model item
+    {
+        return getAlbumSecondIndex();;
+    } else if (that == m_pBDCItem) //broadcast model item
+    {
+        return getBDCSecondIndex();
+    }
+    assert(0);
+}
+
 int KLDataProc::getBDCFirstTabIndex()
 {
     return mSwitch.bdc.bdc_cate_tab_index;
@@ -929,6 +939,8 @@ int KLDataProc::getBDCFirstAreaIndex()
 
 int KLDataProc::getAlbumFirstIndex()
 {
+//    GEN_Printf(LOG_DEBUG, "----------%d----------", mSwitch.cate_tab_index);
+//    if (4 == mSwitch.cate_tab_index) enterBroadcastView();
     return mSwitch.cate_tab_index;
 }
 
@@ -1045,25 +1057,6 @@ void KLDataProc::playPrev()
     chipPlayThirdClick(mPlayPath.chip_item_index - 1);
 }
 
-void KLDataProc::currentIsCollect()
-{
-    if (!m_pChipItemPlay->isEmpty())
-    {
-        LocalDataProc::instance()->opCurCollect(&mPlayInfo);
-    }
-}
-
-void KLDataProc::notifyCurIsCollect(bool isCollect)
-{
-    mCurrentIsCollect = isCollect;
-    Q_EMIT m_pChipItemPlay->isCollectChanged(isCollect);
-}
-
-void KLDataProc::notifyBDCCollectChange(int index, bool isCollect)
-{
-    m_pBDCItem->isCollectItemContentChange(index, isCollect);
-}
-
 bool KLDataProc::getCurrentPlayInfo(ByteString &parentId, ByteString &id)
 {
     int index2 = mPlayPath.chip_item_index;
@@ -1088,7 +1081,6 @@ void KLDataProc::localItemPlay(int type, int index, ChipItemUnion *pUnion)
     m_pChipItemPlay->chipLocalLoad(pUnion);
 
     mPlayPath = mSwitch;
-    mPlayPath.current_play_source = type;
 
     chipPlayThirdClick(index);
 
@@ -1134,5 +1126,88 @@ void KLDataProc::setViewSwitchInfo(char *data)
 const CollectNode *KLDataProc::getPlayInfoIfPlaying() const
 {
     return (m_pChipItemPlay->isEmpty()) ? nullptr : &mPlayInfo;
+}
+
+void KLDataProc::currentIsCollect()
+{
+    if (!m_pChipItemPlay->isEmpty() && !(mPlayInfo.id.empty() && mPlayInfo.parentId.empty()))
+    {
+        LocalDataProc::instance()->opCurCollect(&mPlayInfo);
+    }
+}
+
+void KLDataProc::notifyCurIsCollect(bool isCollect)
+{
+    mCurrentIsCollect = isCollect;
+    Q_EMIT m_pChipItemPlay->isCollectChanged(isCollect);
+}
+
+void KLDataProc::bdcNotifyCurIsCollect(CollectNode *item, bool isCollect)
+{
+    if ((mPlayInfo.parentId == item->parentId) &&
+            (item->type == PLAY_CHIP_TYPE_BROADCAST
+             || item->type == PLAY_CHIP_TYPE_TYPE_RADIO
+             || item->type == PLAY_CHIP_TYPE_RADIO_CHIP
+             || item->type == PLAY_CHIP_TYPE_BDC_PROGRAM_CHIP
+             || item->type == PLAY_CHIP_TYPE_ALBUM
+             || item->id == mPlayInfo.id))
+    {
+        notifyCurIsCollect(isCollect);
+    }
+}
+
+void KLDataProc::notifyBDCCollectChange(int index, bool isCollect)
+{
+    //GEN_Printf(LOG_DEBUG, "++++++++++++index=%d", index);
+    m_pBDCItem->isCollectItemContentChange(index, isCollect);
+}
+
+bool KLDataProc::deleteCurrentInfo(int chipType)
+{
+    if (chipType == m_pChipItemPlay->getChipType())
+    {
+        mPlayInfo.isLocal    = 0; // 表明当前媒体时候在本地
+        mPlayInfo.type       = 0;    // PLAY_CHIP_TYPE*
+        mPlayInfo.id         = ByteString();
+        mPlayInfo.parentId   = ByteString();
+        mPlayInfo.name       = ByteString();
+        mPlayInfo.parentName = ByteString();
+        mPlayInfo.image      = ByteString();
+        mPlayInfo.playUrl    = ByteString();
+        mPlayInfo.fileSize   = ByteString();
+        return true;
+    }
+    return false;
+}
+
+void KLDataProc::collectItemDelete()
+{
+    if (PLAY_CHIP_TYPE_COLLECT_RECORD == m_pChipItemPlay->getChipType())
+    {
+        int index = mPlayPath.chip_item_index;
+        mPlayPath.chip_item_index = -1;
+        chipPlayThirdClick(index);
+
+        if (m_pChipItemPlay->isEmpty())
+        {
+            gInstance->qmlReset();
+        }
+    }
+}
+
+void KLDataProc::notifyCurrentCollectChange(CollectNode *node, bool isCollect)
+{
+    GEN_Printf(LOG_DEBUG, "Current Collect Item change.%s,%s, %s", node->id.string(), node->parentId.string(), node->name.string());
+    VectorTable<MusicCateItemUnion *> &vec = m_pBDCItem->vec();
+    for (int i = 0; i < vec.size(); ++i)
+    {
+        //GEN_Printf(LOG_DEBUG, "%s, %s", vec[i]->id.string(), vec[i]->name.string());
+
+        if (vec[i]->id == node->parentId)
+        {
+            m_pBDCItem->isCollectItemContentChange(i, isCollect);
+            break;
+        }
+    }
 }
 

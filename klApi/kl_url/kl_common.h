@@ -567,6 +567,7 @@ class ImageStatus
 public:
     virtual void dataPrepare() = 0;
     virtual void errorInfo(int , const char *) {}
+    virtual void setLocalFile(ByteString const &) {}
 };
 
 #endif // KL_COMMON_H

@@ -31,7 +31,7 @@ enum
 
 };
 
-typedef void (*LocalDataStatus)(int status, long pri);
+typedef void (*LocalDataStatus)(int status, long pri, long nodePtr);
 
 namespace kl
 {
@@ -46,20 +46,16 @@ public:
 
     void profile();
 
-    void checkCurrentItem(RecordItem *item);
-
-    void opCurrentItem(RecordItem *item);
-
     void setCallBack(LocalDataStatus st)
     {
         mDataStatus = st;
     }
 
-    void execStatus(int st, long ptr = 0)
+    void execStatus(int st, long ptr, long nodePtr)
     {
         if (mDataStatus)
         {
-            mDataStatus(st, ptr);
+            mDataStatus(st, ptr, nodePtr);
         }
     }
 private:

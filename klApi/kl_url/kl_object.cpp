@@ -40,7 +40,8 @@ bool kl::KLObject::obtain()
     if (mLoad.isLoading())
     {
         GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
-        mLoad.cancel();
+        //mLoad.cancel();
+        return true;
     }
 
     return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);

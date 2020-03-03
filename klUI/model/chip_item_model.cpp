@@ -86,7 +86,7 @@ void ChipItemModel::chipLoadOver(long ptr)
 {
     int start = mVec.size();
 
-    if ((long)m_pUnion != ptr)
+    if ((long)m_pUnion != ptr || !m_pUnion)
     {
         qWarning() << "Current is not need.";
         return;
@@ -132,12 +132,13 @@ void ChipItemModel::localDataChange(ChipItemUnion *pUnion)
         m_pUnion->onLoadOver(this);
         beginResetModel();
         endResetModel();
+        Q_EMIT playingIndexChanged(0);
     }
 }
 
 int ChipItemModel::getChipType() const
 {
-    return m_pUnion->getChipType();
+    return m_pUnion ? m_pUnion->getChipType() : -1;
 }
 
 void ChipItemModel::loadNextPage(int loadAction)
@@ -187,8 +188,8 @@ int ChipItemModel::playingIndex()
 
 int ChipItemModel::itemCount() const
 {
-    qDebug() << "itemCount: " << (long) m_pUnion;
-    return m_pUnion->itemCount();
+    //qDebug() << "itemCount: " << (long) m_pUnion;
+    return m_pUnion ? m_pUnion->itemCount() : 0;
 }
 
 void ChipItemModel::clean()

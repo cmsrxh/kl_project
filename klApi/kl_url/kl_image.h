@@ -15,7 +15,7 @@ public:
     KLImage(const ByteString &imgUrl, const char *file);
     ~KLImage();
 
-    void obtain();
+    bool obtain();
 
     void oneFrameObtain(NetBuffer *data);
 

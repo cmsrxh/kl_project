@@ -17,6 +17,11 @@ public:
     }
 
     void opBDCItem(RecordItem *item, long ptr);
+
+    void checkCurrentItem(RecordItem *item);
+
+    void opCurrentItem(RecordItem *item);
+
 };
 }
 

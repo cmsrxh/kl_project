@@ -67,7 +67,7 @@ QVariant CollectModel::data(const QModelIndex &index, int role) const
 void CollectModel::resetAll()
 {
     beginResetModel();
-    endResetModel();
+    endResetModel();    
 }
 
 QHash<int, QByteArray> CollectModel::roleNames() const

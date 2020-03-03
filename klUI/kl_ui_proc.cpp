@@ -117,6 +117,7 @@ void KLUIProc::qmlPause()
 void KLUIProc::qmlReset()
 {
     MediaServiceIFace::instance()->reset();
+    Q_EMIT playingInfo("", "");
 }
 
 void KLUIProc::qmlPlayPause()

@@ -14,11 +14,8 @@ class CateItemModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    // album index
+    // album or broadcast index, order by this pointer
     Q_PROPERTY(int currenIndex READ currenIndex NOTIFY currenIndexChanged)
-
-    // broadcast index
-    Q_PROPERTY(int currenBDCIndex READ currenBDCIndex NOTIFY currenBDCIndexChanged)
 public:    
     CateItemModel();
 
@@ -31,8 +28,6 @@ public:
     bool haveNext() const;
 
     int  currenIndex() const;
-
-    int  currenBDCIndex() const;
 
     void setCateItemUnion(CateItemUnion *pUnion);
 
@@ -67,7 +62,6 @@ Q_SIGNALS:
 
     // property
     void currenIndexChanged(int currentIndex);
-    void currenBDCIndexChanged(int currenBDCIndex);
 
     /**
      * @brief loadStartNewPage

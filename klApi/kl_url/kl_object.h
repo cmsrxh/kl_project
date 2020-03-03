@@ -29,6 +29,11 @@ public:
 
     bool obtain();
 
+    bool isLoading()
+    {
+        return mLoad.isLoading();
+    }
+
     static char *genSign(NetUrl &mUrl);
 
     static void loadStatus (int status, void *data, void *arg);

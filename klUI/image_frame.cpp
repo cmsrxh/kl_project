@@ -7,13 +7,14 @@
 
 ImageFrameCpp::ImageFrameCpp()
 {
-    connect(this, SIGNAL(filePrepare()), this, SLOT(onFilePrepare()), Qt::QueuedConnection);
+    connect(this, SIGNAL(filePrepare()), this, SLOT(onFilePrepare()));
     connect(this, SIGNAL(widthChanged()), this, SLOT(correctUpdate()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(correctUpdate()));
 }
 
 ImageFrameCpp::~ImageFrameCpp()
 {
+    ImageCacheManage::instance()->destructNotify(this);
 }
 
 void ImageFrameCpp::paint(QPainter *painter)
@@ -50,9 +51,7 @@ void ImageFrameCpp::setSource(const QString &source)
 {
     mSource = source;
 
-    mLocalFile = ImageCacheManage::instance()->loadImage(ByteString(source.toStdString().c_str(), source.size()), this);
-
-    // qDebug() << mLocalFile.string();
+    ImageCacheManage::instance()->loadImage(ByteString(source.toStdString().c_str(), source.size()), this);
 }
 
 void ImageFrameCpp::dataPrepare()
@@ -60,9 +59,14 @@ void ImageFrameCpp::dataPrepare()
     Q_EMIT filePrepare();
 }
 
-void ImageFrameCpp::errorInfo(int type, const char *str)
+void ImageFrameCpp::errorInfo(int , const char *)
 {
-    qDebug() << "type = " << type << str;
+    //qDebug() << "type = " << type << str;
+}
+
+void ImageFrameCpp::setLocalFile(const ByteString &name)
+{
+    mLocalFile = name;
 }
 
 QRectF ImageFrameCpp::imageScale(int w, int h)
@@ -99,8 +103,7 @@ QRectF ImageFrameCpp::imageScale(int w, int h)
 
 void ImageFrameCpp::onFilePrepare()
 {
-    // qDebug() << "image data prepare" << mLocalFile.string();
-
+    //qDebug() << "image data prepare: " << mLocalFile.string();
     mImage.load(mLocalFile.string());
     correctUpdate();
 }

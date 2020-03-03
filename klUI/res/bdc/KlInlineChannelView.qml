@@ -12,7 +12,7 @@ Item {
         clip: true;
         model: bdcItem
         delegate: chDelegate
-        currentIndex: bdcItem.currenBDCIndex
+        currentIndex: bdcItem.currenIndex
         spacing: 2
         boundsBehavior: Flickable.StopAtBounds
         cacheBuffer: 61

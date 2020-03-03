@@ -150,14 +150,14 @@ Item {
             }
 
             Button {
-                width: 30
-                height: 30
+                width: 50
+                height: 50
                 anchors.right: parent.right
                 anchors.rightMargin: 15
                 anchors.top: parent.top
                 anchors.topMargin: 15
 
-                text: qsTr("收藏")
+                text: playList.isCollect ? qsTr("收藏") : qsTr("未收藏")
                 onClicked: playList.qmlCurrentCollectClick()
 
                 style: ButtonStyle {
