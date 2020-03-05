@@ -82,13 +82,13 @@ int LocalDataProc::getLocalPlayIndex(ListTable<kl::RecordItem>::vector &vec)
 
     if (KLDataProc::instance()->getCurrentPlayInfo(parentId, id))
     {
-        GEN_Printf(LOG_DEBUG, "Check,id: %s, parentId: %s", id.string(), parentId.string());
+        //GEN_Printf(LOG_DEBUG, "Check,id: %s, parentId: %s", id.string(), parentId.string());
         for (int i = 0; i < vec.size(); ++i)
         {
-            GEN_Printf(LOG_DEBUG, "id: %s, parentId: %s", vec[i].id.string(), vec[i].parentId.string());
+            //GEN_Printf(LOG_DEBUG, "id: %s, parentId: %s", vec[i].id.string(), vec[i].parentId.string());
             if (vec[i].id == id && vec[i].parentId == parentId)
             {
-                GEN_Printf(LOG_DEBUG, "correct id: %d", i);
+                //GEN_Printf(LOG_DEBUG, "correct id: %d", i);
                 return i;
             }
         }
@@ -134,13 +134,13 @@ void LocalDataProc::bdcTypeRadioCollect(int bdcItemIndeex, CollectNode *info)
     }
 }
 
-bool LocalDataProc::checkBDCItemIsCollect(int type, const ByteString &id)
+bool LocalDataProc::checkBDCItemIsCollect(int , const ByteString &id)
 {
+    // GEN_Printf(LOG_DEBUG, "------check, type=%d, id=%s------", type, id.string());
     ListTable<kl::RecordItem>::vector &vec = m_pCollect->vec();
     for (int i = 0; i < vec.size(); ++i)
     {
-        if (vec[i].type == type
-                && vec[i].parentId == id)
+        if (vec[i].parentId == id)
         {
             return true;
         }

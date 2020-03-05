@@ -181,7 +181,8 @@ void KLUIProc::qmlMainTabClick(int index)
         m_pViewStack->setSource("qrc:/self/KlDlgOptionView.qml");
     } else
     {
-        m_pViewStack->setSource("qrc:/CategoryView.qml");
+        m_pViewStack->showAlbumView();
+        // m_pViewStack->setSource("qrc:/CategoryView.qml");
     }
 }
 

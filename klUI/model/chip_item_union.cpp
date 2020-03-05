@@ -261,8 +261,10 @@ bool ChipItemUnion::loadNextPage(int loadAction)
     {
     case PLAY_CHIP_TYPE_AUDIO_CHIP:
         ret = ((kl::ChipAudioList *)m_pChip)->loadNextPage();
+        break;
     case PLAY_CHIP_TYPE_RADIO_CHIP:
         ret = ((kl::ChipRadioList *)m_pChip)->loadNextPage();
+        break;
     default:
         break;
     }

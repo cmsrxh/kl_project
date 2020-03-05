@@ -129,8 +129,7 @@ bool kl::ChipAudioList::loadNextPage()
         needPage.clear();
         needPage = ByteString::allocLong(nextPage);
 
-        obtain();
-        return true;
+        return obtain();
     } else
     {
         GEN_Printf(LOG_DEBUG, "Nothing next page.");

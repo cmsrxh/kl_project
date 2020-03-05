@@ -148,31 +148,30 @@ void ChipItemModel::loadNextPage(int loadAction)
 
 void ChipItemModel::chipItemClick(int index)
 {
-    qDebug() << "Chip Item Click " << index;
+    //qDebug() << "Chip Item Click " << index;
     KLDataProc::instance()->chipAudioThirdChick(index);
 }
 
 bool ChipItemModel::needNextPage()
 {
-    qDebug() << "Chip Need Next Page";
     return m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_NORMAL_SHOW);
 }
 
 bool ChipItemModel::playNeedNextPage()
 {
-    qDebug() << "Player Chip Need Next Page";
+    //qDebug() << "Player Chip Need Next Page";
     return m_pUnion->loadNextPage(ChipItemUnion::LOAD_OVER_ALBUM_IN_PLAYVIEW);
 }
 
 void ChipItemModel::playItemClick(int index)
 {
-    qDebug() << "Click Index=" << index;
+    //qDebug() << "Click Index=" << index;
     KLDataProc::instance()->chipPlayThirdClick(index);
 }
 
 void ChipItemModel::qmlCurrentCollectClick()
 {
-    qDebug() << "Collect Current or not.";
+    //qDebug() << "Collect Current or not.";
     KLDataProc::instance()->currentIsCollect();
 }
 
@@ -194,7 +193,7 @@ int ChipItemModel::itemCount() const
 
 void ChipItemModel::clean()
 {
-    qDebug() << "vector clean";
+    //qDebug() << "vector clean";
     mVec.clearPtr();
 }
 

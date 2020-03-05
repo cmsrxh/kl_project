@@ -60,6 +60,46 @@ bool kl::KLObject::obtain()
 }
 
 #if 1
+
+/*
+
+/**
+ * @brief NetUrl::genKLSign
+ * @param appid
+ * @param secretkey
+ * @return
+ * @details kl 签名算法的字串生成
+ *
+ByteString NetUrl::genKLSign(const ByteString &appid, const ByteString &secretkey)
+{
+    const char *method = "get";
+    if (mMethodType == NET_HTTP_METHOD_POST)
+    {
+        method = "post";
+    }
+    int urlLen = 5 + mBaseUrl.size() + appid.size() + secretkey.size();
+
+    int   i = 0;
+    char *urlStr = allocAddr(urlLen);
+
+    strcpy(urlStr, method);
+    i += strlen(method);
+
+    memcpy(urlStr + i, mBaseUrl.string(), mBaseUrl.size());
+    i += mBaseUrl.size();
+
+    memcpy(urlStr + i, appid.string(), appid.size());
+    i += appid.size();
+
+    memcpy(urlStr + i, secretkey.string(), secretkey.size());
+    i += secretkey.size();
+
+    urlStr[i] = '\0';
+
+    return ByteString(urlStr, i);
+}
+
+*/
 char *kl::KLObject::genSign(NetUrl &url)
 {
     unsigned char sign_bytes[16];

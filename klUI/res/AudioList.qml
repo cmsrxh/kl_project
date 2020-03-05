@@ -85,6 +85,7 @@ Item {
             {
                 isLoad = false
                 var isHaveNext = chipList.needNextPage();
+                console.log("+++++++++++++++++++", isHaveNext)
                 if (!isHaveNext)
                 {
                     msgBox.boxType = 4

@@ -149,6 +149,23 @@ Item {
                 }
             }
 
+            ThreeStateBtn
+            {
+                width: 38
+                height: 38
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.top: parent.top
+                anchors.topMargin: 15
+
+                initSt: "qrc:/image/collect.png"
+                pressSt: "qrc:/image/collect_clk.png"
+                lastSt: "qrc:/image/collect_hl.png"
+                enable: playList.isCollect
+                onClicked: playList.qmlCurrentCollectClick()
+            }
+
+/*
             Button {
                 width: 50
                 height: 50
@@ -183,6 +200,7 @@ Item {
                     }
                 }
             }
+        */
         }
     }
 }
