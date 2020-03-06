@@ -1,10 +1,10 @@
 TEMPLATE = subdirs 
 
-SUBDIRS += klApi/klApi.pro
+#SUBDIRS += klApi/klApi.pro
 
 #SUBDIRS += netNotify
 
-#SUBDIRS += klUI
+SUBDIRS += klUI
 
 #SUBDIRS += playerClient
 

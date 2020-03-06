@@ -23,6 +23,7 @@
 #include "kl_url/kl_res_suggestion_word.h"
 #include "kl_url/kl_res_voice_search_all.h"
 #include "kl_url/kl_ip_positioning.h"
+#include "qq_ip_positioning.h"
 #include "test_album_load.h"
 #include "util/net_buffer.h"
 #include "util/config_setting.h"
@@ -136,6 +137,9 @@ void Application::initialize()
 
 //        static kl::IPPositioning ipPosition;
 //        ipPosition.obtain();
+
+        static QQIPPositioning ipPostion;
+        ipPostion.obtain();
     }
 }
 

@@ -49,7 +49,7 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv)
         break;
     }
 
-    // GEN_Printf(LOG_DEBUG, "string: %s", url.genUrl().string());
+    GEN_Printf(LOG_DEBUG, "string: %s", url.genUrl().string());
 
     // my_curl_easy_setopt(m_pCurl, CURLOPT_HTTPGET, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.genUrl().string());

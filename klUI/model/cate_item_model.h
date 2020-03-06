@@ -41,6 +41,11 @@ public:
     void isCollectItemContentChange(int i, bool en);
 
     int getCateType();
+
+    bool empty()
+    {
+        return mVec.empty();
+    }
 public Q_SLOTS:
     void onLoadOver(long ptr);
 

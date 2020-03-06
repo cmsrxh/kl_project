@@ -40,7 +40,7 @@ bool kl::KLObject::obtain()
     if (mLoad.isLoading())
     {
         GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
-        //mLoad.cancel();
+//        mLoad.cancel();
         return true;
     }
 
@@ -63,7 +63,7 @@ bool kl::KLObject::obtain()
 
 /*
 
-/**
+**
  * @brief NetUrl::genKLSign
  * @param appid
  * @param secretkey
@@ -102,6 +102,7 @@ ByteString NetUrl::genKLSign(const ByteString &appid, const ByteString &secretke
 */
 char *kl::KLObject::genSign(NetUrl &url)
 {
+#if 0
     unsigned char sign_bytes[16];
     static char sign[33];
 
@@ -124,6 +125,10 @@ char *kl::KLObject::genSign(NetUrl &url)
     GEN_Printf(LOG_DEBUG, "true  sign: %s", SIGN_ActiveManage);
 
     return sign;
+#else
+    UNUSED(url);
+    return nullptr;
+#endif
 }
 #else
 char *kl::KLObject::genSign(NetUrl &url)

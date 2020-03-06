@@ -19,6 +19,7 @@
 #include "iface/media_service_i_face.h"
 #include "iface/media_iface_common.h"
 #include "iface/media_service_call_back.h"
+#include "qq_ip_positioning.h"
 #include "application.h"
 #include "current_backup.h"
 #include "../klIface/kl_service_notify.h"
@@ -46,13 +47,18 @@ KLDataProc::KLDataProc()
 void KLDataProc::enterBroadcastView()
 {
     GEN_Printf(LOG_DEBUG, "enter BDC view.");
+    int index = 0;
     mSwitch.media_type = MEDIA_TYPE_BROADCAST;
     gInstance->viewAlbumBDCSwitch("bdc/KlInlineBroadcast.qml");
 
-    if (-1 == mSwitch.bdc.bdc_cate_tab_index)
+    if (-1 < mSwitch.bdc.bdc_cate_tab_index)
     {
-        bdcFirstCateTabClick(0);
+        index = mSwitch.bdc.bdc_cate_tab_index;
     }
+
+    if (mSwitch.bdc.bdc_cate_tab_index == index) mSwitch.bdc.bdc_cate_tab_index = -1;
+
+    bdcFirstCateTabClick(index);
 }
 
 void KLDataProc::playSubItem(MusicChipItemUnion *chip)
@@ -458,9 +464,10 @@ void KLDataProc::chipPlayThirdClick(int index)
 }
 
 #define AREA_TAB_ID 2
-void KLDataProc::bdcFirstCateTabClick(int index, bool forceAcqure)
+void KLDataProc::bdcFirstCateTabClick(int index)
 {
-    if (mSwitch.bdc.bdc_cate_tab_index != index || forceAcqure)
+    GEN_Printf(LOG_DEBUG, "-------bdc cate click: %d-----", index);
+    if (mSwitch.bdc.bdc_cate_tab_index != index)
     {
         VectorTable<MusicCateUnion *> &vec = m_pBDCTab->vec();
         if (index < 0 || index > vec.size())
@@ -471,21 +478,28 @@ void KLDataProc::bdcFirstCateTabClick(int index, bool forceAcqure)
 
         MusicCateUnion *bdcCate = vec[index];
 
-        if (bdcCate->cid.empty()
-                || bdcCate->hasSub.empty())
+        if (bdcCate->cid.empty())
         {
             GEN_Printf(LOG_WARN, "ID num is empty, %s.", bdcCate->hasSub.string());
+            if (0 == index) // 需要定位当前位置
+            {
+                (new QQIPPositioning)->obtain();
+            }
             return;
         }
 
         int cid_type   = CateItemUnion::CATE_ITEM_BDCAST;
-        int cid_num    = atoi(bdcCate->cid.string());
-        int bdc_type   = atoi(bdcCate->hasSub.string());
+        int cid_num    = bdcCate->cid.toInt();
+        int bdc_type   = bdcCate->hasSub.toInt();
         int area_code  = 0;
         bool isAreaLab = false;
 
-
-        if (-1 == cid_num) //type radio
+        if (0 == index)  // "id":2,"name":"省市台","type":1,
+        {
+            area_code = cid_num;
+            bdc_type  = 1;
+            cid_num = 2;
+        } else if (-1 == cid_num) //type radio "id":-1,"name":"智能台","type":-1
         {
             cid_type= CateItemUnion::CATE_ITEM_TYPE_RADIO;
         } else if (AREA_TAB_ID == cid_num) // 省市台
@@ -496,7 +510,7 @@ void KLDataProc::bdcFirstCateTabClick(int index, bool forceAcqure)
             {
                 if (false == areaVec[mSwitch.bdc.bdc_area_index]->cid.empty())
                 {
-                    area_code = atoi(areaVec[mSwitch.bdc.bdc_area_index]->cid.string());
+                    area_code = areaVec[mSwitch.bdc.bdc_area_index]->cid.toInt();
                 }
             }
         }
@@ -569,9 +583,9 @@ void KLDataProc::bdcFirstAreaTabClick(int index)
                 return;
             }
 
-            int cid_num    = atoi(bdcCate->cid.string());
-            int bdc_type   = atoi(bdcCate->hasSub.string());
-            int area_code  = atoi(vec[index]->cid.string());
+            int cid_num    = bdcCate->cid.toInt();
+            int bdc_type   = bdcCate->hasSub.toInt();
+            int area_code  = vec[index]->cid.toInt();
 
             m_pBDCItem->clear();
 
@@ -579,7 +593,14 @@ void KLDataProc::bdcFirstAreaTabClick(int index)
             if (tmp)
             {
                 m_pBDCItem->setCateItemUnion(tmp);
-                tmp->onLoadOver(m_pBDCItem);
+                if (tmp->isEmpty())
+                {
+                    tmp->loadCateItem();
+                } else
+                {
+                    tmp->onLoadOver(m_pBDCItem);
+                    PopTipManage::instance()->closeMsgBox(kl::OBJECT_BDC_ITEM_LIST);
+                }
                 m_pBDCItem->resetAll();
             } else
             {
@@ -1208,6 +1229,59 @@ void KLDataProc::notifyCurrentCollectChange(CollectNode *node, bool isCollect)
             m_pBDCItem->isCollectItemContentChange(i, isCollect);
             break;
         }
+    }
+}
+
+bool KLDataProc::locationConfirm(const ByteString &province, kl::AreaItem &area)
+{
+    VectorTable<MusicCateUnion *> &vec = m_pBDCArea->vec();
+    GEN_Printf(LOG_DEBUG, "Locationing province=%s", province.string());
+
+    for (int i = 1; i < vec.size(); ++i)
+    {
+        MusicCateUnion *addr = vec[i];
+        // GEN_Printf(LOG_DEBUG, "id=%s, name=%s", addr->cid.string(), addr->name.string());
+        if (0 == strncmp(addr->name.string(), province.string(), addr->name.size()))
+        {
+            area.id = addr->cid;
+            area.name = addr->name;
+            return true;
+        }
+    }
+    return false;
+}
+
+void KLDataProc::notifyLocationChange(kl::AreaItem *area)
+{
+    VectorTable<MusicCateUnion *> &vec = m_pBDCTab->vec();
+
+    GEN_Printf(LOG_DEBUG, "Location Change: %s, %s", area->id.string(), area->name.string());
+    if (!vec.empty())
+    {
+        vec[0]->cid  = area->id;
+        vec[0]->name = area->name;
+        // GEN_Printf(LOG_DEBUG, "notify data change.");
+        Q_EMIT m_pBDCTab->dataChanged(m_pBDCTab->index(0), m_pBDCTab->index(0));
+
+        // 此处是事件循环子线程调用这个偏向主线程调用的函数，有一定的概率会发生错误（同步和异步）
+        // 最好使用消息的方式通知主线程，由主线程调用(bdcFirstCateTabClick)这个函数
+        if (m_pBDCItem->empty())
+        {
+            // 发送到主线程中调用
+            Q_EMIT gInstance->mainThreadProc(1, 0);
+            // bdcFirstCateTabClick(0);
+        }
+    }
+}
+
+void KLDataProc::notifyLocationFailed()
+{
+    VectorTable<MusicCateUnion *> &vec = m_pBDCTab->vec();
+
+    if (!vec.empty())
+    {
+        vec[0]->name = "定位失败";
+        Q_EMIT m_pBDCTab->dataChanged(m_pBDCTab->index(0), m_pBDCTab->index(0));
     }
 }
 

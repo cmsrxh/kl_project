@@ -4,6 +4,7 @@
 #include "kl_url/kl_broadcast_area_list.h"
 #include "kl_url/kl_category_broadcast.h"
 #include "pop_tip_manage.h"
+#include <application.h>
 #include "category_model.h"
 #include "cate_item_model.h"
 #include "category_union.h"
@@ -259,12 +260,20 @@ void CategoryUnion::genCatesByBDCArea(ListTable<kl::AreaItem> &nodes, VectorTabl
         tmp->name   = it->name;
 
         vec.push_back(tmp);
-    }
+    }    
 }
 
 void CategoryUnion::genCatesByCateBDC(ListTable<kl::CateBCast> &nodes, VectorTable<MusicCateUnion *> &vec)
 {
     ListTable<kl::CateBCast>::iterator it = nodes.begin();
+
+    MusicCateUnion *tmp = new MusicCateUnion;
+    kl::AreaItem *pos = Application::instance()->positionArea();
+
+    tmp->cid    = pos->id;
+    tmp->name   = pos->name;
+
+    vec.push_back(tmp);
 
     for ( ; it != nodes.end(); ++it)
     {
@@ -277,6 +286,12 @@ void CategoryUnion::genCatesByCateBDC(ListTable<kl::CateBCast> &nodes, VectorTab
 
         vec.push_back(tmp);
     }
+
+//    for (int i = 0; i < vec.size(); ++i)
+//    {
+//        MusicCateUnion *addr = vec[i];
+//        GEN_Printf(LOG_DEBUG, "id=%s, name=%s", addr->cid.string(), addr->name.string());
+//    }
 }
 
 

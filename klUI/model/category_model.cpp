@@ -104,7 +104,7 @@ void CategoryModel::onLoadOver(long ptr)
 
 void CategoryModel::qmlCateTabClick(int index)
 {
-    qDebug() << "CateTabClick index =" << index;
+    //qDebug() << "CateTabClick index =" << index;
     KLDataProc::instance()->albumFirstClick(index);
 }
 
@@ -115,19 +115,14 @@ int CategoryModel::qmlGetTabIndex()
 
 void CategoryModel::qmlBDCCateTabClick(int index)
 {
-    qDebug() << index;
+    //qDebug() << index;
     KLDataProc::instance()->bdcFirstCateTabClick(index);
 }
 
 void CategoryModel::qmlBDCAreaTabClick(int index)
 {
-    qDebug() << index;
+    // qDebug() << index;
     KLDataProc::instance()->bdcFirstAreaTabClick(index);
-}
-
-void CategoryModel::qmlBDCShowDefaultPage()
-{
-    KLDataProc::instance()->bdcFirstCateTabShowDefaultPage();
 }
 
 QHash<int, QByteArray> CategoryModel::roleNames() const

@@ -25,6 +25,7 @@ KLUIProc::KLUIProc()
 {
     connect(this, SIGNAL(recvNotify(int,int,int,QString)), this, SLOT(onRecvNotify(int,int,int,QString)));
     connect(this, SIGNAL(searchProc(int,int,long)), this, SLOT(onSearchProc(int,int,long)), Qt::QueuedConnection);
+    connect(this, SIGNAL(mainThreadProc(long,long)), this, SLOT(onMainThreadProc(long,long)), Qt::QueuedConnection);
 }
 
 KLUIProc::~KLUIProc()
@@ -289,6 +290,17 @@ void KLUIProc::onAlbumTabLoadOver(long pUnion)
 {
     qDebug() << "album tab load over, and need load first " << pUnion;
     KLDataProc::instance()->detailLoadAlbumInfo();
+}
+
+void KLUIProc::onMainThreadProc(long type, long arg)
+{
+    switch (type) {
+    case 1:
+        KLDataProc::instance()->bdcFirstCateTabClick(arg);
+        break;
+    default:
+        break;
+    }
 }
 
 QString KLUIProc::numToTimeStr(int num)

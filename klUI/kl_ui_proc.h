@@ -96,10 +96,15 @@ public Q_SLOTS:
 
     // 首页专辑标签下载完毕，表示要自动下载默认标签页下面的信息
     void onAlbumTabLoadOver(long pUnion);
+
+    // 需要发送到主线程处理的事件函数调用
+    void onMainThreadProc(long type, long arg);
 Q_SIGNALS:
     void recvNotify(int msg, int ext1, int ext2, const QString &str);
 
     void searchProc(int type, int index, long searchPtr);
+
+    void mainThreadProc(long type, long arg);
 
     // property signal
     void playStateChanged();

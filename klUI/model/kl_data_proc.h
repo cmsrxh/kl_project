@@ -174,11 +174,7 @@ public:
      */
     void chipPlayThirdClick(int index);
 
-    void bdcFirstCateTabClick(int index, bool forceAcqure = false);
-    void bdcFirstCateTabShowDefaultPage()
-    {
-        bdcFirstCateTabClick(mSwitch.bdc.bdc_cate_tab_index, true);
-    }
+    void bdcFirstCateTabClick(int index);
 
     void bdcFirstAreaTabClick(int index);
 
@@ -355,7 +351,26 @@ public:
      */
     void notifyCurrentCollectChange(CollectNode *node, bool isCollect);
 
+    /**
+     * @brief locationConfirm
+     * @param province [in] 省市名字
+     * @param area [out] 如果正确的找到就设置正确的信息
+     * @details 根据输入省市名称找到正确地区信
+     */
+    bool locationConfirm(ByteString const &province, kl::AreaItem &area);
 
+    /**
+     * @brief notifyLocationChange
+     * @details 通知定位发生变化
+     */
+    void notifyLocationChange(kl::AreaItem *area);
+
+    /**
+     * @brief notifyLocationFailed
+     * @param errInfo
+     * @details 通知定位失败了
+     */
+    void notifyLocationFailed();
 private:
     KLDataProc();
     void enterBroadcastView();

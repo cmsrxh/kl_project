@@ -83,7 +83,8 @@ ByteString NetUrl::tar2String(ListTable<NetUrl::QueryKV> &list)
             urlStr[i++] = '&';
         }
     }
-    urlStr[i - 1] = '\0';
+    i--;
+    urlStr[i] = '\0';
 
     return ByteString(urlStr, i);
 }

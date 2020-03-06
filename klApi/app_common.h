@@ -38,6 +38,8 @@ enum {
 
     SIG_KL_RELOAD_ERR_OBJECT,   // 重新加载错误的对象
     SIG_KL_COLLECT_ERR_OBJECT,  // 收集kl加载错误的对象
+
+    SIG_LOCATION_POSITIONING,   // 位置定位结束（可能定位加载错误）
 };
 
 

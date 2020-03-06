@@ -20,10 +20,12 @@
 #include "kl_record_manage.h"
 #include "kl_search_manage.h"
 #include "current_backup.h"
+#include "qq_ip_positioning.h"
 #include "application.h"
 
 Application::Application()
     : m_pKLInit(NULL), m_pKLActive(NULL)
+    , m_pPositionArea(new kl::AreaItem)
 {
 #ifdef USE_MPV_API_INTERFACE
     setlocale(LC_NUMERIC, "C");
@@ -43,12 +45,15 @@ void Application::initialize()
         stateMache->initialize();
 #endif
     }
-    KLDataProc::instance()->initSockService();
+    //KLDataProc::instance()->initSockService();
 
     // 启动收数据线程，并连接播放服务端socket
-    postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
+    //postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     SimpleThread::start();
+
+    m_pPositionArea->id   = LocalConfig::instance()->getValue("location", "id");
+    m_pPositionArea->name = LocalConfig::instance()->getValue("location", "name");
 }
 
 void Application::runLoop()
@@ -134,6 +139,10 @@ void Application::runLoop()
             break;
         }
 
+        case SIG_LOCATION_POSITIONING:
+            positioningManage(((GeneralQEvt *)evt)->wParam);
+            break;
+
         case SIG_USER_UNUSED:
         default:
             GEN_Printf(LOG_WARN, "[%d] is UNKOWN.", evt->sig);
@@ -205,4 +214,32 @@ void Application::klInitGetOpenId()
         (*it)->obtain();
     }
     mKlBack.clear();
+}
+
+void Application::positioningManage(long qqPtr)
+{
+    kl::AreaItem    area;
+    QQIPPositioning *ipPos = reinterpret_cast<QQIPPositioning *>(qqPtr);
+
+    if (ipPos->locationValid())
+    {
+        if (KLDataProc::instance()->locationConfirm(ipPos->province(), area)
+                && !(m_pPositionArea->id == area.id
+                     && m_pPositionArea->name == area.name))
+        {
+            LocalConfig::instance()->setValue("location", "id", area.id);
+            LocalConfig::instance()->setValue("location", "name", area.name);
+            LocalConfig::instance()->save();
+            m_pPositionArea->id   = LocalConfig::instance()->getValue("location", "id");
+            m_pPositionArea->name = LocalConfig::instance()->getValue("location", "name");
+
+            KLDataProc::instance()->notifyLocationChange(m_pPositionArea);
+        }
+    } else
+    {
+        GEN_Printf(LOG_ERROR, "Locationing reason: %s!!!", ipPos->message().string());
+        KLDataProc::instance()->notifyLocationFailed();
+    }
+
+    delete ipPos;
 }
