@@ -19,16 +19,19 @@ ImageCacheManage::~ImageCacheManage()
     }
 }
 
-ByteString ImageCacheManage::loadImage(const ByteString &imgUrl, ImageStatus *notify)
+void ImageCacheManage::loadImage(const ByteString &imgUrl, ImageStatus *notify)
 {
     ByteString filePath = imgUrlEncrypt(imgUrl);
     if (filePath.empty())
     {
         GEN_Printf(LOG_ERROR, "general image url is empty");
-        return filePath;
+        return;
     }
+    assert(notify);
 
     mList.push_back(filePath);
+
+    notify->setLocalFile(filePath);
 
     // GEN_Printf(LOG_DUMP, "Save path: %s", filePath.string());
 
@@ -37,15 +40,67 @@ ByteString ImageCacheManage::loadImage(const ByteString &imgUrl, ImageStatus *no
     if (0 == stat(filePath.string(), &st)
             && st.st_size > 512)
     {
-        if (notify) notify->dataPrepare();
+        notify->dataPrepare();
     } else
     {
         kl::KLImage *img = new kl::KLImage(imgUrl, filePath.string());
         img->setUINotify(notify);
-        img->obtain();
-    }
 
-    return filePath;
+        if (img->obtain())
+        {
+            Autolock l(&mMtx);
+            mNotifyList.push_back(notify);
+        } else
+        {
+            delete img;
+            notify->errorInfo(0, NULL);
+        }
+    }
+}
+
+void ImageCacheManage::dataPrepare(ImageStatus *notify)
+{
+    Autolock l(&mMtx);
+    ListTable<ImageStatus *>::iterator it = mNotifyList.begin();
+    for (; it != mNotifyList.end(); ++it)
+    {
+        if (notify == *it)
+        {
+            notify->dataPrepare();
+            break;
+        }
+    }
+}
+
+void ImageCacheManage::errorInfo(ImageStatus *notify)
+{
+    Autolock l(&mMtx);
+    ListTable<ImageStatus *>::iterator it = mNotifyList.begin();
+    for (; it != mNotifyList.end(); ++it)
+    {
+        if (notify == *it)
+        {
+            notify->errorInfo(0, nullptr);
+            break;
+        }
+    }
+}
+
+void ImageCacheManage::destructNotify(ImageStatus *notify)
+{
+    Autolock l(&mMtx);
+    ListTable<ImageStatus *>::iterator it = mNotifyList.begin();
+    for (; it != mNotifyList.end(); ++it)
+    {
+        if (notify == *it)
+        {
+            break;
+        }
+    }
+    if (it != mNotifyList.end())
+    {
+        mNotifyList.remove(it);
+    }
 }
 
 ByteString ImageCacheManage::imgUrlEncrypt(ByteString const &in)

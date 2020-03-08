@@ -4,8 +4,9 @@ import Hongjing.HMI.KL 1.0 as KL
 Rectangle
 {
     id: smartBCDelegate
-    width: view.width; height: 51
-    color: (playList.playingIndex === index) ?
+    width: ListView.view.width; height: 51
+    //color: (playList.playingIndex === index) ?
+    color: (ListView.view.currentIndex === index) ?
              "#51EEA105" : "#414141"
 
     Rectangle
@@ -15,7 +16,8 @@ Rectangle
         color: "transparent"
     }
     //对应PlayingInfo::Playing
-    state: (playList.playingIndex === index) ? "pySt" : ""
+    //state: (playList.playingIndex === index) ? "pySt" : ""
+    state: (ListView.view.currentIndex === index) ? "pySt" : ""
 
     Item
     {

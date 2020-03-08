@@ -6,8 +6,8 @@ import Hongjing.HMI.KL 1.0 as KL
 Item{
     id:slider
 
-    property int maxValue: KL.Controller.qmlGetDuration();
-    property int currentValue: KL.Controller.qmlGetCurrentPosition()
+    property int maxValue: 1
+    property int currentValue: 0
     property int valueBak: 0
     property int fontSize: 16
     property bool isPress: false
@@ -17,10 +17,10 @@ Item{
         target: KL.Controller
         onDurationChanged: {
             slider.maxValue = duration;
-            rightTime.text  = durStr;
         }        
         onPositionChanged: {
-             leftTime.text  = curPos
+            rightTime.text = durStr;
+            leftTime.text  = curPos            
         }
         onCacheDataChanged: {
             cacheData.cacheValue = curPos
@@ -37,6 +37,10 @@ Item{
             if (!slider.isPress)
             {
                 slider.currentValue = KL.Controller.qmlGetCurrentPosition();
+                if (slider.maxValue <= slider.currentValue)
+                {
+                    slider.maxValue = KL.Controller.qmlGetDuration();
+                }
             }
         }
     }

@@ -84,6 +84,8 @@ public Q_SLOTS:
     void qmlMainTabClick(int index);
     void qmlSelfTabClick(int index);
 
+    int  qmlGetSelfTabIndex();
+
     void qmlReloadErrObject();
 
     // 播放控制反馈回来的处理信息
@@ -94,18 +96,23 @@ public Q_SLOTS:
 
     // 首页专辑标签下载完毕，表示要自动下载默认标签页下面的信息
     void onAlbumTabLoadOver(long pUnion);
+
+    // 需要发送到主线程处理的事件函数调用
+    void onMainThreadProc(long type, long arg);
 Q_SIGNALS:
     void recvNotify(int msg, int ext1, int ext2, const QString &str);
 
     void searchProc(int type, int index, long searchPtr);
+
+    void mainThreadProc(long type, long arg);
 
     // property signal
     void playStateChanged();
     void canSeekChanged();
 
     // qml
-    void durationChanged(int duration, QString const &durStr);
-    void positionChanged(QString const &curPos);
+    void durationChanged(int duration);
+    void positionChanged(QString const &curPos, QString const &durStr);
     void cacheDataChanged(int curPos);
     void playingInfo(QString const &name, QString const &desc);
 
@@ -135,6 +142,7 @@ private:
     int               mPositionBase;
     int               mCurPosition;
     int               mCurDuring;
+    int               mCacheValue;
     ViewSwitchStack  *m_pViewStack;
 
     // album

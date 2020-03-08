@@ -12,7 +12,7 @@ Item {
         clip: true;
         model: bdcItem
         delegate: chDelegate
-        // currentIndex: bdcItem.currenBDCIndex
+        currentIndex: bdcItem.currenIndex
         spacing: 2
         boundsBehavior: Flickable.StopAtBounds
         cacheBuffer: 61
@@ -34,7 +34,7 @@ Item {
         Rectangle {
             id: chItem
             width: view.width; height: 61
-            color: (bdcItem.currenBDCIndex === index) ?
+            color: (ListView.view.currentIndex === index) ?
                      "#433A2D" : "#545454"
             Rectangle {
                 id: foreground
@@ -47,7 +47,7 @@ Item {
                 height: parent.height
                 x: 10; y: 0
 
-                state: bdcItem.currenBDCIndex === index ? "signSt" : ""
+                state: chItem.ListView.view.currentIndex === index ? "signSt" : ""
                 Item {
                     id: playItem
                     width: 0

@@ -3,7 +3,7 @@ import Hongjing.HMI.KL 1.0 as KL
 
 Item {
     id: option
-    property int curFocus : 0
+    property int curFocus : KL.Controller.qmlGetSelfTabIndex()
     property var views: [   "KlCollectView.qml",
                             "KlLoadView.qml",
                             "KlHistoryRecord.qml",

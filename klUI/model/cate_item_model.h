@@ -14,11 +14,8 @@ class CateItemModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    // album index
+    // album or broadcast index, order by this pointer
     Q_PROPERTY(int currenIndex READ currenIndex NOTIFY currenIndexChanged)
-
-    // broadcast index
-    Q_PROPERTY(int currenBDCIndex READ currenBDCIndex NOTIFY currenBDCIndexChanged)
 public:    
     CateItemModel();
 
@@ -32,8 +29,6 @@ public:
 
     int  currenIndex() const;
 
-    int  currenBDCIndex() const;
-
     void setCateItemUnion(CateItemUnion *pUnion);
 
     void clear();
@@ -45,6 +40,12 @@ public:
 
     void isCollectItemContentChange(int i, bool en);
 
+    int getCateType();
+
+    bool empty()
+    {
+        return mVec.empty();
+    }
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
@@ -66,7 +67,6 @@ Q_SIGNALS:
 
     // property
     void currenIndexChanged(int currentIndex);
-    void currenBDCIndexChanged(int currenBDCIndex);
 
     /**
      * @brief loadStartNewPage

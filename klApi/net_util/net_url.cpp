@@ -49,101 +49,6 @@ ByteString NetUrl::genUrl()
     return ByteString(mTmpAlloc, mBaseUrl.size() + 1 + tmp.size());
 }
 
-static size_t _sf_strlcpy (char *dst, const char *src, size_t size)
-{
-    const char *old = src;
-
-    /* Copy as many bytes as will fit */
-    if (size)
-    {
-        while (--size)
-        {
-            if (!(*dst++ = *src++))
-            {
-                return src - old - 1;
-            }
-        }
-
-        *dst = 0;
-    }
-
-    while (*src++);
-    return src - old - 1;
-}
-
-/**
- * @brief NetUrl::genConcat
- * @param first
- * @param str0
- * @return
- * @details 拼接字符串，同ByteString::concatStrings
- */
-ByteString NetUrl::genConcat(const ByteString &first, const char *str0, ...)
-{
-    va_list args;
-    const char *arg;
-    int length = first.size(), pos = first.size();
-    char *s;
-    if(!str0 || first.empty()) return first;
-
-    va_start (args, str0);
-    for (arg = str0; arg; arg = va_arg (args, const char *))
-    {
-        length += strlen(arg);
-    }
-    va_end (args);
-
-    s = allocAddr(length);
-
-    //GEN_Printf(LOG_DEBUG, "[%s], size: %d, length: %d", first.string(), first.size(), length);
-    strncpy(s, first.string(), first.size());
-
-    va_start (args, str0);
-    for (arg = str0; arg; arg = va_arg (args, const char *))
-    {
-        pos += _sf_strlcpy(s + pos, arg, length - pos + 1);
-    }
-    va_end (args);
-
-    return ByteString(s, length);
-}
-
-/**
- * @brief NetUrl::genKLSign
- * @param appid
- * @param secretkey
- * @return
- * @details kl 签名算法的字串生成
- */
-ByteString NetUrl::genKLSign(const ByteString &appid, const ByteString &secretkey)
-{
-    const char *method = "get";
-    if (mMethodType == NET_HTTP_METHOD_POST)
-    {
-        method = "post";
-    }
-    int urlLen = 5 + mBaseUrl.size() + appid.size() + secretkey.size();
-
-    int   i = 0;
-    char *urlStr = allocAddr(urlLen);
-
-    strcpy(urlStr, method);
-    i += strlen(method);
-
-    memcpy(urlStr + i, mBaseUrl.string(), mBaseUrl.size());
-    i += mBaseUrl.size();
-
-    memcpy(urlStr + i, appid.string(), appid.size());
-    i += appid.size();
-
-    memcpy(urlStr + i, secretkey.string(), secretkey.size());
-    i += secretkey.size();
-
-    urlStr[i] = '\0';
-
-    return ByteString(urlStr, i);
-}
-
 ByteString NetUrl::tar2String(ListTable<NetUrl::QueryKV> &list)
 {
     int urlLen = mBaseUrl.size() + 2; //uri + ?
@@ -178,7 +83,8 @@ ByteString NetUrl::tar2String(ListTable<NetUrl::QueryKV> &list)
             urlStr[i++] = '&';
         }
     }
-    urlStr[i - 1] = '\0';
+    i--;
+    urlStr[i] = '\0';
 
     return ByteString(urlStr, i);
 }

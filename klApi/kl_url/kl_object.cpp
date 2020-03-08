@@ -7,7 +7,7 @@
 kl::KLObject::KLObject(const ByteString &baseUrl, int methodType)
     : mUrl(baseUrl, methodType)
     , mLoad(true), m_pUINotify(nullptr)
-    , mObjectName(-1)
+    , mObjectName(-1)/*, mLoadStatus(STATUS_IDLE)*/
 {
     mUrl.append("appid", LocalConfig::instance()->appID());
     mUrl.append("deviceid", LocalConfig::instance()->deviceID());
@@ -40,11 +40,12 @@ bool kl::KLObject::obtain()
     if (mLoad.isLoading())
     {
         GEN_Printf(LOG_WARN, "is loading, need cancel loading.");
-        mLoad.cancel();
+//        mLoad.cancel();
+        return true;
     }
-/*
-    bool ret =
 
+    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
+/*
     switch (objectName()) {
     case kl::OBJECT_ACTIVE_MANAGE:
     case kl::OBJECT_INIT_MANAGE:
@@ -56,12 +57,52 @@ bool kl::KLObject::obtain()
         break;
     }
 */
-    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
 }
 
 #if 1
+
+/*
+
+**
+ * @brief NetUrl::genKLSign
+ * @param appid
+ * @param secretkey
+ * @return
+ * @details kl 签名算法的字串生成
+ *
+ByteString NetUrl::genKLSign(const ByteString &appid, const ByteString &secretkey)
+{
+    const char *method = "get";
+    if (mMethodType == NET_HTTP_METHOD_POST)
+    {
+        method = "post";
+    }
+    int urlLen = 5 + mBaseUrl.size() + appid.size() + secretkey.size();
+
+    int   i = 0;
+    char *urlStr = allocAddr(urlLen);
+
+    strcpy(urlStr, method);
+    i += strlen(method);
+
+    memcpy(urlStr + i, mBaseUrl.string(), mBaseUrl.size());
+    i += mBaseUrl.size();
+
+    memcpy(urlStr + i, appid.string(), appid.size());
+    i += appid.size();
+
+    memcpy(urlStr + i, secretkey.string(), secretkey.size());
+    i += secretkey.size();
+
+    urlStr[i] = '\0';
+
+    return ByteString(urlStr, i);
+}
+
+*/
 char *kl::KLObject::genSign(NetUrl &url)
 {
+#if 0
     unsigned char sign_bytes[16];
     static char sign[33];
 
@@ -84,6 +125,10 @@ char *kl::KLObject::genSign(NetUrl &url)
     GEN_Printf(LOG_DEBUG, "true  sign: %s", SIGN_ActiveManage);
 
     return sign;
+#else
+    UNUSED(url);
+    return nullptr;
+#endif
 }
 #else
 char *kl::KLObject::genSign(NetUrl &url)

@@ -48,7 +48,6 @@ public:
             , cate_item_index(-1)
             , chip_item_index(-1)
             , chip_item_sub_index(-1)
-            , current_play_source(-1)
             , bdc {-1, -1, -1}
             , local{-1, 0, -1}
         {}
@@ -87,7 +86,6 @@ public:
         int cate_item_index;
         int chip_item_index;
         int chip_item_sub_index;
-        int current_play_source;
 
         struct {
             int bdc_cate_tab_index;
@@ -174,13 +172,9 @@ public:
      * @param index
      * @details 当前主页上，正在播放的节目列表ID点击，有可能跟audio碎片相等
      */
-    void chipPlayThirdClick(int index, bool isKeyPress = false);
+    void chipPlayThirdClick(int index);
 
-    void bdcFirstCateTabClick(int index, bool forceAcqure = false);
-    void bdcFirstCateTabShowDefaultPage()
-    {
-        bdcFirstCateTabClick(mSwitch.bdc.bdc_cate_tab_index, true);
-    }
+    void bdcFirstCateTabClick(int index);
 
     void bdcFirstAreaTabClick(int index);
 
@@ -238,6 +232,13 @@ public:
     int  getBDCSecondIndex();
 
     /**
+     * @brief cateItemCurIndex
+     * @param that
+     * @return 返回二级标签当前ID
+     */
+    int cateItemCurIndex(CateItemModel *that);
+
+    /**
      * @brief getBDCFirstTabIndex
      * @return 返回当前电台的一级标签ID
      */
@@ -249,28 +250,14 @@ public:
      */
     int  getBDCFirstAreaIndex();
 
-    void playNext(bool isKeyPress = false);
-    void playPrev();
-
-    /**
-     * @brief currentIsCollect
-     * @brief notifyCurIsCollect
-     * @brief isCollect
-     * @details 处理界面当前播放项是否已经被收藏了
-     */
-    void currentIsCollect();
-    void notifyCurIsCollect(bool isCollect);
-    bool isCollect() const
+    int  getSelfTabIndex()
     {
-        return mCurrentIsCollect;
+        return mSwitch.local.self_tab_index;
     }
-    /**
-     * @brief notifyBDCCollectChange
-     * @param index [in] 标签ID
-     * @param isCollect [in] 当前是否收藏（没有用到）
-     * @details 电台界面收藏处理
-     */
-    void notifyBDCCollectChange(int index, bool isCollect);
+
+    void playNext();
+    void autoPlayNext();
+    void playPrev();
 
     /**
      * @brief getCurrentPlayInfo
@@ -323,12 +310,73 @@ public:
 
     const CollectNode *getPlayInfoIfPlaying() const;
 
+    // relate to collect function
+    /**
+     * @brief currentIsCollect
+     * @brief notifyCurIsCollect
+     * @brief isCollect
+     * @details 处理界面当前播放项是否已经被收藏了
+     */
+    void currentIsCollect();
+    void notifyCurIsCollect(bool isCollect);
+    bool isCollect() const { return mCurrentIsCollect; }
+    void bdcNotifyCurIsCollect(CollectNode *node, bool isCollect);
 
+    /**
+     * @brief notifyBDCCollectChange
+     * @param index [in] 标签ID
+     * @param isCollect [in] 当前是否收藏（没有用到）
+     * @details 电台界面收藏处理
+     */
+    void notifyBDCCollectChange(int index, bool isCollect);
+
+    /**
+     * @brief deleteCurrentInfo
+     * @param chipType [in] 当前播放列表的类型，并返回正确与否
+     * @details 只有播放源在收藏列表时，用于移除当前播放项，
+     */
+    bool deleteCurrentInfo(int chipType);
+
+    /**
+     * @brief collectItemDelete
+     * @details 表示收藏列表中的项被删掉，但是当前是在播放收藏列表中的节目，所有需要同步
+     */
+    void collectItemDelete();
+
+    /**
+     * @brief notifyCurrentCollectChange
+     * @param node
+     * @param isCollect
+     * @details 展示在时CateItemView收藏项是否改变
+     */
+    void notifyCurrentCollectChange(CollectNode *node, bool isCollect);
+
+    /**
+     * @brief locationConfirm
+     * @param province [in] 省市名字
+     * @param area [out] 如果正确的找到就设置正确的信息
+     * @details 根据输入省市名称找到正确地区信
+     */
+    bool locationConfirm(ByteString const &province, kl::AreaItem &area);
+
+    /**
+     * @brief notifyLocationChange
+     * @details 通知定位发生变化
+     */
+    void notifyLocationChange(kl::AreaItem *area);
+
+    /**
+     * @brief notifyLocationFailed
+     * @param errInfo
+     * @details 通知定位失败了
+     */
+    void notifyLocationFailed();
 private:
     KLDataProc();
     void enterBroadcastView();
     void playSubItem(MusicChipItemUnion *chip);
     bool playCurSubItemSubNext(MusicChipItemUnion *);
+    void setPlayInfo(MusicChipItemUnion &chip);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;
@@ -357,9 +405,6 @@ private:
     MapTable<int, CateItemUnion*>         mCidMap;
     MapTable<int, CateItemUnion*>         mBDCMap;
     MapTable<ByteString, ChipItemUnion *> mChipMap;
-
-    void setPlayInfo(MusicChipItemUnion &chip);
-
 };
 
 #endif // KL_DATA_PROC_H

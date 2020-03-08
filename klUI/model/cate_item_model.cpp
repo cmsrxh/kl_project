@@ -51,13 +51,15 @@ void CateItemModel::resetAll()
 {
     beginResetModel();
     endResetModel();
+
+    Q_EMIT currenIndexChanged(0);
 }
 
 void CateItemModel::onLoadOver(long ptr)
 {   
     int start = mVec.size();
 
-    if ((long)m_pUnion != ptr)
+    if ((long)m_pUnion != ptr || !m_pUnion)
     {
         qWarning() << "Current is not need.";
         return;
@@ -71,6 +73,8 @@ void CateItemModel::onLoadOver(long ptr)
     {
         beginResetModel();
         endResetModel();
+
+        Q_EMIT currenIndexChanged(0);
     } else
     {
         beginInsertRows(QModelIndex(), start, mVec.size() - 1);
@@ -110,17 +114,12 @@ QHash<int, QByteArray> CateItemModel::roleNames() const
 
 bool CateItemModel::haveNext() const
 {
-    return m_pUnion->haveNext();
+    return m_pUnion ? m_pUnion->haveNext() : false;
 }
 
 int CateItemModel::currenIndex() const
 {
-    return KLDataProc::instance()->getAlbumSecondIndex();
-}
-
-int CateItemModel::currenBDCIndex() const
-{
-    return KLDataProc::instance()->getBDCSecondIndex();
+    return KLDataProc::instance()->cateItemCurIndex(const_cast<CateItemModel *> (this));
 }
 
 void CateItemModel::setCateItemUnion(CateItemUnion *pUnion)
@@ -143,5 +142,10 @@ void CateItemModel::isCollectItemContentChange(int i, bool en)
         mVec[i]->isCollect = en;
         Q_EMIT dataChanged(this->index(i), this->index(i));
     }
+}
+
+int CateItemModel::getCateType()
+{
+    return m_pUnion ? m_pUnion->getCateType() : -1;
 }
 

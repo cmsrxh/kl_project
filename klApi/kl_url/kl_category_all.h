@@ -15,6 +15,12 @@ public:
     void profile();
 
     int genResult(NetBuffer *data);
+
+    /**
+     * @brief checkFile
+     * @details 核对文件是否过期, 过期就要重新下载
+     */
+    bool checkFile();
 };
 }
 

@@ -22,7 +22,6 @@ Item {
             anchors.fill: parent
             clip: true;
             spacing: 0
-
         }
 
         ScrollBar {
@@ -42,8 +41,8 @@ Item {
             id:collectDelegate
             Rectangle
             {
-                width: cltView.width; height: 100
-                color: (collectList.collectId === index) ? "#433A2D" : "#373737"
+                width: ListView.view.width; height: 100
+                color: (ListView.view.currentIndex === index) ? "#433A2D" : "#373737"
                 ImageFrame {
                     id: comImage
                     width: parent.height - 10

@@ -85,6 +85,7 @@ Item {
             {
                 isLoad = false
                 var isHaveNext = chipList.needNextPage();
+                console.log("+++++++++++++++++++", isHaveNext)
                 if (!isHaveNext)
                 {
                     msgBox.boxType = 4
@@ -160,7 +161,9 @@ Item {
 
             Image {
                 id: imgPlaying
-                visible: chipList.playingIndex === index
+                //visible: chipList.playingIndex === index
+                visible: chItem.ListView.view.currentIndex === index
+
                 width: Image.width
                 height: Image.height
                 anchors.verticalCenter: parent.verticalCenter

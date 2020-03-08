@@ -106,6 +106,11 @@ public:
 
     void loadNextPage(int loadAction);
 
+    ChipItemUnion *getPUnion() const
+    {
+        return m_pUnion;
+    }
+
 public Q_SLOTS:
 
     void chipItemClick(int index);

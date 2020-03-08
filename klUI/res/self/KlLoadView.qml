@@ -74,7 +74,7 @@ Item {
             Rectangle
             {
                 width: cltView.width; height: 100
-                color: (loadList.collectId === index) ? "#433A2D" : "#373737"
+                color: (ListView.view.currentIndex === index) ? "#433A2D" : "#373737"
                 ImageFrame
                 {
                     id: comImage

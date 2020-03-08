@@ -1,4 +1,5 @@
 #include <events/common_log.h>
+#include "image_cache_manage.h"
 #include "kl_image.h"
 
 kl::KLImage::KLImage(const ByteString &imgUrl, const char *file)
@@ -29,16 +30,9 @@ kl::KLImage::~KLImage()
  * @brief kl::KLImage::obtain
  * @details 启动下载，获取标签数据
  */
-void kl::KLImage::obtain()
+bool kl::KLImage::obtain()
 {
-    if (mFile > 0)
-    {
-        LoadItem::obtain(mUrl);
-    } else
-    {
-        GEN_Printf(LOG_ERROR, "File Create failed.");
-        delete this;
-    }
+    return (mFile > 0) ? LoadItem::obtain(mUrl) : false;
 }
 
 void kl::KLImage::oneFrameObtain(NetBuffer *data)
@@ -58,20 +52,19 @@ void kl::KLImage::oneFrameObtainOver()
     {
         close(mFile);
         mFile = -1;
-        if (notify) notify->dataPrepare();
+
+        ImageCacheManage::instance()->dataPrepare(notify);
     } else
     {
-        if (notify) notify->errorInfo(0, "file open error.");
+        ImageCacheManage::instance()->errorInfo(notify);
     }
 
     delete this;
 }
 
-void kl::KLImage::errorInfo(int type, const char *str)
+void kl::KLImage::errorInfo(int , const char *)
 {
-    // GEN_Printf(LOG_ERROR, "type[%d] = %s", type, str);
-    if (notify) notify->errorInfo(type, str);
-
+    ImageCacheManage::instance()->errorInfo(notify);
     delete this;
 }
 

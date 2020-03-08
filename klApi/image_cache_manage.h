@@ -2,6 +2,7 @@
 #define IMAGE_CACHE_MANAGE_H
 
 #include "kl_url/kl_image.h"
+#include "events/sf_mutex.h"
 #include "util/hash_container.h"
 
 class ImageCacheManage
@@ -18,12 +19,18 @@ public:
     ~ImageCacheManage();
 
 //    void push
-    ByteString loadImage(const ByteString &imgUrl, ImageStatus *notify);
+    void loadImage(const ByteString &imgUrl, ImageStatus *notify);
 
+    void dataPrepare(ImageStatus *);
+    void errorInfo(ImageStatus *);
+
+    void destructNotify(ImageStatus *);
 private:
     // 保存tmp中的图片数据<url, file>
     // HashContainer<ByteString, ByteString> mCaches;
-    ListTable<ByteString>                 mList;
+    ListTable<ByteString> mList;
+    ListTable<ImageStatus *> mNotifyList;
+    SFMutex mMtx;
 
     ByteString imgUrlEncrypt(const ByteString &in);
 };

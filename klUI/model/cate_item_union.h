@@ -3,9 +3,10 @@
 
 #include "kl_ui_data_union.h"
 
-// 下面有专辑: AlbumList
+// 专辑: AlbumList
 // 推荐: OperateList
-// 智能电台: TypeRadioList
+// 智能电台:  TypeRadioList
+// 传统电台:  BroadcastItemList
 class CateItemModel;
 class CateItemUnion : public kl::UINotifyIface
 {
@@ -38,6 +39,11 @@ public:
 
     int  page();
     bool haveNext();
+
+    int getCateType()
+    {
+        return mCateItemType;
+    }
 private:
     const int                           mCateItemType;
     int                                 mLoadAction;

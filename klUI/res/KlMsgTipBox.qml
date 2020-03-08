@@ -49,7 +49,12 @@ Item
 
     Component {
         id: generalBox
+
         Item{
+            Component.onCompleted: {
+                msgTimer.running = true;
+                msgTimer.interval = 1500;
+            }
             Rectangle
             {
                 width: 400

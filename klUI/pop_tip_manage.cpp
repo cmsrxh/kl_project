@@ -118,8 +118,10 @@ void PopTipManage::klLoadDataExportEmpty(int objectName, int loadAction, const B
     case kl::OBJECT_BDC_AREA_LIST:
         Q_EMIT gInstance->msgTipGlobal(KLUIProc::emptyData, "Load Empty Data.");
         break;
-    case kl::OBJECT_BDC_ITEM_DETAIL:
     case kl::OBJECT_BDC_ITEM_PROGRAM:
+        Q_EMIT gInstance->msgTipGlobal(KLUIProc::generalBox, "当前电台还没有节目");
+        break;
+    case kl::OBJECT_BDC_ITEM_DETAIL:    
     case kl::OBJECT_CATEGORY_SUB_LIST:
     case kl::OBJECT_CHIP_AUDIO_DETAIL:
     case kl::OBJECT_CHIP_RADIO_DETAIL:

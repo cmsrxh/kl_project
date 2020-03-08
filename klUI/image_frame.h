@@ -23,6 +23,7 @@ public:
 
     void dataPrepare();
     void errorInfo(int , const char *);
+    void setLocalFile(ByteString const &name);
     QRectF imageScale(int width, int height);
 
 public Q_SLOTS:

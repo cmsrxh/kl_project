@@ -34,18 +34,32 @@ bool ViewSwitchStack::push(const QString &url)
 void ViewSwitchStack::pop()
 {
     //把当前界面弹出，然后显示上一个界面
-    mStack.pop_back();
+    if (!mStack.empty())
+    {
+        mStack.pop_back();
+    }
 
     if (mStack.empty())
     {
         setSource("qrc:/CategoryView.qml");
         setIsShowReturn(false);
-        qDebug() << "pop" << mCurrentSource;
+        qDebug() << "pop" << mCurrentSource << "stack size="<< mStack.size();
     } else
     {
         setSource(mStack.pop_back());
         setIsShowReturn(true);
-        qDebug() << "pop" << mCurrentSource;
+        qDebug() << "pop" << mCurrentSource << "stack size="<< mStack.size();
+    }
+}
+
+void ViewSwitchStack::showAlbumView()
+{
+    if (mStack.empty())
+    {
+        setSource("qrc:/CategoryView.qml");
+    } else
+    {
+        setSource(mStack.back());
     }
 }
 

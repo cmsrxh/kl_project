@@ -109,14 +109,14 @@ public:
     void showHistoryIndex();
 
 public Q_SLOTS:
-    void onCollect(int st, long ptr);
-    void onDownload(int st, long ptr);
-    void onRecord(int st, long ptr);
+    void onCollect(int st, long ptr, long nodePtr); //CollectNode *node
+    void onDownload(int st, long ptr, long nodePtr);
+    void onRecord(int st, long ptr, long nodePtr);
 
 Q_SIGNALS:
-    void collectStatus(int st, long ptr);
-    void downloadStatus(int st, long ptr);
-    void historyStatus(int st, long ptr);
+    void collectStatus(int st, long ptr, long nodePtr);
+    void downloadStatus(int st, long ptr, long nodePtr);
+    void historyStatus(int st, long ptr, long nodePtr);
 
 private:
     ChipItemUnion    *m_pDownLoadChip;

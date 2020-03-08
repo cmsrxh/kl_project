@@ -149,15 +149,32 @@ Item {
                 }
             }
 
-            Button {
-                width: 30
-                height: 30
+            ThreeStateBtn
+            {
+                width: 38
+                height: 38
                 anchors.right: parent.right
                 anchors.rightMargin: 15
                 anchors.top: parent.top
                 anchors.topMargin: 15
 
-                text: qsTr("收藏")
+                initSt: "qrc:/image/collect.png"
+                pressSt: "qrc:/image/collect_clk.png"
+                lastSt: "qrc:/image/collect_hl.png"
+                enable: playList.isCollect
+                onClicked: playList.qmlCurrentCollectClick()
+            }
+
+/*
+            Button {
+                width: 50
+                height: 50
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.top: parent.top
+                anchors.topMargin: 15
+
+                text: playList.isCollect ? qsTr("收藏") : qsTr("未收藏")
                 onClicked: playList.qmlCurrentCollectClick()
 
                 style: ButtonStyle {
@@ -183,6 +200,7 @@ Item {
                     }
                 }
             }
+        */
         }
     }
 }

@@ -22,6 +22,7 @@ public:
     bool push(QString const &url);
 
     void pop();
+    void showAlbumView();
 
     bool isShowReturn() const;
     void setIsShowReturn(bool isShowReturn);

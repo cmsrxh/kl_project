@@ -62,7 +62,9 @@ HEADERS += app_common.h application.h \
     kl_record_manage.h \
     kl_download_manage.h \
     kl_collect_manage.h \
-    image_cache_manage.h
+    image_cache_manage.h \
+    kl_url/kl_ip_positioning.h \
+    qq_ip_positioning.h
 
 
 SOURCES += application.cpp main.cpp \ 
@@ -100,4 +102,6 @@ SOURCES += application.cpp main.cpp \
     kl_record_manage.cpp \
     kl_download_manage.cpp \
     kl_collect_manage.cpp \
-    image_cache_manage.cpp
+    image_cache_manage.cpp \
+    kl_url/kl_ip_positioning.cpp \
+    qq_ip_positioning.cpp
