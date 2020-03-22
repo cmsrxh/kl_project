@@ -4,7 +4,7 @@
 #include "kl_ui_data_union.h"
 
 class CategoryModel;
-class CategoryUnion : public kl::UINotifyIface
+class CategoryUnion : public UINotifyIface
 {
 public:
     enum {

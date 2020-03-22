@@ -1,8 +1,8 @@
 #include <events/common_log.h>
 #include "image_cache_manage.h"
-#include "kl_image.h"
+#include "net_image.h"
 
-kl::KLImage::KLImage(const ByteString &imgUrl, const char *file)
+NetImage::NetImage(const ByteString &imgUrl, const char *file)
     : LoadItem(false), mUrl(imgUrl, NetUrl::NET_HTTP_METHOD_GET)
     , notify(nullptr)
 {
@@ -13,7 +13,7 @@ kl::KLImage::KLImage(const ByteString &imgUrl, const char *file)
     }
 }
 
-kl::KLImage::~KLImage()
+NetImage::~NetImage()
 {
     if (isLoading())
     {
@@ -27,15 +27,15 @@ kl::KLImage::~KLImage()
 }
 
 /**
- * @brief kl::KLImage::obtain
+ * @brief KLImage::obtain
  * @details 启动下载，获取标签数据
  */
-bool kl::KLImage::obtain()
+bool NetImage::obtain()
 {
     return (mFile > 0) ? LoadItem::obtain(mUrl) : false;
 }
 
-void kl::KLImage::oneFrameObtain(NetBuffer *data)
+void NetImage::oneFrameObtain(NetBuffer *data)
 {
     int ret = write(mFile, data->buffer(), data->size());
     if ((size_t)ret != data->size())
@@ -46,7 +46,7 @@ void kl::KLImage::oneFrameObtain(NetBuffer *data)
     }
 }
 
-void kl::KLImage::oneFrameObtainOver()
+void NetImage::oneFrameObtainOver()
 {
     if (mFile > 0)
     {
@@ -62,7 +62,7 @@ void kl::KLImage::oneFrameObtainOver()
     delete this;
 }
 
-void kl::KLImage::errorInfo(int , const char *)
+void NetImage::errorInfo(int , const char *)
 {
     ImageCacheManage::instance()->errorInfo(notify);
     delete this;

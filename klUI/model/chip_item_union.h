@@ -7,7 +7,7 @@
 // ChipAudioList
 // ChipRadioList
 class ChipItemModel;
-class ChipItemUnion : public kl::UINotifyIface
+class ChipItemUnion : public UINotifyIface
 {
 public:
     // 下载动作

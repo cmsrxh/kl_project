@@ -17,23 +17,15 @@ QMAKE_LFLAGS   += -Wl,-rpath,$$HOME/framework/$$PLATFORM/lib
 
 LIBS += -L$$HOME/framework/$$PLATFORM/lib
 LIBS += -levents_core -levents_log -levents_util -lpthread
-LIBS += -lcurl -lssl -lcrypto
 
+#下载数据相关一些功能统集
+include(../netLoad/netLoad.pri)
 
 # Input
-HEADERS += app_common.h application.h \ 
-    net_util/curl_load_proc.h \
-    net_util/curl_load_item.h \
-    net_util/load_item.h \
-    net_util/http_util.h \
-    kl_url/kl_active_manage.h \
-    net_util/net_url.h \
+HEADERS += app_common.h application.h \    
+    kl_url/kl_active_manage.h \    
     kl_url/kl_init_manage.h \
-    kl_url/kl_object.h \
-    kl_url/kl_image.h \
-    net_util/test_data_load.h \
-    net_util/net_common.h \
-    net_util/cJSON.h \
+    kl_url/kl_object.h \    
     config_local_info.h \
     kl_url/kl_broadcast_area_list.h \
     kl_url/kl_category_broadcast.h \
@@ -62,28 +54,19 @@ HEADERS += app_common.h application.h \
     kl_record_manage.h \
     kl_download_manage.h \
     kl_collect_manage.h \
-    image_cache_manage.h \
     kl_url/kl_ip_positioning.h \
     qq_ip_positioning.h
 
 
-SOURCES += application.cpp main.cpp \ 
-    net_util/curl_load_proc.cpp \
-    net_util/curl_load_item.cpp \
-    net_util/load_item.cpp \
-    net_util/http_util.cpp \
-    kl_url/kl_active_manage.cpp \
-    net_util/net_url.cpp \
+SOURCES += application.cpp main.cpp \     
+    kl_url/kl_active_manage.cpp \   
     kl_url/kl_init_manage.cpp \
-    kl_url/kl_object.cpp \
-    kl_url/kl_image.cpp \
-    net_util/test_data_load.cpp \
+    kl_url/kl_object.cpp \    
     kl_url/kl_broadcast_area_list.cpp \
     kl_url/kl_category_broadcast.cpp \
     kl_url/kl_category_sub_list.cpp \
     kl_url/kl_broadcast_item_list.cpp \
-    kl_url/kl_broadcast_item_detail.cpp \
-    net_util/cJSON.cpp \
+    kl_url/kl_broadcast_item_detail.cpp \    
     kl_url/kl_broadcast_item_programlist.cpp \
     kl_url/kl_category_all.cpp \
     kl_url/kl_operate_list.cpp \
@@ -102,6 +85,5 @@ SOURCES += application.cpp main.cpp \
     kl_record_manage.cpp \
     kl_download_manage.cpp \
     kl_collect_manage.cpp \
-    image_cache_manage.cpp \
     kl_url/kl_ip_positioning.cpp \
     qq_ip_positioning.cpp

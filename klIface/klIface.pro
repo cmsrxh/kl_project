@@ -14,7 +14,7 @@ PLATFORM = pc
 INCLUDEPATH += .
 INCLUDEPATH += $$HOME/framework/$$PLATFORM/include
 INCLUDEPATH += ../player/iface
-INCLUDEPATH += ../klApi/net_util
+INCLUDEPATH += ../netLoad/net_util
 
 QMAKE_LFLAGS   += -Wl,-rpath,$$HOME/framework/$$PLATFORM/lib
 
@@ -24,11 +24,11 @@ LIBS += -levents_ipc_client -levents_ipc_service  -levents_socket -levents_core 
 # Input
 SOURCES += main.cpp \
     kl_client_call.cpp \
-    ../klApi/net_util/cJSON.cpp \
+    ../netLoad/net_util/cJSON.cpp \
     kl_client_result_common.cpp
 
 HEADERS += \
     kl_iface_common.h \
     kl_client_call.h \
-    ../klApi/net_util/cJSON.h \
+    ../netLoad/net_util/cJSON.h \
     kl_client_result_common.h

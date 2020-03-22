@@ -43,7 +43,7 @@ void ImageCacheManage::loadImage(const ByteString &imgUrl, ImageStatus *notify)
         notify->dataPrepare();
     } else
     {
-        kl::KLImage *img = new kl::KLImage(imgUrl, filePath.string());
+        NetImage *img = new NetImage(imgUrl, filePath.string());
         img->setUINotify(notify);
 
         if (img->obtain())

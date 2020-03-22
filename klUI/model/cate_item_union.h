@@ -8,7 +8,7 @@
 // 智能电台:  TypeRadioList
 // 传统电台:  BroadcastItemList
 class CateItemModel;
-class CateItemUnion : public kl::UINotifyIface
+class CateItemUnion : public UINotifyIface
 {
 public:
     enum {

@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>VideosModel.qml</file>
+        <file>BottomLabel.qml</file>
+        <file>CategoryView.qml</file>
+        <file>CateItemInfoView.qml</file>
+        <file>ImageFrame.qml</file>
+        <file>AudioList.qml</file>
+        <file>ScrollBar.qml</file>
+        <file>MediaSlider.qml</file>
+        <file>CurrentPlay.qml</file>
+        <file>CurrentDelegate.qml</file>
+        <file>bdc/KlInlineAreaView.qml</file>
+        <file>bdc/KlInlineBroadcast.qml</file>
+        <file>bdc/KlInlineChannelView.qml</file>
+        <file>bdc/KlInlineLeftView.qml</file>
+        <file>bdc/KlLine.qml</file>
+        <file>CateItemListView.qml</file>
+        <file>self/KlDlgOptionView.qml</file>
+        <file>self/KlCollectView.qml</file>
+        <file>ThreeStateBtn.qml</file>
+        <file>KlLine.qml</file>
+        <file>self/KlLoadView.qml</file>
+        <file>self/KlHistoryRecord.qml</file>
+        <file>self/KlVioceGuide.qml</file>
+        <file>self/KlSettingView.qml</file>
+        <file>BusyIndicator.qml</file>
+        <file>KlMsgTipBox.qml</file>
+    </qresource>
+</RCC>

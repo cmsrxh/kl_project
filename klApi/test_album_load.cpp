@@ -2,7 +2,7 @@
 #include "application.h"
 #include "test_album_load.h"
 
-class SearchResult : public kl::UINotifyIface
+class SearchResult : public UINotifyIface
 {
 public:
     void dataPrepare()
@@ -15,7 +15,7 @@ public:
     }
 };
 
-class AudioDetailResult: public kl::UINotifyIface
+class AudioDetailResult: public UINotifyIface
 {
 public:
     void dataPrepare()

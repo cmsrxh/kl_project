@@ -48,6 +48,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+#下载数据相关一些功能统集
+include(../netLoad/netLoad.pri)
 
 include(./klApi.pri)
 

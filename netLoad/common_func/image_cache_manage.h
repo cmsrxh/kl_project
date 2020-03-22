@@ -1,7 +1,7 @@
 #ifndef IMAGE_CACHE_MANAGE_H
 #define IMAGE_CACHE_MANAGE_H
 
-#include "kl_url/kl_image.h"
+#include "net_image.h"
 #include "events/sf_mutex.h"
 #include "util/hash_container.h"
 

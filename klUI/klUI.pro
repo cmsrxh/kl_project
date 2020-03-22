@@ -88,6 +88,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 #kl所有的数据加载API
 include(../klApi/klApi.pri)
+#下载数据相关一些功能统集
+include(../netLoad/netLoad.pri)
 #kl把播放器功能作为一个SDK作为调用
 #include(../player/mpvPlayer.pri)
 #kl作为客户端接口，调用播放器服务程序的各种API

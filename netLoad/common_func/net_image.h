@@ -2,18 +2,15 @@
 #define KL_IMAGE_H
 
 #include <stdio.h>
-#include "app_common.h"
-#include "net_util/net_url.h"
-#include "net_util/load_item.h"
-#include "kl_url/kl_common.h"
+#include "common_func.h"
+#include "../net_util/net_url.h"
+#include "../net_util/load_item.h"
 
-namespace kl
-{
-class KLImage : public LoadItem
+class NetImage : public LoadItem
 {
 public:
-    KLImage(const ByteString &imgUrl, const char *file);
-    ~KLImage();
+    NetImage(const ByteString &imgUrl, const char *file);
+    ~NetImage();
 
     bool obtain();
 
@@ -32,5 +29,5 @@ private:
     ImageStatus *notify;
     int          mFile;
 };
-}
+
 #endif // KL_IMAGE_H
