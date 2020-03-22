@@ -1,8 +1,8 @@
 #include <events/common_log.h>
-#include "kl_data_proc.h"
+#include "data_proc.h"
 #include "ui_proc.h"
 #include "events/app_timer.h"
-#include "kl_local_data_proc.h"
+#include "local_data_proc.h"
 #include "iface/media_service_i_face.h"
 #include "iface/media_iface_common.h"
 #include "iface/media_service_call_back.h"
@@ -36,7 +36,7 @@ void DataProc::enterBroadcastView()
 void DataProc::playSubItem(MusicChipItemUnion *chip)
 {
     GEN_Printf(LOG_DEBUG, "play sub item,sub_type=%d", chip->sub_type);
-   }
+}
 
 bool DataProc::playCurSubItemSubNext(MusicChipItemUnion *)
 {
@@ -46,7 +46,7 @@ bool DataProc::playCurSubItemSubNext(MusicChipItemUnion *)
 
 void DataProc::setPlayInfo(MusicChipItemUnion &chip)
 {
-    }
+}
 
 DataProc::~DataProc()
 {
@@ -66,7 +66,7 @@ void DataProc::initAlbum(CategoryModel *cate, CateItemModel *cateItem, ChipItemM
     m_pChipItem     = chip;
     m_pChipItemPlay = player;
 
-    }
+}
 
 void DataProc::initBroadcast(CategoryModel *bdcTab, CategoryModel *bdcArea, CateItemModel *bdcItem)
 {
@@ -149,7 +149,7 @@ void DataProc::albumFirstClick(int index)
 
 void DataProc::albumSecondClick(int index)
 {
-    }
+}
 
 void DataProc::chipAudioThirdChick(int index)
 {
@@ -181,7 +181,7 @@ void DataProc::bdcSecondItemCollectClick(int index, bool isCollect)
 {
     GEN_Printf(LOG_DEBUG, "index=%d collect.", index, isCollect);
 
-    }
+}
 
 void DataProc::bdcProgramListAction()
 {
@@ -194,7 +194,7 @@ void DataProc::bdcProgramListAction()
  */
 void DataProc::showPlayingInfo()
 {
-    }
+}
 
 //void KLDataProc::enterAlbumView()
 //{
@@ -228,7 +228,7 @@ int DataProc::getBDCFirstAreaIndex()
 
 int DataProc::getAlbumFirstIndex()
 {
-return mSwitch.cate_tab_index;
+    return mSwitch.cate_tab_index;
 }
 
 int DataProc::getChipAudioThirdIndex()
@@ -239,7 +239,7 @@ int DataProc::getChipAudioThirdIndex()
 int DataProc::getPlayThirdIndex(ChipItemModel *model)
 {
     if (m_pChipItem == model)
-    {       
+    {
 
         return -1;
     } else if (m_pChipItemPlay == model)
@@ -253,15 +253,15 @@ int DataProc::getPlayThirdIndex(ChipItemModel *model)
 
 void DataProc::playNext()
 {    
-    }
+}
 
 void DataProc::autoPlayNext()
 {
-    }
+}
 
 void DataProc::playPrev()
 {
-    }
+}
 
 bool DataProc::getCurrentPlayInfo(ByteString &parentId, ByteString &id)
 {
@@ -271,7 +271,7 @@ bool DataProc::getCurrentPlayInfo(ByteString &parentId, ByteString &id)
 
 void DataProc::localItemPlay(int type, int index, ChipItemUnion *pUnion)
 {
-    }
+}
 
 void DataProc::playDefaultItem(ChipItemUnion *pUnion)
 {    
@@ -296,8 +296,8 @@ void DataProc::setViewSwitchInfo(char *data)
     {
         mSwitch.local.self_tab_index = 0;
     }
-//    GEN_Printf(LOG_DEBUG, "mSwitch: sec=%d, fir=%d, firArea=%d", mSwitch.bdc.bdc_item_index, mSwitch.bdc.bdc_cate_tab_index, mSwitch.bdc.bdc_area_index);
-//    GEN_Printf(LOG_DEBUG, "mPlayPath: sec=%d, fir=%d, firArea=%d", mPlayPath.bdc.bdc_item_index, mPlayPath.bdc.bdc_cate_tab_index, mPlayPath.bdc.bdc_area_index);
+    //    GEN_Printf(LOG_DEBUG, "mSwitch: sec=%d, fir=%d, firArea=%d", mSwitch.bdc.bdc_item_index, mSwitch.bdc.bdc_cate_tab_index, mSwitch.bdc.bdc_area_index);
+    //    GEN_Printf(LOG_DEBUG, "mPlayPath: sec=%d, fir=%d, firArea=%d", mPlayPath.bdc.bdc_item_index, mPlayPath.bdc.bdc_cate_tab_index, mPlayPath.bdc.bdc_area_index);
 }
 
 const CollectNode *DataProc::getPlayInfoIfPlaying() const

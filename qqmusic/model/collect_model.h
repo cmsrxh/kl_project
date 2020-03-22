@@ -1,7 +1,7 @@
 #ifndef COLLECT_MODEL_H
 #define COLLECT_MODEL_H
 
-#include "kl_ui_data_union.h"
+#include "ui_data_union.h"
 #include <QAbstractListModel>
 #include <QtQml>
 

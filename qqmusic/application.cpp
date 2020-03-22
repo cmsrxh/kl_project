@@ -2,21 +2,23 @@
 #include <events/common_log.h>
 #include <events/app_timer.h>
 #include "util/config_setting.h"
-#include "model/kl_data_proc.h"
-//#include "model/kl_local_data_proc.h"
+#include "model/data_proc.h"
+//#include "model/local_data_proc.h"
+#include "qqmusicApi/qqmusic_object.h"
 #include "pop_tip_manage.h"
 #include "current_backup.h"
 #include "application.h"
 
 Application::Application()
-    : m_pKLInit(NULL), m_pKLActive(NULL)
 {
 }
 
 void Application::initialize()
 {    
+
+
     // 启动收数据线程，并连接播放服务端socket
-    DataProc::instance()->initMedia();
+    // DataProc::instance()->initMedia();
 
     SimpleThread::start();
 }
@@ -70,16 +72,16 @@ void Application::runLoop()
             break;
 
         case SIG_KL_COLLECT_ERR_OBJECT:
-            mErrObj.push_back(reinterpret_cast<kl::KLObject *> (((GeneralQEvt *)evt)->wParam));
+            mErrObj.push_back(reinterpret_cast<MOBJECT *> (((GeneralQEvt *)evt)->wParam));
             break;
 
         case SIG_KL_RELOAD_ERR_OBJECT:
         {
-            ListTable<kl::KLObject *>::iterator it = mErrObj.begin();
+            ListTable<MOBJECT *>::iterator it = mErrObj.begin();
             for ( ; it != mErrObj.end(); ++it)
             {
-                bool ret = false;//(*it)->obtain();
-                PopTipManage::instance()->errReloadStart(ret, 0/*(*it)->objectName()*/);
+                bool ret = (*it)->obtain();
+                PopTipManage::instance()->errReloadStart(ret, (*it)->objectName());
             }
             mErrObj.clear();
             break;
@@ -125,7 +127,7 @@ void Application::poweroff()
 //    kl::DownloadManage::instance()->saveNodesFile();
 //    kl::CollectManage::instance()->saveNodesFile();
 //    kl::RecordManage::instance()->saveNodesFile();
-    CurrentBackup::instance()->saveCurrent();
+//    CurrentBackup::instance()->saveCurrent();
 }
 
 void Application::klInitActiveManage(GeneralQEvt *evt)

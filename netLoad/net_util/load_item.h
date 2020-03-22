@@ -29,10 +29,11 @@ public:
      * @param url [in] 传递的网络地址
      * @param fstate [in] 传递的回调函数
      * @param ptr [in] 传递私有参数
+     * @param needUserAgent[in] 有时候发出的https GET/POST 消息不会收到信息，但是数据都是对的，这有时需要在http的协议头上，加上user-agent
      * @return 是否成功
      * @details 设置参数，并执行下载
      */
-    bool setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr);
+    bool setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr, bool needUserAgent = false);
 
     /**
      * @brief cancel

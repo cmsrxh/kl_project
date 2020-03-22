@@ -178,7 +178,7 @@ void kl::KLObject::loadStatus(int status, void *data, void *arg)
     {
         int ret = static_cast<kl::KLObject *>(arg)->loadData(static_cast<NetBuffer *>(data));
         static_cast<kl::KLObject *>(arg)->loadOver();
-
+        //GEN_Printf(LOG_DEBUG, "----ret = %d----", ret);
         switch (ret)
         {
         case KL_DATA_PRISER_OK:          // 分析数据正确

@@ -3,12 +3,12 @@
 //#include "kl_download_manage.h"
 //#include "kl_record_manage.h"
 #include "collect_model.h"
-#include "kl_ui_data_union.h"
-#include "kl_data_proc.h"
+#include "ui_data_union.h"
+#include "data_proc.h"
 #include "application.h"
 #include "ui_proc.h"
 #include "model/chip_item_union.h"
-#include "kl_local_data_proc.h"
+#include "local_data_proc.h"
 
 extern UIProc *gInstance;
 

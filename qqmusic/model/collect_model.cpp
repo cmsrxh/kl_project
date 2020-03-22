@@ -1,5 +1,5 @@
-#include "kl_data_proc.h"
-#include "kl_local_data_proc.h"
+#include "data_proc.h"
+#include "local_data_proc.h"
 #include "collect_model.h"
 #include <QDebug>
 

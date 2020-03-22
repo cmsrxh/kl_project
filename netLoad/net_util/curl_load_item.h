@@ -19,7 +19,7 @@ class CurlGlobal;
 class CurlLoadItem : public ListNode
 {
 public:
-    CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *ptr);
+    CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *ptr, bool needUserAgent = false);
     ~CurlLoadItem();
 
     void setBuffer();

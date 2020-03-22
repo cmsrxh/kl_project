@@ -25,12 +25,10 @@ HEADERS += app_common.h \
     application.h \
     model/cate_item_model.h \
     model/category_model.h \
-    model/kl_data_proc.h \
     qml_view_switch_stack.h \
     model/chip_item_model.h \
     model/detail_qobject.h \
     model/collect_model.h \
-    model/kl_local_data_proc.h \
     image_frame.h \
     pop_tip_manage.h \
     current_backup.h \
@@ -39,7 +37,10 @@ HEADERS += app_common.h \
     model/chip_item_play_manage.h \
     model/chip_item_union.h \
     model/detail_union.h \
-    ui_proc.h
+    ui_proc.h \
+    model/data_proc.h \
+    model/ui_data_union.h \
+    model/local_data_proc.h
 
 SOURCES += application.cpp main.cpp \
     model/cate_item_model.cpp \
@@ -93,3 +94,5 @@ include(../netLoad/netLoad.pri)
 #qqmusic作为客户端接口，调用播放器服务程序的各种API
 include(../playerClient/playerClient.pri)
 
+#添加qqmusic api接口封装
+include(qqmusicApi/qqmusicApi.pri)

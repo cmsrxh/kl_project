@@ -1,6 +1,6 @@
 #include <events/common_log.h>
-#include "model/kl_data_proc.h"
-#include "model/kl_local_data_proc.h"
+#include "model/data_proc.h"
+#include "model/local_data_proc.h"
 #include "model/chip_item_play_manage.h"
 #include "ui_proc.h"
 #include "events/app_timer.h"

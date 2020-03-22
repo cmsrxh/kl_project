@@ -1,7 +1,7 @@
 #include "events/common_log.h"
 #include "detail_union.h"
 #include "detail_qobject.h"
-#include "kl_data_proc.h"
+#include "data_proc.h"
 #include "ui_proc.h"
 
 extern UIProc *gInstance;

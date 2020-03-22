@@ -1,7 +1,7 @@
 #ifndef CATEGORY_UNION_H
 #define CATEGORY_UNION_H
 
-#include "kl_ui_data_union.h"
+#include "ui_data_union.h"
 
 class CategoryModel;
 class CategoryUnion : public UINotifyIface

@@ -2,7 +2,7 @@
 #define KL_LOCAL_DATA_PROC_H
 
 #include <QObject>
-#include "kl_ui_data_union.h"
+#include "ui_data_union.h"
 
 class CollectNode;
 class CollectModel;

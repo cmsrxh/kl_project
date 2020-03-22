@@ -1,7 +1,7 @@
 #ifndef DETAIL_QOBJECT_H
 #define DETAIL_QOBJECT_H
 
-#include "kl_ui_data_union.h"
+#include "ui_data_union.h"
 #include "util/map_table.h"
 #include <QObject>
 

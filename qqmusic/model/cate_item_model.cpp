@@ -1,6 +1,6 @@
 #include "cate_item_union.h"
 #include "cate_item_model.h"
-#include "kl_data_proc.h"
+#include "data_proc.h"
 
 #define CATE_ITEM_NAME     Qt::UserRole
 #define CATE_ITEM_IMG_URL (Qt::UserRole+1)
