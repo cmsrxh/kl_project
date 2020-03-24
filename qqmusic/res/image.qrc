@@ -9,5 +9,35 @@
         <file>image/collect_clk.png</file>
         <file>image/collect.png</file>
         <file>image/busy.png</file>
+        <file>image/svg/album.svg</file>
+        <file>image/svg/Back.svg</file>
+        <file>image/svg/bottom.svg</file>
+        <file>image/svg/close.svg</file>
+        <file>image/svg/cocomusic.svg</file>
+        <file>image/svg/cycle.svg</file>
+        <file>image/svg/Favorite.svg</file>
+        <file>image/svg/Forward.svg</file>
+        <file>image/svg/from.svg</file>
+        <file>image/svg/hasFavorite.svg</file>
+        <file>image/svg/list.svg</file>
+        <file>image/svg/lyric.svg</file>
+        <file>image/svg/minimize.svg</file>
+        <file>image/svg/music3.svg</file>
+        <file>image/svg/nextmusic.svg</file>
+        <file>image/svg/pause.svg</file>
+        <file>image/svg/play.svg</file>
+        <file>image/svg/play2.svg</file>
+        <file>image/svg/PlayList.svg</file>
+        <file>image/svg/previousmusic.svg</file>
+        <file>image/svg/qq_login.svg</file>
+        <file>image/svg/random.svg</file>
+        <file>image/svg/Search.svg</file>
+        <file>image/svg/Setting.svg</file>
+        <file>image/svg/SingerList.svg</file>
+        <file>image/svg/single.svg</file>
+        <file>image/svg/source.svg</file>
+        <file>image/svg/Up.svg</file>
+        <file>image/svg/volume.svg</file>
+        <file>image/svg/pause.svg</file>
     </qresource>
 </RCC>

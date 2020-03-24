@@ -114,24 +114,40 @@ void HttpUtil::urlDecoding(ByteString &query, char percent)
  * @param percent
  * @details 把‘%’表示的字符，替换的回来
  *  例如："陈猛" 转成： %e9%99%88%e7%8c%9b
+ * assci字符 0 ～ 31 之间的字符都要转译
+ * 32 ~ 39 = 00000010 --0x02
+ * 40 ~ 47 = 00110111 --0x37
+ * 48 ~ 55 = 11111111 --0xFF
+ * 56 ~ 63 = 11100101 --0xE5
+ * 64 ~ 71 = 11111111 --0xFF
+ * 72 ~ 79 = 11111111 --0xFF
+ * 80 ~ 87 = 11111111 --0xFF
+ * 88 ~ 95 = 11100000 --0xE0
+ * 96 ~103 = 01111111 --0x7F
+ * 104~111 = 11111111 --0xFF
+ * 112~119 = 11111111 --0xFF
+ * 120~127 = 11100000 --0xE0
  */
 void HttpUtil::urlEncoding(const ByteString &query, ByteString &result, char percent)
 {
     char *data = new char[query.size() * 3]; // 按照最大长度分配
     const char *inputPtr = query.string();
     const char *pattern = "0123456789abcdef";
+    static uint8_t authBit[16]={0,    0,    0,    0,    //前32位都必须转译
+                                0x02, 0x37, 0xFF, 0xE5,
+                                0xFF, 0xFF, 0xFF, 0xE0,
+                                0x7F, 0xFF, 0xFF, 0xE0};
 
     int i = 0;
     int len = query.size();
     int outlen = 0;
-    char c;
+    unsigned char c;
 
     while (i < len)
     {
-        c = inputPtr[i];
-        if ((c >= '0' && c <= '9')
-                || (c >= 'a' && c <= 'z')
-                || (c >= 'A' && c <= 'Z'))
+        c = (unsigned char)inputPtr[i];
+        //GEN_Printf(LOG_DEBUG, "[%c] %d - [%d, %d]", c, (unsigned char)c, c >> 3, (c & 0x7));
+        if (!(c & 0x80) && (authBit[c >> 3] & (0x80 >> (c & 0x7))))
         {
             data[outlen++] = c;
         } else

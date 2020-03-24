@@ -11,6 +11,21 @@
 #include "common_func/common_func.h"
 #include "net_util/net_common.h"
 
+namespace  {
+enum QQMusicObjectName
+{
+    OBJECT_NAME_SINGER_LIST,
+
+};
+
+//歌手列表中的项
+class SingerNode
+{
+public:
+
+};
+
+}
 
 
 #endif // QQMUSIC_API_COMMON_H
