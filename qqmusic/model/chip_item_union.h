@@ -52,7 +52,7 @@ public:
      * @details 用于当前列表界面，与上一次的界面不一样时，还能够继续上一次chip列表播放
      *          用于自动播放下一曲的功能
      */
-    bool getUnionInfo(MusicChipItemUnion &info, int &index);
+    bool getUnionInfo(PlayingChipnion &info, int &index);
 
     bool getUnionIndex(ByteString const &id, int &index);
 

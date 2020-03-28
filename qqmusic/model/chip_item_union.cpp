@@ -128,7 +128,7 @@ bool ChipItemUnion::loadNextPage(int loadAction)
     return ret;
 }
 
-bool ChipItemUnion::getUnionInfo(MusicChipItemUnion &info, int &index)
+bool ChipItemUnion::getUnionInfo(PlayingChipnion &info, int &index)
 {
     int newIndex;
     return false;

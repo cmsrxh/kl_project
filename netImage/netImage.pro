@@ -22,7 +22,7 @@ LIBS += -levents_core -levents_log -levents_util -lpthread
 
 SOURCES += main.cpp \
     application.cpp \
-    ../klUI/image_frame.cpp
+    image_frame.cpp
 
 RESOURCES += qml.qrc
 
@@ -48,11 +48,12 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+include(./klApi.pri)
+
 #下载数据相关一些功能统集
 include(../netLoad/netLoad.pri)
 
-include(./klApi.pri)
 
 HEADERS += \
     application.h \
-    ../klUI/image_frame.h
+    image_frame.h

@@ -22,7 +22,7 @@ public:
 
     void errorInfo(int, const ByteString &);
 
-    void onLoadOver(VectorTable<MusicCateUnion *> &vec);
+    void onLoadOver(VectorTable<FirstMenuUnion *> &vec);
 
 private:
     const int                     mCateType;

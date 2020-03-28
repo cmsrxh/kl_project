@@ -374,9 +374,9 @@ public:
 private:
     DataProc();
     void enterBroadcastView();
-    void playSubItem(MusicChipItemUnion *chip);
-    bool playCurSubItemSubNext(MusicChipItemUnion *);
-    void setPlayInfo(MusicChipItemUnion &chip);
+    void playSubItem(PlayingChipnion *chip);
+    bool playCurSubItemSubNext(PlayingChipnion *);
+    void setPlayInfo(PlayingChipnion &chip);
 
     bool              mCurrentIsCollect;
     ChipPlayManage   *m_pPlayManage;

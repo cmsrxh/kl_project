@@ -1,6 +1,11 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import ImageFrame 1.0
+import QtQuick 2.0
+import QtQuick.Controls 1.0
+import QtQuick.Controls.Styles 1.0
+import QtQuick.Layouts 1.1
+import QtGraphicalEffects 1.0
 
 Window {
     visible: true
@@ -8,42 +13,75 @@ Window {
     height: 480
     title: qsTr("Hello World")
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            console.log(qsTr('Clicked on background. Text: "' + textEdit.text + '"'))
-        }
+    MyButton {
+        width: 200
+        height: 100
     }
 
-    TextEdit {
+    Item {
+         id:musicCover
+         width: 150; height: 150
+         x: 10; y: 258
+
+//         Image {
+//             id: img
+//             cache: false
+//             visible: false
+//             smooth: true
+//             anchors.fill: parent
+//             sourceSize: Qt.size(parent.width - 10, parent.height - 10)
+//             source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
+//         }
+         ImageFrame {
+             id: img
+             visible: false
+             anchors.fill: parent
+             source: "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp"
+         }
+
+         Rectangle {
+             id: imgMask
+             visible: false
+             smooth: true
+             anchors.fill: parent
+             radius: width / 2
+         }
+
+         //使用QML的覆盖属性，将图片显示成为maskSource的形状
+         OpacityMask {
+             id: opMask
+             anchors.fill: img
+             source: img
+             maskSource: imgMask
+         }
+     }
+
+    Rectangle {
         id: textEdit
-        text: qsTr("Enter some text...")
-        verticalAlignment: Text.AlignVCenter
         anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 20
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: -10
-            color: "transparent"
-            border.width: 1
-        }
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.margins: -10
+
+        width: 100
+        height: 80
+
+        color: "blue"
+        border.width: 1
     }
+
 
     ImageFrame {
         id: image
         anchors.left: textEdit.left
-        anchors.right: textEdit.right
         anchors.top: textEdit.bottom
         anchors.topMargin: 40
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 90
-//        x: 23
-//        y: 23
-//        width: 160
-//        height: 160
 
-        source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
+        width: 150
+        height: 150
+
+//        source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
+        source: "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp"
 
         MouseArea {
             anchors.fill: parent

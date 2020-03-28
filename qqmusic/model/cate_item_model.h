@@ -33,7 +33,7 @@ public:
 
     void clear();
 
-    VectorTable<MusicCateItemUnion *> &vec()
+    VectorTable<SecondMenuUnion *> &vec()
     {
         return mVec;
     }
@@ -86,7 +86,7 @@ protected:
 private:
     CateItemUnion                    *m_pUnion;
     QHash<int, QByteArray>            roles;
-    VectorTable<MusicCateItemUnion *> mVec;
+    VectorTable<SecondMenuUnion *> mVec;
 };
 
 #endif // CATE_ITEM_MODEL_H

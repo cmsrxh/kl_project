@@ -47,7 +47,7 @@ public:
      * @return 返回的是引用
      * @warning 警告，获取结构的时候，也必须使用引用，否则定义 的局部变量会释放，vector容器中的指针指向的地址
      */
-    VectorTable<MusicChipItemUnion *> &vec()
+    VectorTable<PlayingChipnion *> &vec()
     {
         return mVec;
     }
@@ -157,7 +157,7 @@ protected:
 private:
     ChipItemUnion                    *m_pUnion;
     QHash<int, QByteArray>            roles;
-    VectorTable<MusicChipItemUnion *> mVec;
+    VectorTable<PlayingChipnion *> mVec;
 };
 
 #endif // CHIP_ITEM_MODEL_H

@@ -39,7 +39,7 @@ ApplicationWindow {
         onCurrentIndexChanged: KL.Controller.qmlMainTabClick(currentIndex)
 
         TabButton {
-            text: qsTr("精品")
+            text: qsTr("set")
             width: 100
         }
         TabButton {
@@ -62,20 +62,20 @@ ApplicationWindow {
         }
     }
 
-    BottomLabel {
-        id: showLabel
-        anchors.bottom: parent.bottom
-        width: application.width
-        height: application.height / 4
+//    BottomLabel {
+//        id: showLabel
+//        anchors.bottom: parent.bottom
+//        width: application.width
+//        height: application.height / 4
 
-        onPlayListShow: playListLab.visible = true
-    }
+//        onPlayListShow: playListLab.visible = true
+//    }
 
-    CurrentPlay{
-        id: playListLab
-        visible: false
-        anchors.fill: parent
-    }
+//    CurrentPlay{
+//        id: playListLab
+//        visible: false
+//        anchors.fill: parent
+//    }
 
     Connections {
         target: KL.Controller

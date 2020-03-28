@@ -91,9 +91,9 @@ bool CurrentBackup::empty()
     return mRecPlay.id.empty();
 }
 
-void CurrentBackup::pushRecPlayInto(VectorTable<MusicChipItemUnion *> &vec)
+void CurrentBackup::pushRecPlayInto(VectorTable<PlayingChipnion *> &vec)
 {
-    MusicChipItemUnion *tmp = new MusicChipItemUnion;
+    PlayingChipnion *tmp = new PlayingChipnion;
 
     tmp->type       = PLAY_CHIP_TYPE_PREV_PLAYING_RECORD;
     tmp->sub_type   = mRecPlay.type;

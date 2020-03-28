@@ -38,6 +38,7 @@ public:
 
     static void loadStatus (int status, void *data, void *arg);
 
+    //! 生成请求字串
     virtual NetUrl &genQueryUrl() = 0;
 
     virtual int  loadData (NetBuffer *data) = 0;

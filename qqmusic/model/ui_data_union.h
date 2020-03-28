@@ -23,30 +23,31 @@ enum
     PLAY_CHIP_TYPE_PREV_PLAYING_RECORD,                         // 表示上一次程序退出时记录的播放信息
 };
 
-struct MusicCateUnion
+// 一级菜单集合，一般就只用有名字和ID就OK
+struct FirstMenuUnion
 {
-    ByteString cid;
+    int id;
     ByteString name;
-    ByteString hasSub; // or == CateBCast.type
-    ByteString img;
 };
 
-struct MusicCateItemUnion
+// 二级菜单集合，一般涉及到图片，和各种私有数据，需在此 结构体体现，有时一个变量（在不同的列表中）会有几种含义
+struct SecondMenuUnion
 {
-    MusicCateItemUnion()
+    SecondMenuUnion()
         : isCollect(false)
     {}
 
     bool isCollect;
+    int  type;       // PLAY_CHIP_TYPE_ALBUM ....
+
     ByteString id;
     ByteString name;
-    ByteString img;
-    //ByteString type; // 资源类型 (0:专辑|3:电台|11:传统广播) 分别对应
-    int type; // PLAY_CHIP_TYPE_ALBUM ....
+    ByteString img;    
     ByteString playUrl;
 };
 
-class MusicChipItemUnion
+// 具体的播放项设定，已经是最小的碎片项，代表每个可以播放的数据项，其中 数据必然较为复杂
+class PlayingChipnion
 {
 public:
     int type;

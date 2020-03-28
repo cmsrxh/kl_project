@@ -199,7 +199,7 @@ void ChipItemModel::clean()
 
 void ChipItemModel::getSliderBase(int &cur, int &dur, int index)
 {
-    MusicChipItemUnion *item = mVec[index];
+    PlayingChipnion *item = mVec[index];
 
     if (item->startTime.empty()
             || item->finishTime.empty())

@@ -64,25 +64,9 @@ void CategoryModel::resetAll()
     endResetModel();
 }
 
-ByteString CategoryModel::getCID(int index)
+int CategoryModel::curIndex() const
 {
-    if(index >= 0 && index < mVec.size())
-    {
-        return mVec[index]->cid;
-    } else
-    {
-        return ByteString();
-    }
-}
 
-int CategoryModel::bdcTabIndex() const
-{
-    return DataProc::instance()->getBDCFirstTabIndex();
-}
-
-int CategoryModel::bdcAreaIndex() const
-{
-    return DataProc::instance()->getBDCFirstAreaIndex();
 }
 
 void CategoryModel::onLoadOver(long ptr)
@@ -104,23 +88,6 @@ void CategoryModel::qmlCateTabClick(int index)
 {
     //qDebug() << "CateTabClick index =" << index;
     DataProc::instance()->albumFirstClick(index);
-}
-
-int CategoryModel::qmlGetTabIndex()
-{
-    return DataProc::instance()->getAlbumFirstIndex();
-}
-
-void CategoryModel::qmlBDCCateTabClick(int index)
-{
-    //qDebug() << index;
-    DataProc::instance()->bdcFirstCateTabClick(index);
-}
-
-void CategoryModel::qmlBDCAreaTabClick(int index)
-{
-    // qDebug() << index;
-    DataProc::instance()->bdcFirstAreaTabClick(index);
 }
 
 QHash<int, QByteArray> CategoryModel::roleNames() const

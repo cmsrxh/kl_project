@@ -11,7 +11,7 @@
 #include "common_func/common_func.h"
 #include "net_util/net_common.h"
 
-namespace  {
+namespace qqmusic {
 enum QQMusicObjectName
 {
     OBJECT_NAME_SINGER_LIST,
@@ -22,8 +22,33 @@ enum QQMusicObjectName
 class SingerNode
 {
 public:
+    void clear()
+    {
+        country.clear();
+        singer_id.clear();
+        singer_mid.clear();
+        singer_name.clear();
+        singer_pic.clear();
+    }
 
+    ByteString country;  // 一直都是空数据
+    ByteString singer_id;
+    ByteString singer_mid;
+    ByteString singer_name;
+    ByteString singer_pic;
 };
+// 歌手数据参数标签, area genra index sex
+class TagNode
+{
+public:
+    void clear()
+    {
+        name.clear();
+    }
+    int id;
+    ByteString name;
+};
+
 
 }
 

@@ -1,7 +1,7 @@
 TEMPLATE = subdirs 
 
 ## 验证考拉所有的采集数据的接口，并封装成相应的对象
-SUBDIRS += klApi/klApi.pro
+#SUBDIRS += klApi/klApi.pro
 
 ## qml测试例子，只有main.cpp和qml
 #SUBDIRS += netNotify
@@ -16,7 +16,7 @@ SUBDIRS += klApi/klApi.pro
 #SUBDIRS += player
 
 ## 测试代码，测试qml，图片控件
-#SUBDIRS += netImage
+SUBDIRS += netImage
 
 ## 测试klUI向外提供的接口，主要是使用到考拉的数据搜索功能
 #SUBDIRS += klIface
@@ -25,4 +25,4 @@ SUBDIRS += klApi/klApi.pro
 SUBDIRS += qqmusic
 
 # 测试网络接口
-SUBDIRS += netLoad
+#SUBDIRS += netLoad

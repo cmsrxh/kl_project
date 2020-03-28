@@ -48,7 +48,7 @@ void CategoryUnion::errorInfo(int type, const ByteString &err_str)
     }
 }
 
-void CategoryUnion::onLoadOver(VectorTable<MusicCateUnion *> &vec)
+void CategoryUnion::onLoadOver(VectorTable<FirstMenuUnion *> &vec)
 {
     switch (mCateType)
     {

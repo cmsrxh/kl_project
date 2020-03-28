@@ -33,18 +33,18 @@ void DataProc::enterBroadcastView()
     GEN_Printf(LOG_DEBUG, "enter BDC view.");
 }
 
-void DataProc::playSubItem(MusicChipItemUnion *chip)
+void DataProc::playSubItem(PlayingChipnion *chip)
 {
     GEN_Printf(LOG_DEBUG, "play sub item,sub_type=%d", chip->sub_type);
 }
 
-bool DataProc::playCurSubItemSubNext(MusicChipItemUnion *)
+bool DataProc::playCurSubItemSubNext(PlayingChipnion *)
 {
 
     return false;
 }
 
-void DataProc::setPlayInfo(MusicChipItemUnion &chip)
+void DataProc::setPlayInfo(PlayingChipnion &chip)
 {
 }
 

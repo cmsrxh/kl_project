@@ -27,7 +27,7 @@ public:
 
     bool empty();
 
-    void pushRecPlayInto(VectorTable<MusicChipItemUnion *> &);
+    void pushRecPlayInto(VectorTable<PlayingChipnion *> &);
 
     /**
      * @brief playPrevRecordInfo
