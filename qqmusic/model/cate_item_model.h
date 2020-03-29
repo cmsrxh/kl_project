@@ -13,8 +13,6 @@ class CateItemUnion;
 class CateItemModel : public QAbstractListModel
 {
     Q_OBJECT
-
-    // album or broadcast index, order by this pointer
     Q_PROPERTY(int currenIndex READ currenIndex NOTIFY currenIndexChanged)
 public:    
     CateItemModel();
@@ -28,6 +26,7 @@ public:
     bool haveNext() const;
 
     int  currenIndex() const;
+    void setCurrenIndex(int currenIndex);
 
     void setCateItemUnion(CateItemUnion *pUnion);
 
@@ -46,6 +45,7 @@ public:
     {
         return mVec.empty();
     }
+
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
@@ -84,6 +84,7 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
+    int                               mCurrenIndex;
     CateItemUnion                    *m_pUnion;
     QHash<int, QByteArray>            roles;
     VectorTable<SecondMenuUnion *> mVec;

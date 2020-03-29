@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>MyButton.qml</file>
+        <file>PictureFrame.qml</file>
+        <file>PictureShadow.qml</file>
     </qresource>
 </RCC>

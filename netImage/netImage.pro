@@ -57,3 +57,5 @@ include(../netLoad/netLoad.pri)
 HEADERS += \
     application.h \
     image_frame.h
+
+

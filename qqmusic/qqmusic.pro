@@ -40,7 +40,8 @@ HEADERS += app_common.h \
     ui_proc.h \
     model/data_proc.h \
     model/ui_data_union.h \
-    model/local_data_proc.h
+    model/local_data_proc.h \
+    singer_list_proc.h
 
 SOURCES += application.cpp main.cpp \
     model/cate_item_model.cpp \
@@ -59,7 +60,8 @@ SOURCES += application.cpp main.cpp \
     model/detail_union.cpp \
     ui_proc.cpp \
     model/data_proc.cpp \
-    model/local_data_proc.cpp
+    model/local_data_proc.cpp \
+    singer_list_proc.cpp
 
 RESOURCES += \
     res/qml.qrc \

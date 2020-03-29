@@ -7,14 +7,14 @@
 
 CategoryModel::CategoryModel()
     : QAbstractListModel()
-    , m_pCateUnion(nullptr)
+    , mCurIndex(0), m_pCateUnion(nullptr)
 {
     roles[CATEGORY_NAME] = "ctgname";
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
 
-#if 0
-    MusicCateUnion *cate = new MusicCateUnion;
+#if 1
+    FirstMenuUnion *cate = new FirstMenuUnion;
 
     cate->name = "ABC";
 
@@ -25,15 +25,15 @@ CategoryModel::CategoryModel()
     mVec.push_back(cate);
     mVec.push_back(cate);
     mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
-    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
+//    mVec.push_back(cate);
 
 #endif
 }
@@ -64,11 +64,6 @@ void CategoryModel::resetAll()
     endResetModel();
 }
 
-int CategoryModel::curIndex() const
-{
-
-}
-
 void CategoryModel::onLoadOver(long ptr)
 {
     if ((long)m_pCateUnion != ptr || !m_pCateUnion)
@@ -95,3 +90,17 @@ QHash<int, QByteArray> CategoryModel::roleNames() const
     return roles;
 }
 
+void CategoryModel::setCurIndex(int curIndex)
+{
+    if (mCurIndex != curIndex)
+    {
+        mCurIndex = curIndex;
+        Q_EMIT curIndexChanged();
+    }
+}
+
+
+int CategoryModel::curIndex() const
+{
+    return mCurIndex;
+}

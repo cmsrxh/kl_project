@@ -9,18 +9,19 @@ import QtGraphicalEffects 1.0
 
 Item {
     id : mybutton
-    width: 100
-    height: 50
-
+    property bool isChoice: false
+    property bool isCancel: false
+    property alias color: toprect.color
+    property alias text: mytext.text
     signal clicked();
+    signal canceled();
 
     Rectangle {
         id : bgrect;
-        y : 20
-        x : 20
-        //color: "#999999";
-        width: mybutton.width-25;
-        height: mybutton.height-25
+        y : 10
+        x : 10
+        width: mybutton.width-15
+        height: mybutton.height-15
         radius: height/7
     }
 
@@ -28,57 +29,39 @@ Item {
         id : shadow
         anchors.fill: bgrect
         horizontalOffset: 8
-
+        visible: isChoice ? true : false
         verticalOffset: 8
-        radius: 14.0
+        radius: 10.0
         samples: 17
         color: "#999999"
         source: bgrect
     }
 
-
     Rectangle{
         id : toprect
-        color: "#5CB85C"
+        color: isChoice ? "#5CB8FC" : "white"
         width: mybutton.width;
         height: mybutton.height-2
         radius: height/7
-
+        border.color: "#AA888888"
+        border.width: isCancel ? 3 : 0
         MouseArea {
             id: mouseArea
             anchors.fill: parent
             hoverEnabled : true
-            onClicked: {
-                animation.start();
-                mybutton.clicked();
-            }
-            onEntered: {
-                toprect.color = "#3e8e41";
-                bgrect.color = "#3e8e41";
-            }
-            onExited: {
-                toprect.color = "#5CB85C";
-                bgrect.color = "#5CB85C";
-            }
-
+            onCanceled: mybutton.canceled()
+            onClicked: mybutton.clicked()
         }
-
     }
 
     Text {
         id: mytext
         anchors.centerIn: toprect
-        text: qsTr("text")
-        color: "#ffffff"
-        font.pixelSize : toprect.height/2
+        color: isChoice ? "white" : "#88000000"
+        font.pixelSize : 28
+        onContentWidthChanged: {
+            mybutton.width  = mytext.contentWidth + 20
+            mybutton.height = mytext.contentHeight + 18
+        }
     }
-
-
-    SequentialAnimation {
-
-        id : animation
-        NumberAnimation { target: toprect; property: "y"; to: toprect.x+2; duration: 100 }
-        NumberAnimation { target: toprect; property: "y"; to: toprect.x-2; duration: 100 }
-    }
-
 }

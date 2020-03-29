@@ -7,75 +7,46 @@ import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Window 2.2
 import Hongjing.HMI.KL 1.0 as KL
+import "./status"
+import "./singerList"
 
-ApplicationWindow {
+Window {
     id: application
     visible: true
-    width: 800
-    height: 600
-    title: qsTr("KaoLa FM")
-    Material.theme: Material.Light
-    Material.accent: Material.DeepOrange
-    Material.primary: Material.Blue
-    Rectangle {
-        id: bg
+    width:  1500
+    height: width * 0.618
+    flags: Qt.FramelessWindowHint
+
+    SingerList {
+        z: 0
         anchors.fill: parent
 
-        LinearGradient {
-            anchors.fill: parent
-            start: Qt.point(0, parent.height)
-            end: Qt.point(0, 0)
-            gradient: Gradient{
-                GradientStop{position: 0.0; color: "#111111"}
-                GradientStop{position: 1.0; color: "#C5A5A9"}
+    }
+
+    StatusBar {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 80
+        z: 1
+
+        onIndexChanged: {
+            KL.Controller.qmlMainTabClick(index)
+        }
+
+        onStatusOperate: {
+            if (op === "close")
+            {
+                console.warn("Window Close !")
+                application.close()
+            } else if (op === "minimize")
+            {
+                console.warn("Window minimize !")
+                application.visibility = Window.Minimized
             }
-        }
-    }
-    TabBar {
-        id: topbar
-        anchors.horizontalCenter: parent.horizontalCenter
-        height: 40
-        currentIndex: 0
-        onCurrentIndexChanged: KL.Controller.qmlMainTabClick(currentIndex)
-
-        TabButton {
-            text: qsTr("set")
-            width: 100
-        }
-        TabButton {
-            text: qsTr("我的")
-            width: 100
-        }
-    }
-    Item {
-        id: ei
-        clip: true
-        width: parent.width
-        anchors.top: topbar.bottom
-        anchors.bottom: showLabel.top
-
-        Loader{
-            focus: true
-            anchors.fill: parent
-            //source: "qrc:/self/KlDlgOptionView.qml"
-            source: stack.source
+            console.log(op)
         }
     }
 
-//    BottomLabel {
-//        id: showLabel
-//        anchors.bottom: parent.bottom
-//        width: application.width
-//        height: application.height / 4
-
-//        onPlayListShow: playListLab.visible = true
-//    }
-
-//    CurrentPlay{
-//        id: playListLab
-//        visible: false
-//        anchors.fill: parent
-//    }
 
     Connections {
         target: KL.Controller

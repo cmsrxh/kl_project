@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     Application::instance()->initialize();
 
     qmlRegisterSingletonType<QObject> ("Hongjing.HMI.KL", 1, 0, "Controller", controllerProvider);
-    qmlRegisterType<ImageFrameCpp, 1>("ImageFrameCpp", 1, 0, "ImageFrameCpp");
+    qmlRegisterType<ImageFrameCpp, 1>("ImageFrame", 1, 0, "ImageFrame");
 
     gInstance->init(engine.rootContext());
 

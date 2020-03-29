@@ -5,27 +5,27 @@
         <file>BottomLabel.qml</file>
         <file>CategoryView.qml</file>
         <file>CateItemInfoView.qml</file>
-        <file>ImageFrame.qml</file>
         <file>AudioList.qml</file>
-        <file>ScrollBar.qml</file>
         <file>MediaSlider.qml</file>
         <file>CurrentPlay.qml</file>
         <file>CurrentDelegate.qml</file>
-        <file>bdc/KlInlineAreaView.qml</file>
-        <file>bdc/KlInlineBroadcast.qml</file>
-        <file>bdc/KlInlineChannelView.qml</file>
-        <file>bdc/KlInlineLeftView.qml</file>
-        <file>bdc/KlLine.qml</file>
-        <file>CateItemListView.qml</file>
-        <file>self/KlDlgOptionView.qml</file>
-        <file>self/KlCollectView.qml</file>
-        <file>ThreeStateBtn.qml</file>
-        <file>KlLine.qml</file>
-        <file>self/KlLoadView.qml</file>
-        <file>self/KlHistoryRecord.qml</file>
-        <file>self/KlVioceGuide.qml</file>
-        <file>self/KlSettingView.qml</file>
-        <file>BusyIndicator.qml</file>
         <file>KlMsgTipBox.qml</file>
+        <file>CateItemListView.qml</file>
+        <file>tool/RoundPicture.qml</file>
+        <file>tool/RoundPictureButton.qml</file>
+        <file>tool/ThreeStateBtn.qml</file>
+        <file>tool/KlLine.qml</file>
+        <file>tool/BusyIndicator.qml</file>
+        <file>tool/ScrollBar.qml</file>
+        <file>tool/ImageFrame.qml</file>
+        <file>status/StatusBar.qml</file>
+        <file>status/LeftLabel.qml</file>
+        <file>status/RightLabel.qml</file>
+        <file>tool/ShadowButton.qml</file>
+        <file>singerList/SingerList.qml</file>
+        <file>singerList/TagsView.qml</file>
+        <file>singerList/PageFooter.qml</file>
+        <file>singerList/TagButton.qml</file>
+        <file>singerList/TagFlow.qml</file>
     </qresource>
 </RCC>

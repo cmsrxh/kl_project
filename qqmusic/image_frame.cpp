@@ -18,27 +18,17 @@ ImageFrameCpp::~ImageFrameCpp()
 
 void ImageFrameCpp::paint(QPainter *painter)
 {
-//    QRectF rectangle(0, 0, this->width(), this->height());
-//    painter->setRenderHint(QPainter::Antialiasing);
-
-//    painter->fillRect(QRectF(0, 0, this->width(), this->height()), Qt::gray);
+//    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
     if (!mImage.isNull())
     {
-        QRectF updateRect = imageScale(mImage.width(), mImage.height());
-        QImage tmp        = mImage.scaled(updateRect.width(), updateRect.height());
-        //qDebug() << updateRect;
+        QRect updateRect = imageScale(mImage.width(), mImage.height());
+        QImage tmp       = mImage.scaled(updateRect.width()
+                                         , updateRect.height()
+                                         , Qt::IgnoreAspectRatio
+                                         , Qt::SmoothTransformation);
         painter->drawImage(updateRect, tmp);
     }
-
-//    QPen pen;
-//    pen.setColor(QColor(0xff, 0x00, 0x00, 0xe1));
-//    pen.setWidth(4);
-//    pen.setJoinStyle(Qt::RoundJoin);
-//    pen.setCapStyle(Qt::RoundCap);
-//    painter->setPen(pen);
-
-//    painter->drawRoundedRect(rectangle, 3.0, 4.0);
 }
 
 QString ImageFrameCpp::source() const
@@ -68,7 +58,7 @@ void ImageFrameCpp::setLocalFile(const ByteString &name)
     mLocalFile = name;
 }
 
-QRectF ImageFrameCpp::imageScale(int w, int h)
+QRect ImageFrameCpp::imageScale(int w, int h)
 {
     int screenW = this->width();
     int screenH = this->height();
@@ -97,7 +87,7 @@ QRectF ImageFrameCpp::imageScale(int w, int h)
 //    qDebug() << x << y << scaleW << scaleH << "orgin" << w << h; // x, y, scaleW, scaleH;
 //    qDebug() << screenW << screenH;
 
-    return QRectF(x, y, scaleW, scaleH);
+    return QRect(x, y, scaleW, scaleH);
 }
 
 void ImageFrameCpp::onFilePrepare()

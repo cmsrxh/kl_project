@@ -13,7 +13,6 @@ class CategoryUnion;
 class CategoryModel : public QAbstractListModel
 {
     Q_OBJECT
-    // broadcast ctg index
     Q_PROPERTY(int curIndex READ curIndex NOTIFY curIndexChanged)
 
 public:
@@ -43,6 +42,8 @@ public:
     // property
     int curIndex() const;
 
+    void setCurIndex(int curIndex);
+
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
@@ -64,6 +65,7 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
+    int                           mCurIndex;
     CategoryUnion                *m_pCateUnion;
     QHash<int, QByteArray>        roles;
     VectorTable<FirstMenuUnion *> mVec;

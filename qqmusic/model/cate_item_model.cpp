@@ -8,13 +8,46 @@
 
 CateItemModel::CateItemModel()
     : QAbstractListModel()    
-    , m_pUnion(nullptr)
+    , mCurrenIndex(0), m_pUnion(nullptr)
 {
     roles[CATE_ITEM_NAME]    = "cateItemName";
     roles[CATE_ITEM_IMG_URL] = "imageUri";
     roles[CATE_ITEM_COLLECT] = "collect";
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
+#if 1
+    SecondMenuUnion *sec = new SecondMenuUnion;
+    sec->name = "absd";
+    sec->img = "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp";
+    sec->isCollect = false;
+
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+     sec = new SecondMenuUnion;
+    sec->name = "sdfsasf";
+    sec->img = "";
+    sec->isCollect = false;
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+    mVec.push_back(sec);
+
+#endif
 }
 
 int CateItemModel::rowCount(const QModelIndex &) const
@@ -108,6 +141,15 @@ QHash<int, QByteArray> CateItemModel::roleNames() const
     return roles;
 }
 
+void CateItemModel::setCurrenIndex(int currenIndex)
+{
+    if (mCurrenIndex != currenIndex)
+    {
+        mCurrenIndex = currenIndex;
+        Q_EMIT currenIndexChanged(currenIndex);
+    }
+}
+
 bool CateItemModel::haveNext() const
 {
     return m_pUnion ? m_pUnion->haveNext() : false;
@@ -115,7 +157,7 @@ bool CateItemModel::haveNext() const
 
 int CateItemModel::currenIndex() const
 {
-    return DataProc::instance()->cateItemCurIndex(const_cast<CateItemModel *> (this));
+    return mCurrenIndex;
 }
 
 void CateItemModel::setCateItemUnion(CateItemUnion *pUnion)

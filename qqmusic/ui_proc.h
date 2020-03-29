@@ -9,12 +9,14 @@ class ChipItemModel;
 class QQmlContext;
 class CollectModel;
 class ViewSwitchStack;
+class SingerListProc;
 class UIProc : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int playState READ playState WRITE setPlayState NOTIFY playStateChanged)
 
     Q_PROPERTY(bool canSeek READ canSeek WRITE setCanSeek NOTIFY canSeekChanged)
+
 public:
     enum MsgTipBoxType
     {
@@ -64,7 +66,10 @@ public:
     {
         return mCurPosition;
     }
+
+
 public Q_SLOTS:
+
     void qmlStart();
     void qmlPlay();
     void qmlStop();
@@ -145,23 +150,11 @@ private:
     int               mCacheValue;
     ViewSwitchStack  *m_pViewStack;
 
-    // album
-    CategoryModel    *m_pCate;
-    CateItemModel    *m_pCateItem;
+    SingerListProc   *m_pSingerProc;
+
+
     ChipItemModel    *m_pChipItem;
 
-    // player
-    ChipItemModel    *m_pChipItemPlay;
-
-    // broadcast
-    CategoryModel    *m_pBDCTab;
-    CategoryModel    *m_pBDCArea;
-    CateItemModel    *m_pBDCItem;
-
-    //collect
-    CollectModel      *m_pCollect;
-    CollectModel      *m_pDownload;
-    CollectModel      *m_pHistory;
 };
 
 #endif // KL_UI_PROC_H

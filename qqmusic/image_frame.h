@@ -24,7 +24,7 @@ public:
     void dataPrepare();
     void errorInfo(int , const char *);
     void setLocalFile(ByteString const &name);
-    QRectF imageScale(int width, int height);
+    QRect imageScale(int width, int height);
 
 public Q_SLOTS:
     void onFilePrepare();
@@ -40,7 +40,6 @@ private:
     QString     mSource;
     ByteString  mLocalFile;
     QImage      mImage;
-    QRectF      mUpdateRect;
 };
 
 #endif // IMAGE_LOAD_H

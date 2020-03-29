@@ -7,6 +7,7 @@
 #include "model/local_data_proc.h"
 #include "model/data_proc.h"
 #include "model/detail_qobject.h"
+#include "singer_list_proc.h"
 #include "qml_view_switch_stack.h"
 #include "current_backup.h"
 #include "ui_proc.h"
@@ -29,62 +30,21 @@ UIProc::UIProc()
 
 UIProc::~UIProc()
 {
-    delete m_pCate;
-    delete m_pCateItem;
-    delete m_pChipItem;
-    delete m_pChipItemPlay;
 
-    delete m_pBDCTab;
-    delete m_pBDCArea;
-    delete m_pBDCItem;
-
-    delete m_pCollect;
-    delete m_pDownload;
-    delete m_pHistory;
 }
 
 void UIProc::init(QQmlContext *ctx)
-{    
-    m_pCate         = new CategoryModel;
-    m_pCateItem     = new CateItemModel;
-    m_pChipItem     = new ChipItemModel();
-    m_pChipItemPlay = new ChipItemModel();
+{
+    m_pSingerProc = new SingerListProc;
 
-    connect(m_pCate, SIGNAL(dataLoadOver(long)), this, SLOT(onAlbumTabLoadOver(long)));
-    DataProc::instance()->initAlbum(m_pCate, m_pCateItem, m_pChipItem, m_pChipItemPlay);
+    // singer list
+    ctx->setContextProperty("singerIndexModel", m_pSingerProc->indexHandler());
+    ctx->setContextProperty("singerAreaModel", m_pSingerProc->areaHandler());
+    ctx->setContextProperty("singerSexModel", m_pSingerProc->sexHandler());
+    ctx->setContextProperty("singerGenreModel", m_pSingerProc->genreHandler());
+    ctx->setContextProperty("singerModel", m_pSingerProc->singerListHandler());
+    ctx->setContextProperty("singerProc", m_pSingerProc);
 
-    m_pBDCTab       = new CategoryModel;
-    m_pBDCArea      = new CategoryModel;
-    m_pBDCItem      = new CateItemModel;
-
-    DataProc::instance()->initBroadcast(m_pBDCTab, m_pBDCArea, m_pBDCItem);
-
-    m_pCollect      = new CollectModel;
-    m_pDownload     = new CollectModel;
-    m_pHistory      = new CollectModel;
-
-    LocalDataProc::instance()->initLocal(m_pCollect, m_pDownload, m_pHistory);
-
-    // album
-    ctx->setContextProperty("cateItemModel", m_pCateItem);
-    ctx->setContextProperty("cateModel", m_pCate);
-    ctx->setContextProperty("chipList", m_pChipItem);
-
-    //player
-    ctx->setContextProperty("playList", m_pChipItemPlay);
-
-    //broadcast
-    ctx->setContextProperty("bdcTab", m_pBDCTab);
-    ctx->setContextProperty("bdcArea", m_pBDCArea);
-    ctx->setContextProperty("bdcItem", m_pBDCItem);
-
-    //detail
-    ctx->setContextProperty("detailObject", DetailQobject::instance());
-
-    //collect
-    ctx->setContextProperty("collectList", m_pCollect);
-    ctx->setContextProperty("loadList", m_pDownload);
-    ctx->setContextProperty("historyList", m_pHistory);
 
     // view switch
     ctx->setContextProperty("stack", m_pViewStack);    
@@ -317,6 +277,7 @@ void UIProc::setCanSeek(bool canSeek)
         Q_EMIT canSeekChanged();
     }
 }
+
 
 void UIProc::setSliderBase(int cur, int dur)
 {

@@ -18,74 +18,49 @@ Window {
         height: 100
     }
 
-    Item {
+    PictureShadow {
+        width: 150; height: 150
+        x: 200; y: 258
+    }
+
+    PictureFrame {
          id:musicCover
          width: 150; height: 150
          x: 10; y: 258
 
-//         Image {
-//             id: img
-//             cache: false
-//             visible: false
-//             smooth: true
-//             anchors.fill: parent
-//             sourceSize: Qt.size(parent.width - 10, parent.height - 10)
-//             source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
-//         }
-         ImageFrame {
-             id: img
-             visible: false
-             anchors.fill: parent
-             source: "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp"
-         }
-
-         Rectangle {
-             id: imgMask
-             visible: false
-             smooth: true
-             anchors.fill: parent
-             radius: width / 2
-         }
-
-         //使用QML的覆盖属性，将图片显示成为maskSource的形状
-         OpacityMask {
-             id: opMask
-             anchors.fill: img
-             source: img
-             maskSource: imgMask
-         }
+         source: "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp"
      }
 
-    Rectangle {
-        id: textEdit
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.margins: -10
+//    Rectangle {
+//        id: textEdit
+//        anchors.top: parent.top
+//        anchors.topMargin: 20
+//        anchors.horizontalCenter: parent.horizontalCenter
+//        anchors.margins: -10
 
-        width: 100
-        height: 80
+//        width: 100
+//        height: 80
 
-        color: "blue"
-        border.width: 1
-    }
+//        color: "blue"
+//        border.width: 1
+//    }
 
 
-    ImageFrame {
-        id: image
-        anchors.left: textEdit.left
-        anchors.top: textEdit.bottom
-        anchors.topMargin: 40
+//    ImageFrame {
+//        id: image
+//        anchors.left: textEdit.left
+//        anchors.top: textEdit.bottom
+//        anchors.topMargin: 40
 
-        width: 150
-        height: 150
+//        width: 150
+//        height: 150
 
-//        source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
-        source: "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp"
+////        source: "http://img.kaolafm.net/mz/images/201906/eb01b107-d009-43be-a4bb-dbebc8496082/default.jpg"
+//        source: "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp"
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: console.log("abcdefg")
-        }
-    }
+//        MouseArea {
+//            anchors.fill: parent
+//            onClicked: console.log("abcdefg")
+//        }
+//    }
 }
