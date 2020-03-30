@@ -31,21 +31,21 @@ CateItemModel::CateItemModel()
     mVec.push_back(sec);
     mVec.push_back(sec);
     mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-     sec = new SecondMenuUnion;
-    sec->name = "sdfsasf";
-    sec->img = "";
-    sec->isCollect = false;
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
-    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//     sec = new SecondMenuUnion;
+//    sec->name = "sdfsasf";
+//    sec->img = "";
+//    sec->isCollect = false;
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
+//    mVec.push_back(sec);
 
 #endif
 }

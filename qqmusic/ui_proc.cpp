@@ -43,6 +43,7 @@ void UIProc::init(QQmlContext *ctx)
     ctx->setContextProperty("singerSexModel", m_pSingerProc->sexHandler());
     ctx->setContextProperty("singerGenreModel", m_pSingerProc->genreHandler());
     ctx->setContextProperty("singerModel", m_pSingerProc->singerListHandler());
+    ctx->setContextProperty("singerChildModel", m_pSingerProc->singerChildListHandler());
     ctx->setContextProperty("singerProc", m_pSingerProc);
 
 

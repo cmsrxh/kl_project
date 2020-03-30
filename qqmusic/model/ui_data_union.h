@@ -5,6 +5,7 @@
 #include <util/vector_table.h>
 #include <util/list_table.h>
 #include "common_func/common_func.h"
+#include "qqmusicApi/qqmusic_api_common.h"
 
 enum
 {

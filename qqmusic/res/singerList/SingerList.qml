@@ -16,9 +16,9 @@ Item {
             width: parent.width
             height: 300
         }
-        footer: PageFooter {
+        footer: PageSubFooter {
             width: parent.width
-            height: 70
+            height: contentHeight
         }
 
         delegate: Item {

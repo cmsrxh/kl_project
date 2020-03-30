@@ -23,6 +23,7 @@ qqmusic::SingerList::SingerList(int areaId, int sex, int genre, int index)
     : ListObject<SingerNode> ("http://u.y.qq.com/cgi-bin/musicu.fcg", OBJECT_NAME_SINGER_LIST, NetUrl::NET_HTTP_METHOD_GET)
     , mAreaId(areaId), mSex(sex), mGenre(genre)
     , mIndex(index), mSin(0), mCurPage(1)
+    , mTotals(0)
 {
     mUrl.append("g_tk", "5381");
     mUrl.append("loginUin", "0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&needNewCode=0");
@@ -163,7 +164,7 @@ void qqmusic::SingerList::profile()
 #define DEFAULT_PAGE 80
 int qqmusic::SingerList::getTotalPages()
 {
-    return mTotals / 80;
+    return mTotals / DEFAULT_PAGE;
 }
 
 bool qqmusic::SingerList::loadNextPage(int page_index)

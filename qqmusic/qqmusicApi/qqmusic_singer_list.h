@@ -86,6 +86,32 @@ public:
         return mTags.tags[SingerTags::SEX_TAG].curIndex;
     }
 
+
+    ListTable<TagNode> &areaTag() const
+    {
+        return mTags.tags[SingerTags::AREA_TAG].tag;
+    }
+
+    ListTable<TagNode> &genreTag() const
+    {
+        return mTags.tags[SingerTags::GENRE_TAG].tag;
+    }
+
+    ListTable<TagNode> &indexTag() const
+    {
+        return mTags.tags[SingerTags::INDEX_TAG].tag;
+    }
+
+    ListTable<TagNode> &sexTag() const
+    {
+        return mTags.tags[SingerTags::SEX_TAG].tag;
+    }
+
+    bool isEmpty()
+    {
+        return 0 == mTotals ? true : false;
+    }
+
 private:
     //! 通过操作当前这五个参数，控制当前歌手列表
     //! 同时在加载完成数据时，也会返回当前数据的定位(当前四个参数)
@@ -95,10 +121,9 @@ private:
     int mIndex;
     int mSin;  // 当前页的开始位置，默认页有80项数据，eg：第二页sin就 以80开始，等等.
     int mCurPage;
+    int mTotals;
 
     char mDataBuffer[1024];
-
-    int mTotals;
 
     static SingerTags mTags;
 };

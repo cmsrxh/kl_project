@@ -109,7 +109,7 @@ Item {
                             console.log("Invalid Clicked.", index)
                             return
                         }
-                        singerProc.qmlSingerList(6, cur);
+                        singerProc.qmlSingerList(7, cur);
                     }
                 }
             }

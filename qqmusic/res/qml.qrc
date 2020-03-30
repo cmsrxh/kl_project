@@ -27,5 +27,6 @@
         <file>singerList/PageFooter.qml</file>
         <file>singerList/TagButton.qml</file>
         <file>singerList/TagFlow.qml</file>
+        <file>singerList/PageSubFooter.qml</file>
     </qresource>
 </RCC>
