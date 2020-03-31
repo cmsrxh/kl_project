@@ -17,6 +17,7 @@ Item {
         spacing: 15
         TagFlow {
             id: index
+            spacing: 12
             currentIndex: singerIndexModel.curIndex
             model: singerIndexModel
             onClicked: singerProc.qmlSingerList(1, choiceIndex)

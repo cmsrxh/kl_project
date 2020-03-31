@@ -13,7 +13,7 @@ CategoryModel::CategoryModel()
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
 
-#if 1
+#if 0
     FirstMenuUnion *cate = new FirstMenuUnion;
 
     cate->name = "ABC";

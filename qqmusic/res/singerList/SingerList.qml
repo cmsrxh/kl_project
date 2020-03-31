@@ -2,6 +2,10 @@ import QtQuick 2.0
 import "../tool"
 
 Item {
+    Component.onCompleted: {
+        singerProc.qmlObtainSingerList()
+    }
+
     GridView {
         id: singerList
         anchors.fill: parent
@@ -18,7 +22,7 @@ Item {
         }
         footer: PageSubFooter {
             width: parent.width
-            height: contentHeight
+            height: contentHeight + 21
         }
 
         delegate: Item {

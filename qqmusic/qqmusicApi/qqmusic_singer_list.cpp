@@ -1,3 +1,4 @@
+#include <net_util/http_util.h>
 #include "qqmusic_singer_list.h"
 
 /*
@@ -25,6 +26,8 @@ qqmusic::SingerList::SingerList(int areaId, int sex, int genre, int index)
     , mIndex(index), mSin(0), mCurPage(1)
     , mTotals(0)
 {
+    // test
+    setSaveFile("/tmp/qqmusic.singer.list");
     mUrl.append("g_tk", "5381");
     mUrl.append("loginUin", "0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&needNewCode=0");
     mUrl.append("platform", "yqq");
@@ -33,16 +36,19 @@ qqmusic::SingerList::SingerList(int areaId, int sex, int genre, int index)
 NetUrl &qqmusic::SingerList::genQueryUrl()
 {
     int ret = snprintf(mDataBuffer, sizeof(mDataBuffer) - 1,
-                       "{\"comm\":{\"ct\":24,\"cv\":10000},\
-                       \"singerList\":{\"module\":\"Music.SingerListServer\",\"method\":\"get_singer_list\",\
-                       \"param\":{\"area\":%d,\"sex\":%d,\"genre\":%d,\"index\":%d,\"sin\":%d,\"cur_page\":%d}}}"
+                       "{\"comm\":{\"ct\":24,\"cv\":10000},"
+                       "\"singerList\":{\"module\":\"Music.SingerListServer\",\"method\":\"get_singer_list\","
+                       "\"param\":{\"area\":%d,\"sex\":%d,\"genre\":%d,\"index\":%d,\"sin\":%d,\"cur_page\":%d}}}"
                        , mAreaId, mSex, mGenre, mIndex, mSin, mCurPage);
     if (ret <= 0 || ret >= (int)(sizeof(mDataBuffer) - 1))
     {
         GEN_Printf(LOG_ERROR, "General signer list data param failed !");
         assert(0);
     }
-    mUrl.appendChange("data", ByteString(mDataBuffer, ret));
+    mDataString.clear();
+
+    HttpUtil::urlEncoding(ByteString(mDataBuffer, ret), mDataString);
+    mUrl.appendChange("data", mDataString);
     return mUrl;
 }
 
@@ -55,6 +61,8 @@ int qqmusic::SingerList::genResult(NetBuffer *data)
     cJSON *singerList = cJSON_GetObjectItem(root, "singerList");
     if (singerList)
     {
+        clearData();
+
         cJSON *data = cJSON_GetObjectItem(singerList, "data");
 
         mAreaId = (obj = cJSON_GetObjectItem(data, "area"))  ? atoi(obj->valuestring) : 0;
@@ -119,10 +127,10 @@ int qqmusic::SingerList::genResult(NetBuffer *data)
         {
             GEN_Printf(LOG_WARN, "load AlbumList is empty.");
             ret = KL_DATA_PRISER_EMPTY;
-        } else
+        }/* else
         {
             profile();
-        }
+        }*/
     } else
     {
         GEN_Printf(LOG_ERROR, "priser failed, size: %lu\n%s", data->size(), data->buffer());
@@ -192,6 +200,42 @@ bool qqmusic::SingerList::loadNextPage(int page_index)
 
     return obtain();
 #undef DEFAULT_PAGE
+}
+
+bool qqmusic::SingerList::loadBySex(int sex)
+{
+    mSex = sex;
+    mSin = 0;
+    mCurPage = 1;
+    mTotals = 0;
+    return obtain();
+}
+
+bool qqmusic::SingerList::loadByGenre(int genre)
+{
+    mGenre = genre;
+    mSin = 0;
+    mCurPage = 1;
+    mTotals = 0;
+    return obtain();
+}
+
+bool qqmusic::SingerList::loadByIndex(int index)
+{
+    mIndex = index;
+    mSin = 0;
+    mCurPage = 1;
+    mTotals = 0;
+    return obtain();
+}
+
+bool qqmusic::SingerList::loadByArea(int area)
+{
+    mAreaId = area;
+    mSin = 0;
+    mCurPage = 1;
+    mTotals = 0;
+    return obtain();
 }
 
 void qqmusic::SingerList::ensureTagsIndex()

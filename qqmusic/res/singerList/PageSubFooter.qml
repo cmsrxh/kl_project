@@ -2,6 +2,7 @@ import QtQuick 2.0
 
 GridView {
     id: singerList
+    width: parent.width
 
     cellWidth: 300
     cellHeight: 100
@@ -36,4 +37,3 @@ GridView {
         }
     }
 }
-

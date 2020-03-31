@@ -38,6 +38,10 @@ public:
     {
         return mVec;
     }
+    bool isEmpty()
+    {
+        return mVec.empty();
+    }
 
     // property
     int curIndex() const;

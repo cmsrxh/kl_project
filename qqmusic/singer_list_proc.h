@@ -52,9 +52,6 @@ public:
         return m_pSingerChildList;
     }
 
-    //! 获取歌手列表，根据当前参数
-    void obtainSingerList();
-
     //! 属性函数， 根据当前歌手数量，计算出当前有几页，默认是80为一页
     int  singerPages();
 
@@ -89,6 +86,9 @@ public Q_SLOTS:
      *      ，qqmusic 歌手列表项的点击
      */
     void qmlSingerList(int type, int index);
+
+    //! 获取歌手列表，根据当前参数
+    void qmlObtainSingerList();
 
     //! 主线程处理数据
     void onSingerDataPrepare();

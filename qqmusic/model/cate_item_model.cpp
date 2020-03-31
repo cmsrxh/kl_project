@@ -15,7 +15,7 @@ CateItemModel::CateItemModel()
     roles[CATE_ITEM_COLLECT] = "collect";
 
     connect(this, SIGNAL(dataLoadOver(long)), this, SLOT(onLoadOver(long)));
-#if 1
+#if 0
     SecondMenuUnion *sec = new SecondMenuUnion;
     sec->name = "absd";
     sec->img = "http:\/\/y.gtimg.cn\/music\/photo_new\/T001R150x150M000002DYpxl3hW3EP.webp";
@@ -80,8 +80,6 @@ void CateItemModel::resetAll()
 {
     beginResetModel();
     endResetModel();
-
-    Q_EMIT currenIndexChanged(0);
 }
 
 void CateItemModel::onLoadOver(long ptr)
@@ -150,14 +148,14 @@ void CateItemModel::setCurrenIndex(int currenIndex)
     }
 }
 
-bool CateItemModel::haveNext() const
-{
-    return m_pUnion ? m_pUnion->haveNext() : false;
-}
-
 int CateItemModel::currenIndex() const
 {
     return mCurrenIndex;
+}
+
+bool CateItemModel::haveNext() const
+{
+    return m_pUnion ? m_pUnion->haveNext() : false;
 }
 
 void CateItemModel::setCateItemUnion(CateItemUnion *pUnion)

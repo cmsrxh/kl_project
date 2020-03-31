@@ -13,29 +13,38 @@ SingerListProc::SingerListProc()
     , m_pSingerGenre(new CategoryModel)
     , m_pSingerList(new CateItemModel)
     , m_pSingerChildList(new CateItemModel)
-    , mSingerTotals(1023), mCurrentPage(3)
+    , mSingerTotals(0), mCurrentPage(1)
     , m_pSingerLoad(new qqmusic::SingerList)
 {
     m_pSingerLoad->setUINotify(this);
     connect(this, SIGNAL(singerDataPrepare()), this, SLOT(onSingerDataPrepare()));
 }
 
-void SingerListProc::obtainSingerList()
+void SingerListProc::qmlObtainSingerList()
 {
+    qDebug() << "Obtain Singer List.";
     if (m_pSingerLoad->isEmpty())
-    {
-        m_pSingerLoad->obtain();
+    {                
+        m_pSingerLoad->loadNodesFile();
+
+        if (m_pSingerLoad->isEmpty())
+        {
+            m_pSingerLoad->obtain();
+        } else if (m_pSingerList->empty())
+        {
+            onSingerDataPrepare();
+        }
     }
 }
 
 int SingerListProc::singerPages()
 {
-    return m_pSingerLoad->getTotalPages();
+    return mSingerTotals; //m_pSingerLoad->getTotalPages();
 }
 
 int SingerListProc::currentPage()
 {
-    return mCurrentPage;
+    return mCurrentPage; //m_pSingerLoad->getCurrentPage();
 }
 
 void SingerListProc::setSingerTotal(int total)
@@ -49,7 +58,7 @@ void SingerListProc::setSingerTotal(int total)
 
 void SingerListProc::setCurrentPage(int page)
 {
-    if (mCurrentPage != page)
+    if (page != mCurrentPage)
     {
         mCurrentPage = page;
         Q_EMIT currentPageChanged();
@@ -58,6 +67,7 @@ void SingerListProc::setCurrentPage(int page)
 
 void SingerListProc::dataPrepare()
 {
+    qDebug() << "Data Load Over !!!";
     Q_EMIT singerDataPrepare();
 }
 
@@ -66,13 +76,13 @@ void SingerListProc::errorInfo(int type, const ByteString &err_str)
     switch (type)
     {
     case LOAD_EMPTY_DATA:        // 分析数据正确，但是得到的数据是空
-        PopTipManage::instance()->klLoadDataExportEmpty(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
+        PopTipManage::instance()->klLoadDataExportEmpty(qqmusic::OBJECT_NAME_SINGER_LIST, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
     case LOAD_PRISER_JSOC_ERROR: // 不能正确解析json数据
-        PopTipManage::instance()->klLoadDataPriserExcept(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
+        PopTipManage::instance()->klLoadDataPriserExcept(qqmusic::OBJECT_NAME_SINGER_LIST, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
     case LOAD_SYS_API_FAILED:    // libcurl下载反馈的错误信息
-        PopTipManage::instance()->sysNetLoadApiExcept(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
+        PopTipManage::instance()->sysNetLoadApiExcept(qqmusic::OBJECT_NAME_SINGER_LIST, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
     default :
         assert(0);
@@ -86,35 +96,55 @@ void SingerListProc::qmlSingerList(int type, int index)
     switch (type)
     {
     case 1:
-        m_pSingerIndex->setCurIndex(index);
+    {
+        int size = m_pSingerIndex->vec().size();
+        if (index >= 0 && index < size)
+        {
+            m_pSingerLoad->loadByIndex(m_pSingerIndex->vec()[index]->id);
+        }
+        //m_pSingerIndex->setCurIndex(index);
         break;
+    }
     case 2:
-        m_pSingerArea->setCurIndex(index);
+    {
+        int size = m_pSingerArea->vec().size();
+        if (index >= 0 && index < size)
+        {
+            m_pSingerLoad->loadByArea(m_pSingerArea->vec()[index]->id);
+        }
+        //m_pSingerArea->setCurIndex(index);
         break;
+    }
     case 3:
-        m_pSingerSex->setCurIndex(index);
+    {
+        int size = m_pSingerSex->vec().size();
+        if (index >= 0 && index < size)
+        {
+            m_pSingerLoad->loadBySex(m_pSingerSex->vec()[index]->id);
+        }
+        //m_pSingerSex->setCurIndex(index);
         break;
+    }
     case 4:
-        m_pSingerGenre->setCurIndex(index);
+    {
+        int size = m_pSingerGenre->vec().size();
+        if (index >= 0 && index < size)
+        {
+            m_pSingerLoad->loadByGenre(m_pSingerGenre->vec()[index]->id);
+        }
+        //m_pSingerGenre->setCurIndex(index);
         break;
+    }
     case 5:
-        m_pSingerList->setCurrenIndex(index);
+        //直接设置index，会使得界面跳到开始或末尾位置
+        //m_pSingerList->setCurrenIndex(index);
         break;
     case 6:
         m_pSingerChildList->setCurrenIndex(index);
         break;
     case 7:
     {
-        int cur = index;
-        int total = singerPages();
-        if (-1 == index) //上一页
-        {
-            cur = (mCurrentPage < 2) ? 1 : mCurrentPage - 1;
-        } else if (-2 == index) // 下一页
-        {
-            cur = (mCurrentPage >= total) ? total : mCurrentPage + 1;
-        }
-        setCurrentPage(cur);
+        m_pSingerLoad->loadNextPage(index);
         break;
     }
     default:
@@ -149,11 +179,43 @@ void SingerListProc::onSingerDataPrepare()
             modelChildSinger.push_back(sec);
         }
     }
+    qDebug() << "Data Load over, image singer item size =" << modelSinger.size()
+             << "text singer item size =" << modelChildSinger.size();
+    m_pSingerList->resetAll();
+    m_pSingerChildList->resetAll();
 
-    tagListProc(m_pSingerIndex->vec(), m_pSingerLoad->indexTag());
-    tagListProc(m_pSingerArea->vec(), m_pSingerLoad->areaTag());
-    tagListProc(m_pSingerSex->vec(), m_pSingerLoad->sexTag());
-    tagListProc(m_pSingerGenre->vec(), m_pSingerLoad->genreTag());
+    m_pSingerLoad->ensureTagsIndex();
+
+    if (m_pSingerIndex->isEmpty())
+    {
+        tagListProc(m_pSingerIndex->vec(), m_pSingerLoad->indexTag());
+        m_pSingerIndex->resetAll();
+    }
+    m_pSingerIndex->setCurIndex(m_pSingerLoad->indexIndex());
+
+    if (m_pSingerArea->isEmpty())
+    {
+        tagListProc(m_pSingerArea->vec(), m_pSingerLoad->areaTag());
+        m_pSingerArea->resetAll();
+    }
+    m_pSingerArea->setCurIndex(m_pSingerLoad->areaIndex());
+
+    if (m_pSingerSex->isEmpty())
+    {
+        tagListProc(m_pSingerSex->vec(), m_pSingerLoad->sexTag());
+        m_pSingerSex->resetAll();
+    }
+    m_pSingerSex->setCurIndex(m_pSingerLoad->sexIndex());
+
+    if (m_pSingerGenre->isEmpty())
+    {
+        tagListProc(m_pSingerGenre->vec(), m_pSingerLoad->genreTag());
+        m_pSingerGenre->resetAll();
+    }
+    m_pSingerGenre->setCurIndex(m_pSingerLoad->genreIndex());
+
+    setCurrentPage(m_pSingerLoad->getCurrentPage());
+    setSingerTotal(m_pSingerLoad->getTotalPages());
 }
 
 void SingerListProc::tagListProc(VectorTable<FirstMenuUnion *> &vec,

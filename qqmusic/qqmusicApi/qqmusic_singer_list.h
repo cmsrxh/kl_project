@@ -60,6 +60,14 @@ public:
      */
     bool loadNextPage(int page_index = -1);
 
+    bool loadByIndex(int index);
+
+    bool loadByArea(int area);
+
+    bool loadBySex(int sex);
+
+    bool loadByGenre(int genre);
+
     //! 获取当前总页数
     int  getTotalPages();
 
@@ -112,6 +120,11 @@ public:
         return 0 == mTotals ? true : false;
     }
 
+    int getCurrentPage() const
+    {
+        return mCurPage;
+    }
+
 private:
     //! 通过操作当前这五个参数，控制当前歌手列表
     //! 同时在加载完成数据时，也会返回当前数据的定位(当前四个参数)
@@ -120,10 +133,13 @@ private:
     int mGenre;
     int mIndex;
     int mSin;  // 当前页的开始位置，默认页有80项数据，eg：第二页sin就 以80开始，等等.
+    //! 表示当前处于那一页
     int mCurPage;
+    //! 表示当前标签下的歌手总数量
     int mTotals;
 
     char mDataBuffer[1024];
+    ByteString mDataString;
 
     static SingerTags mTags;
 };

@@ -100,10 +100,10 @@ Item {
                         //console.log("value =", value, "cur =", cur);
                         if (value === "Previous") //上一页
                         {
-                            cur = -1
+                            cur = -2
                         } else if (value === "Next") // 下一页
                         {
-                            cur = -2
+                            cur = -1
                         } else if  (value === "..." || index == pages.currentIndex)
                         {
                             console.log("Invalid Clicked.", index)
