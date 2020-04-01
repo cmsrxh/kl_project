@@ -177,16 +177,21 @@ int qqmusic::SingerList::getTotalPages()
 
 bool qqmusic::SingerList::loadNextPage(int page_index)
 {
+    int total_page = getTotalPages();
     int load_page = (-1 == page_index) ? 1 + mCurPage
                                        : ((-2 == page_index) ? mCurPage - 1
                                                              : page_index);
     // 默认一页的大小
+    load_page = (load_page < 0) ? 0
+                                : (load_page > total_page) ? total_page
+                                                           : load_page ;
 
     if (mCurPage == load_page)
     {
         GEN_Printf(LOG_WARN, "Current Page=%d equal Load page", mCurPage);
         return false;
     }
+
     int sin_page = load_page < 1 ? 0 : load_page - 1;
     int sin_start= sin_page * DEFAULT_PAGE;
 
@@ -196,7 +201,9 @@ bool qqmusic::SingerList::loadNextPage(int page_index)
         return false;
     }
 
+    mCurPage = load_page;
     mSin = sin_start;
+    // GEN_Printf(LOG_DEBUG, "page_index: %d, mSin: %d, mCurPage: %d, mTotals: %d", page_index, mSin, mCurPage, mTotals);
 
     return obtain();
 #undef DEFAULT_PAGE

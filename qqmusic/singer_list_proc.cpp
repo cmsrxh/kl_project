@@ -39,12 +39,12 @@ void SingerListProc::qmlObtainSingerList()
 
 int SingerListProc::singerPages()
 {
-    return mSingerTotals; //m_pSingerLoad->getTotalPages();
+    return mSingerTotals; // m_pSingerLoad->getTotalPages();
 }
 
 int SingerListProc::currentPage()
 {
-    return mCurrentPage; //m_pSingerLoad->getCurrentPage();
+    return mCurrentPage; // m_pSingerLoad->getCurrentPage();
 }
 
 void SingerListProc::setSingerTotal(int total)
@@ -58,11 +58,8 @@ void SingerListProc::setSingerTotal(int total)
 
 void SingerListProc::setCurrentPage(int page)
 {
-    if (page != mCurrentPage)
-    {
-        mCurrentPage = page;
-        Q_EMIT currentPageChanged();
-    }
+    mCurrentPage = page;
+    Q_EMIT currentPageChanged();
 }
 
 void SingerListProc::dataPrepare()
@@ -214,8 +211,8 @@ void SingerListProc::onSingerDataPrepare()
     }
     m_pSingerGenre->setCurIndex(m_pSingerLoad->genreIndex());
 
-    setCurrentPage(m_pSingerLoad->getCurrentPage());
     setSingerTotal(m_pSingerLoad->getTotalPages());
+    setCurrentPage(m_pSingerLoad->getCurrentPage());
 }
 
 void SingerListProc::tagListProc(VectorTable<FirstMenuUnion *> &vec,

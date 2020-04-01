@@ -38,6 +38,5 @@
         <file>image/svg/source.svg</file>
         <file>image/svg/Up.svg</file>
         <file>image/svg/volume.svg</file>
-        <file>image/svg/pause.svg</file>
     </qresource>
 </RCC>

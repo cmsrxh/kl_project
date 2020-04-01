@@ -18,9 +18,22 @@ Item {
     function listAll(cur, nums)
     {
         pageModel.clear();
-        //console.log ("cur =", cur, "nums =", nums)
+        if (nums < 1)
+        {
+            return;
+        } else if (nums < 2)
+        {
+            pageModel.append({pageIndex: "1"})
+            return;
+        }
+
+        // console.log ("cur =", cur, "nums =", nums)
         pageModel.append({pageIndex: "Previous"})
-        if (cur < 2)
+        if (nums < 3)
+        {
+            pageModel.append({pageIndex: "1"})
+            pageModel.append({pageIndex: "2"})
+        } else if (cur < 2)
         {
             pages.currentIndex = 1
             pageModel.append({pageIndex: "1"})
