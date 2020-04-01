@@ -81,7 +81,8 @@ protected:
      * @brief mObjectName
      * @details 基于KlObject派生类的名字，使用枚举表示，用各种异常处理
      */
-    int            mObjectName;
+    int                mObjectName;
+    static CurlLoadArg mCurlArgs;
 };
 
 }

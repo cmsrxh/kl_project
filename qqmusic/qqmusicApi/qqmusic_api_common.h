@@ -15,7 +15,7 @@ namespace qqmusic {
 enum QQMusicObjectName
 {
     OBJECT_NAME_SINGER_LIST,
-
+    OBJECT_NAME_PLAY_LIST_CATEGORY,
 };
 
 //歌手列表中的项
@@ -47,6 +47,14 @@ public:
     }
     int id;
     ByteString name;
+};
+
+//标签
+class CateNode
+{
+public:
+    void clear() {}
+
 };
 
 

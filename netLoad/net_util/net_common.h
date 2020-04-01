@@ -14,6 +14,54 @@ enum
 };
 typedef void (*OpCurlStatus) (int status, void *data, void *arg);
 
+/**
+  "User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+                AppleWebKit/537.36 (KHTML, like Gecko)
+                Chrome/76.0.3809.132
+                Safari/537.36"
+
+有时候发出的https GET/POST 消息不会收到信息，但是数据都是对的，这有时需要在http的协议头上，加上user-agent
+*/
+#ifndef USER_AGENT_STRING
+//#define USER_AGENT_STRING "Chrome/76.0.3809.132"
+#define USER_AGENT_STRING "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+#endif
+
+class CurlLoadItem;
+class CurlLoadArg
+{
+public:
+    CurlLoadArg()
+        : mUserAgent(0)
+        , mReferer(0)
+    {}
+    CurlLoadArg(const char *agent, const char *ref)
+        : mUserAgent(agent)
+        , mReferer(ref)
+    {}
+
+    const char *userAgent()
+    {
+        return  mUserAgent;
+    }
+    void setUserAgent(const char *userAgent)
+    {
+        mUserAgent = userAgent;
+    }
+
+    const char *referer()
+    {
+        return mReferer;
+    }
+    void setReferer(const char *ref)
+    {
+        mReferer = ref;
+    }
+
+private:
+    const char *mUserAgent;
+    const char *mReferer;
+};
 
 #include "cJSON.h"
 #include <stdarg.h>

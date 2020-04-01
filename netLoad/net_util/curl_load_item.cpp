@@ -12,19 +12,7 @@
         } \
     }while(0)
 
-/**
-  "User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64)
-                AppleWebKit/537.36 (KHTML, like Gecko)
-                Chrome/76.0.3809.132
-                Safari/537.36"
-
-有时候发出的https GET/POST 消息不会收到信息，但是数据都是对的，这有时需要在http的协议头上，加上user-agent
-*/
-#ifndef USER_AGENT_STRING
-#define USER_AGENT_STRING "Chrome/76.0.3809.132"
-#endif
-
-CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv, bool needUserAgent)
+CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv, CurlLoadArg *args)
     : m_pCurl(nullptr), m_pPriv(priv)
     , m_pBuffer(nullptr)
     , m_fStatus(fstate)
@@ -61,10 +49,17 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv, b
     }
 
     GEN_Printf(LOG_DEBUG, "string: %s", url.genUrl().string());
-    if (needUserAgent)
+    if (args)
     {
-        my_curl_easy_setopt(m_pCurl, CURLOPT_USERAGENT, USER_AGENT_STRING);
+        if (args->userAgent())
+        {
+            my_curl_easy_setopt(m_pCurl, CURLOPT_USERAGENT, args->userAgent());
+        } else if (args->referer())
+        {
+            my_curl_easy_setopt(m_pCurl, CURLOPT_REFERER, args->referer());
+        }
     }
+
     // my_curl_easy_setopt(m_pCurl, CURLOPT_HTTPGET, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.genUrl().string());
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, CurlLoadItem::writeData);

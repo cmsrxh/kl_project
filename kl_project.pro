@@ -16,7 +16,7 @@ TEMPLATE = subdirs
 #SUBDIRS += player
 
 ## 测试代码，测试qml，图片控件
-SUBDIRS += netImage
+#SUBDIRS += netImage
 
 ## 测试klUI向外提供的接口，主要是使用到考拉的数据搜索功能
 #SUBDIRS += klIface
@@ -25,4 +25,4 @@ SUBDIRS += netImage
 SUBDIRS += qqmusic
 
 # 测试网络接口
-#SUBDIRS += netLoad
+SUBDIRS += netLoad

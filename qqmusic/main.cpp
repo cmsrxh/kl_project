@@ -29,17 +29,17 @@ int main(int argc, char *argv[])
 
     Application::instance()->initialize();
 
-    qmlRegisterSingletonType<QObject> ("Hongjing.HMI.KL", 1, 0, "Controller", controllerProvider);
-    qmlRegisterType<ImageFrameCpp, 1>("ImageFrame", 1, 0, "ImageFrame");
+//    qmlRegisterSingletonType<QObject> ("Hongjing.HMI.KL", 1, 0, "Controller", controllerProvider);
+//    qmlRegisterType<ImageFrameCpp, 1>("ImageFrame", 1, 0, "ImageFrame");
 
-    gInstance->init(engine.rootContext());
+//    gInstance->init(engine.rootContext());
 
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+//    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-    if (engine.rootObjects().isEmpty())
-    {
-        return -1;
-    }
+//    if (engine.rootObjects().isEmpty())
+//    {
+//        return -1;
+//    }
 
     int res = app.exec();
 

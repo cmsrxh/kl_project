@@ -13,7 +13,7 @@ LoadItem::~LoadItem()
 {
 }
 
-bool LoadItem::setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr, bool needUserAgent)
+bool LoadItem::setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr, CurlLoadArg *args)
 {
     try
     {
@@ -22,7 +22,7 @@ bool LoadItem::setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr, bool n
             CurlGlobal::instance()->removeHandler(m_pLoad);
         }
 
-        m_pLoad = new CurlLoadItem(url, fstate, ptr, needUserAgent);
+        m_pLoad = new CurlLoadItem(url, fstate, ptr, args);
 
         if (mIsLoadAll)
         {

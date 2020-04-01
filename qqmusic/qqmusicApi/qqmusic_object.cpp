@@ -3,6 +3,9 @@
 #include "application.h"
 #include "qqmusic_object.h"
 
+CurlLoadArg qqmusic::Object::mCurlArgs = CurlLoadArg("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+                                                     , "https://c.y.qq.com/");
+
 qqmusic::Object::Object(const ByteString &baseUrl, int objectName, int methodType)
     : mUrl(baseUrl, methodType)
     , mLoad(true), m_pUINotify(nullptr)
@@ -31,7 +34,7 @@ bool qqmusic::Object::obtain()
         return true;
     }
 
-    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this);
+    return mLoad.setLoad(genQueryUrl(), loadStatus, (void *)this, &mCurlArgs);
 }
 
 char *qqmusic::Object::genSign(NetUrl &url)

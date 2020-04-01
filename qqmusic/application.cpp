@@ -6,6 +6,7 @@
 //#include "model/local_data_proc.h"
 #include "qqmusicApi/qqmusic_object.h"
 #include "qqmusicApi/qqmusic_singer_list.h"
+#include "qqmusicApi/qqmusic_category.h"
 #include "pop_tip_manage.h"
 #include "current_backup.h"
 #include "application.h"
@@ -18,6 +19,10 @@ void Application::initialize()
 {    
 //    static qqmusic::SingerList singer;
 //    singer.obtain();
+
+    static qqmusic::Category cate;
+
+    cate.obtain();
 
     // 启动收数据线程，并连接播放服务端socket
     // DataProc::instance()->initMedia();
