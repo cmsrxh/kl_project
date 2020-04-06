@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>CateTreeView.qml</file>
+        <file>bottom.svg</file>
+        <file>Forward.svg</file>
+    </qresource>
+</RCC>

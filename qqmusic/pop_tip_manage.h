@@ -17,7 +17,10 @@ public:
     enum LoadAction
     {
         LOAD_MAIN_PAGE,  // 下载主页数据
-        LOAD_NEXT_PAGE,  // 下载下拉数据
+        LOAD_NEXT_PAGE,  // 下载新数据，如：上一页、下一页、新的ID
+
+
+        //old
         LOAD_ALBUM_NORMAL_SHOW,        // 正常加载数据，并显示出来，应用于专辑相关的界面
         LOAD_ALBUM_IN_PLAYVIEW,        // 正常加载的数据，显示在节目列表界面中，用于专辑当前正在播放的列表,发生在当前播放列表已经放完需要后台加载。
         LOAD_BDCPROGRAM_IN_PLAYVIEW,   // 显示广播节目，在节目列表界面上, 然后要自动播放最新的电台节目

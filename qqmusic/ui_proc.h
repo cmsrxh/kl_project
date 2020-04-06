@@ -10,6 +10,7 @@ class QQmlContext;
 class CollectModel;
 class ViewSwitchStack;
 class SingerListProc;
+class CategoryPlaylistProc;
 class UIProc : public QObject
 {
     Q_OBJECT
@@ -151,7 +152,7 @@ private:
     ViewSwitchStack  *m_pViewStack;
 
     SingerListProc   *m_pSingerProc;
-
+    CategoryPlaylistProc *m_pCatePlayProc;
 
     ChipItemModel    *m_pChipItem;
 

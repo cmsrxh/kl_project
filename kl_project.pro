@@ -24,5 +24,8 @@ TEMPLATE = subdirs
 # QQ音乐
 SUBDIRS += qqmusic
 
-# 测试网络接口
-SUBDIRS += netLoad
+## 测试树形列表
+#SUBDIRS += treeView
+
+## 测试网络接口
+#SUBDIRS += netLoad

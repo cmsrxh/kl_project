@@ -7,7 +7,7 @@
 
 CategoryModel::CategoryModel()
     : QAbstractListModel()
-    , mCurIndex(0), m_pCateUnion(nullptr)
+    , mCurIndex(-1), m_pCateUnion(nullptr)
 {
     roles[CATEGORY_NAME] = "ctgname";
 
@@ -36,6 +36,11 @@ CategoryModel::CategoryModel()
 //    mVec.push_back(cate);
 
 #endif
+}
+
+CategoryModel::~CategoryModel()
+{
+    qDebug() << "------Destruct CategoryModel-------";
 }
 
 int CategoryModel::rowCount(const QModelIndex &) const
@@ -79,12 +84,6 @@ void CategoryModel::onLoadOver(long ptr)
     endResetModel();
 }
 
-void CategoryModel::qmlCateTabClick(int index)
-{
-    //qDebug() << "CateTabClick index =" << index;
-    DataProc::instance()->albumFirstClick(index);
-}
-
 QHash<int, QByteArray> CategoryModel::roleNames() const
 {
     return roles;
@@ -98,7 +97,6 @@ void CategoryModel::setCurIndex(int curIndex)
         Q_EMIT curIndexChanged();
     }
 }
-
 
 int CategoryModel::curIndex() const
 {

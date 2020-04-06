@@ -50,6 +50,11 @@ CateItemModel::CateItemModel()
 #endif
 }
 
+CateItemModel::~CateItemModel()
+{
+    qDebug() << "Destruct CateItemModel";
+}
+
 int CateItemModel::rowCount(const QModelIndex &) const
 {
     return mVec.size();
@@ -83,55 +88,19 @@ void CateItemModel::resetAll()
 }
 
 void CateItemModel::onLoadOver(long ptr)
-{   
-    int start = mVec.size();
-
+{       
     if ((long)m_pUnion != ptr || !m_pUnion)
     {
         qWarning() << "Current is not need.";
         return;
     }
 
-    m_pUnion->onLoadOver(this);
+    m_pUnion->dataLoadOver(this);
 
-    qDebug() << "Load over, size = " << mVec.size();
+    qDebug() << "Load over! size = " << mVec.size();
 
-    if (0 == start)
-    {
-        beginResetModel();
-        endResetModel();
-
-        Q_EMIT currenIndexChanged(0);
-    } else
-    {
-        beginInsertRows(QModelIndex(), start, mVec.size() - 1);
-        endInsertRows();
-    }
-}
-
-bool CateItemModel::qmlCtgNextPage()
-{
-    qDebug() << "Category Next Page";
-    return m_pUnion->loadNextPage();
-}
-
-void CateItemModel::qmlClickCategory(int index)
-{
-    qDebug() << "Click Category List Item index =" << index;
-
-    DataProc::instance()->albumSecondClick(index);
-}
-
-void CateItemModel::qmlClickBDCItem(int index, bool isInArea)
-{
-    qDebug() << index << isInArea;
-    DataProc::instance()->bdcSecondItemClick(index, isInArea);
-}
-
-void CateItemModel::qmlClickBDCItemCollect(int index, bool isCollect)
-{
-    qDebug() << index << isCollect;
-    DataProc::instance()->bdcSecondItemCollectClick(index, isCollect);
+    beginResetModel();
+    endResetModel();
 }
 
 QHash<int, QByteArray> CateItemModel::roleNames() const
@@ -151,11 +120,6 @@ void CateItemModel::setCurrenIndex(int currenIndex)
 int CateItemModel::currenIndex() const
 {
     return mCurrenIndex;
-}
-
-bool CateItemModel::haveNext() const
-{
-    return m_pUnion ? m_pUnion->haveNext() : false;
 }
 
 void CateItemModel::setCateItemUnion(CateItemUnion *pUnion)

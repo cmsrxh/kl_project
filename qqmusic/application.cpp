@@ -7,6 +7,7 @@
 #include "qqmusicApi/qqmusic_object.h"
 #include "qqmusicApi/qqmusic_singer_list.h"
 #include "qqmusicApi/qqmusic_category.h"
+#include "qqmusicApi/qqmusic_category_playlist.h"
 #include "pop_tip_manage.h"
 #include "current_backup.h"
 #include "application.h"
@@ -15,14 +16,32 @@ Application::Application()
 {
 }
 
+//OK
+char string1[] = "http://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg?picmid=1&rnd=0.9214369031553655&g_tk=5381&jsonpCallback=getPlaylist&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&categoryId=10000000&sortId=5&sin=0&ein=29";
+//ERROR
+char string2[] = "http://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg?picmid=1?rnd=0.9214369031553655&g_tk=5381&jsonpCallback=getPlaylist&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&categoryId=10000000&sortId=5&sin=0&ein=29";
+
+
 void Application::initialize()
 {    
+    srand(time(NULL));
+//    for (int i = 0; i < sizeof (string1); ++i)
+//    {
+//        if (string1[i] != string2[i])
+//        {
+//            GEN_Printf(LOG_DEBUG, "[%d] %s", i, string1 + i);
+//            break;
+//        }
+//    }
+//    GEN_Printf(LOG_DEBUG, "Result=%d", strcmp(string1, string2));
 //    static qqmusic::SingerList singer;
 //    singer.obtain();
 
-    static qqmusic::Category cate;
-
-    cate.obtain();
+//    static qqmusic::Category cate;
+//    cate.obtain();
+//    sleep(1);
+//    static qqmusic::CategoryPlaylist pl(10000000);
+//    pl.obtain();
 
     // 启动收数据线程，并连接播放服务端socket
     // DataProc::instance()->initMedia();

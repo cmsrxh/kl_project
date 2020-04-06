@@ -1,6 +1,7 @@
 #include <events/common_log.h>
 #include "local_data_proc.h"
 #include "data_proc.h"
+#include "qqmusicApi/qqmusic_category_playlist.h"
 #include "pop_tip_manage.h"
 #include "cate_item_model.h"
 #include "cate_item_union.h"
@@ -13,16 +14,40 @@ CateItemUnion::CateItemUnion(int cid_type, CateItemModel *parent)
 }
 
 CateItemUnion::~CateItemUnion()
-{
-    if (!m_pCateItem) return;
+{    
 }
 
-void CateItemUnion::loadCateItem(int cid_or_type, int bsorttype_or_classfyid, int area_code)
+void CateItemUnion::loadCateItem(int arg1)
 {    
-    GEN_Printf(LOG_DEBUG, "type: %d, cid=%d, handler: %p", mCateItemType, cid_or_type, m_pCateItem);
-    int ret = false;
-    mLoadAction = PopTipManage::LOAD_MAIN_PAGE;
-    PopTipManage::instance()->klObjectObtainStart(ret, mCateItemType, mLoadAction);
+    GEN_Printf(LOG_DEBUG, "type: %d, cid=%d, handler: %p", mCateItemType, arg1, m_pCateItem);
+    switch (mCateItemType)
+    {
+    case CATE_ITEM_CATE_PLAY_LIST:
+    {
+        qqmusic::CategoryPlaylist *cate = 0;
+        if (!m_pCateItem)
+        {
+            cate = new qqmusic::CategoryPlaylist();
+            cate->setUINotify(this);
+        } else
+        {
+            cate = reinterpret_cast<qqmusic::CategoryPlaylist *>(m_pCateItem);
+        }
+        if (cate->isEmpty())
+        {
+            bool ret = cate->obtain();
+            mLoadAction = PopTipManage::LOAD_MAIN_PAGE;
+            PopTipManage::instance()->klObjectObtainStart(ret, mCateItemType, mLoadAction);
+        } else
+        {
+            Q_EMIT m_pParentModel->dataLoadOver((long)this);
+        }
+        break;
+    }
+    default:
+        assert(0);
+        break;
+    }
 }
 
 void CateItemUnion::dataPrepare()
@@ -50,25 +75,25 @@ void CateItemUnion::errorInfo(int type, const ByteString &err_str)
     }
 }
 
-void CateItemUnion::onLoadOver(CateItemModel *model)
+void CateItemUnion::dataLoadOver(CateItemModel *model)
 {
+    switch (mCateItemType)
+    {
+    case CATE_ITEM_CATE_PLAY_LIST:
+        genCateItemByCatePlayList(reinterpret_cast<qqmusic::CategoryPlaylist *>(m_pCateItem)->nodes()
+                                  , model->vec());
+        break;
+    default:
+        break;
     }
+}
 
 bool CateItemUnion::isEmpty()
 {
     bool res = true;
     switch (mCateItemType) {
-    case CATE_ITEM_ALBUM:
-//        res = ((kl::AlbumList *)m_pCateItem)->nodes().empty();
-        break;
-    case CATE_ITEM_OPERATE:
-//        res = ((kl::OperateList *)m_pCateItem)->nodes().empty();
-        break;
-    case CATE_ITEM_TYPE_RADIO:
-//        res = ((kl::TypeRadioList *)m_pCateItem)->nodes().empty();
-        break;
-    case CATE_ITEM_BDCAST:
-//        res = ((kl::BroadcastItemList *)m_pCateItem)->nodes().empty();
+    case CATE_ITEM_CATE_PLAY_LIST:
+        res = reinterpret_cast<qqmusic::CategoryPlaylist *>(m_pCateItem)->isEmpty();
         break;
     default:
         break;
@@ -76,29 +101,17 @@ bool CateItemUnion::isEmpty()
     return res;
 }
 
-bool CateItemUnion::loadNextPage()
+void CateItemUnion::genCateItemByCatePlayList(ListTable<qqmusic::CatePlayList> &nodes, VectorTable<SecondMenuUnion *> &vec)
 {
-    bool ret = false;
-    mLoadAction = PopTipManage::LOAD_NEXT_PAGE;
-
-    if (ret)
+    vec.clearPtr();
+    ListTable<qqmusic::CatePlayList>::iterator it = nodes.begin();
+    for (; it != nodes.end(); ++it)
     {
-        PopTipManage::instance()->klObjectObtainStart(true, mCateItemType, mLoadAction);
+        SecondMenuUnion *tmp = new SecondMenuUnion;
+        tmp->id = it->dissid;
+        tmp->name = it->dissname;
+        tmp->img = it->imgurl;
+
+        vec.push_back(tmp);
     }
-
-    return ret;
-}
-
-int CateItemUnion::page()
-{
-    int ret = 1;
-
-    return ret;
-}
-
-bool CateItemUnion::haveNext()
-{
-    bool ret = false;
-
-    return ret;
 }

@@ -17,6 +17,7 @@ class CategoryModel : public QAbstractListModel
 
 public:
     CategoryModel();
+    ~CategoryModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -43,28 +44,21 @@ public:
         return mVec.empty();
     }
 
-    // property
+    //! 属性获取函数
     int curIndex() const;
-
+    //! 属性设置函数
     void setCurIndex(int curIndex);
 
 public Q_SLOTS:
     void onLoadOver(long ptr);
 
-    // tab标签ID click
-    void qmlCateTabClick(int index);
-
 Q_SIGNALS:
+    //! 数据下载完成通知
     void dataLoadOver(long ptr);
 
-    //
+    //! 当前index通知变化
     void curIndexChanged();
 
-    /**
-     * @brief loadStart
-     * @details 用于消息弹框，表示下载第一次开始
-     */
-    void loadStart();
 protected:
     QHash<int, QByteArray> roleNames() const;
 

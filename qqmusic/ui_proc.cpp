@@ -8,6 +8,7 @@
 #include "model/data_proc.h"
 #include "model/detail_qobject.h"
 #include "singer_list_proc.h"
+#include "category_playlist.h"
 #include "qml_view_switch_stack.h"
 #include "current_backup.h"
 #include "ui_proc.h"
@@ -36,6 +37,7 @@ UIProc::~UIProc()
 void UIProc::init(QQmlContext *ctx)
 {
     m_pSingerProc = new SingerListProc;
+    m_pCatePlayProc = new CategoryPlaylistProc();
 
     // singer list
     ctx->setContextProperty("singerIndexModel", m_pSingerProc->indexHandler());
@@ -45,6 +47,10 @@ void UIProc::init(QQmlContext *ctx)
     ctx->setContextProperty("singerModel", m_pSingerProc->singerListHandler());
     ctx->setContextProperty("singerChildModel", m_pSingerProc->singerChildListHandler());
     ctx->setContextProperty("singerProc", m_pSingerProc);
+
+    //category and play list
+    ctx->setContextProperty("catePlayListProc", m_pCatePlayProc);
+    ctx->setContextProperty("catePlayListModel", m_pCatePlayProc->playListModel());
 
 
     // view switch

@@ -18,8 +18,6 @@ public:
 
     //! 打印当前页信息
     void profile();
-
-
 };
 }
 

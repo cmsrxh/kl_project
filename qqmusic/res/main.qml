@@ -9,6 +9,7 @@ import QtQuick.Window 2.2
 import Hongjing.HMI.KL 1.0 as KL
 import "./status"
 import "./singerList"
+import "./playList"
 
 Window {
     id: application
@@ -17,10 +18,10 @@ Window {
     height: width * 0.618
     flags: Qt.FramelessWindowHint
 
-    SingerList {
+    CatePlayList {
+//    SingerList {
         z: 0
         anchors.fill: parent
-
     }
 
     StatusBar {

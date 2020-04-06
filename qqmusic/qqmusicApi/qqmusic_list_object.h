@@ -99,6 +99,10 @@ public:
     {
         return mNodes.empty();
     }
+    bool isEmpty()
+    {
+        return mNodes.empty();
+    }
 
     virtual int genResult(NetBuffer */*data*/) { return KL_DATA_PRISER_OK; }
 

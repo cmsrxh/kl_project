@@ -23,7 +23,7 @@ void CurlLoadProc::run()
     int res, M = 0, U = -1;
     fd_set R, W, E;
     struct timeval T;
-    GEN_Printf(LOG_DEBUG, "enter load thread.");
+    // GEN_Printf(LOG_DEBUG, "enter load thread.");
     while (1)
     {
         //GEN_Printf(LOG_DEBUG, "--------------");
@@ -31,7 +31,7 @@ void CurlLoadProc::run()
         //GEN_Printf(LOG_DEBUG, "U: %d, L: %ld, M: %d", U, L, M);
         if (0 == U)
         {
-            GEN_Printf(LOG_INFO, "Load exec over !!!");
+            //GEN_Printf(LOG_INFO, "Load exec over !!!");
             break;
         } else
         {
@@ -89,7 +89,7 @@ void CurlLoadProc::run()
     }
     mMtx.unlock();
 
-    GEN_Printf(LOG_DEBUG, "exit load thread.");
+    // GEN_Printf(LOG_DEBUG, "exit load thread.");
 }
 
 void CurlLoadProc::addItem(CurlLoadItem *item)

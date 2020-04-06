@@ -5,6 +5,7 @@ import QtGraphicalEffects 1.0
 Item {
     id: picture
     property alias source: img.source
+    property alias radius: imgMask.radius
 
     ImageFrame {
         id: img

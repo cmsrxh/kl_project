@@ -17,6 +17,7 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv, C
     , m_pBuffer(nullptr)
     , m_fStatus(fstate)
 {
+    ByteString genUrl = url.genUrl();
     CurlGlobal::instance();
 
     if (url.empty() || !fstate)
@@ -48,20 +49,24 @@ CurlLoadItem::CurlLoadItem(const NetUrl &url, OpCurlStatus fstate, void *priv, C
         break;
     }
 
-    GEN_Printf(LOG_DEBUG, "string: %s", url.genUrl().string());
+    // GEN_Printf(LOG_DEBUG, "string[%d]=%s", genUrl.size(), genUrl.string());
     if (args)
     {
+        // GEN_Printf(LOG_DEBUG, "UserAgent: %s, Referer: %s", args->userAgent(), args->referer());
         if (args->userAgent())
         {
             my_curl_easy_setopt(m_pCurl, CURLOPT_USERAGENT, args->userAgent());
-        } else if (args->referer())
+        }
+        if (args->referer())
         {
             my_curl_easy_setopt(m_pCurl, CURLOPT_REFERER, args->referer());
         }
     }
 
+//    my_curl_easy_setopt(m_pCurl, CURLOPT_ACCEPT_ENCODING, "application/json, text/plain");
+
     // my_curl_easy_setopt(m_pCurl, CURLOPT_HTTPGET, 0L);
-    my_curl_easy_setopt(m_pCurl, CURLOPT_URL, url.genUrl().string());
+    my_curl_easy_setopt(m_pCurl, CURLOPT_URL, genUrl.string());
     my_curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, CurlLoadItem::writeData);
     my_curl_easy_setopt(m_pCurl, CURLOPT_HEADER, 0L);
     my_curl_easy_setopt(m_pCurl, CURLOPT_PRIVATE, this);

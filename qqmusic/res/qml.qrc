@@ -28,5 +28,10 @@
         <file>singerList/TagButton.qml</file>
         <file>singerList/TagFlow.qml</file>
         <file>singerList/PageSubFooter.qml</file>
+        <file>playList/CatePlayList.qml</file>
+        <file>playList/CategoryList.qml</file>
+        <file>playList/PlayList.qml</file>
+        <file>playList/PageFooter.qml</file>
+        <file>playList/FilletPictureButton.qml</file>
     </qresource>
 </RCC>

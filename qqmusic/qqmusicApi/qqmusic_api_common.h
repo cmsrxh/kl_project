@@ -10,12 +10,14 @@
 
 #include "common_func/common_func.h"
 #include "net_util/net_common.h"
+#include <util/list_table.h>
 
 namespace qqmusic {
 enum QQMusicObjectName
 {
     OBJECT_NAME_SINGER_LIST,
-    OBJECT_NAME_PLAY_LIST_CATEGORY,
+    OBJECT_NAME_CATEGORY,
+    OBJECT_NAME_CATEGORY_PLAY_LIST,
 };
 
 //歌手列表中的项
@@ -53,8 +55,41 @@ public:
 class CateNode
 {
 public:
-    void clear() {}
+    struct Cate
+    {
+        int categoryId;
+        ByteString categoryName;
+    };
+    void clear()
+    {
+        categoryGroupName.clear();
+        ListTable<Cate>::iterator it = items.begin();
 
+        for (it = items.pop_front(); it != items.end(); it = items.pop_front())
+        {
+            it->categoryName.clear();
+            items.remove(it);
+        }
+    }
+
+    ByteString categoryGroupName;
+    ListTable<Cate> items;
+};
+
+//标签ID，所对应的Playist
+class CatePlayList
+{
+public:
+    void clear()
+    {
+        dissid.clear();
+        dissname.clear();
+        imgurl.clear();
+    }
+
+    ByteString dissid;
+    ByteString dissname;
+    ByteString imgurl;
 };
 
 

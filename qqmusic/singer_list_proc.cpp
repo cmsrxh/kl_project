@@ -3,7 +3,6 @@
 #include "model/category_model.h"
 #include "qqmusicApi/qqmusic_singer_list.h"
 #include "pop_tip_manage.h"
-#include "qqmusicApi/qqmusic_singer_list.h"
 #include "singer_list_proc.h"
 
 SingerListProc::SingerListProc()
