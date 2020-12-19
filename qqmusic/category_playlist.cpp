@@ -83,7 +83,7 @@ void CategoryPlaylistProc::errorInfo(int type, const ByteString &err_str)
         PopTipManage::instance()->sysNetLoadApiExcept(qqmusic::OBJECT_NAME_CATEGORY, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
     default :
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }

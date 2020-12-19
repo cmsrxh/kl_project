@@ -28,7 +28,7 @@ ChipItemUnion::ChipItemUnion(int type)
         break;
     default:
         GEN_Printf(LOG_ERROR, "Media Type = %d is not invalid.", type);
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }
@@ -68,14 +68,14 @@ void ChipItemUnion::errorInfo(int type, const ByteString &err_str)
         PopTipManage::instance()->sysNetLoadApiExcept(mChipType, mLoadAction, err_str);
         break;
     default :
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }
 
 void ChipItemUnion::onLoadOver(ChipItemModel *parent)
 {
-    }
+}
 
 bool ChipItemUnion::isEmpty()
 {

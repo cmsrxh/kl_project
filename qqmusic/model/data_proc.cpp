@@ -3,14 +3,13 @@
 #include "ui_proc.h"
 #include "events/app_timer.h"
 #include "local_data_proc.h"
-#include "iface/media_service_i_face.h"
-#include "iface/media_iface_common.h"
-#include "iface/media_service_call_back.h"
+#include "media_client_proxy.h"
+#include "media_iface_common.h"
+#include "media_service_call_back.h"
 
 #include "application.h"
 #include "current_backup.h"
-#include "../klIface/kl_service_notify.h"
-#include "../klIface/kl_service_priser.h"
+
 
 extern UIProc *gInstance;
 
@@ -56,7 +55,8 @@ DataProc::~DataProc()
 void DataProc::initMedia()
 {
     static MpvMsgPriser i;
-    MediaServiceIFace::instance()->initClientIface(&i);
+    MediaClientProxy::instance()->setCallback(&i);
+    MediaClientProxy::instance()->registerNotifyMsg();
 }
 
 void DataProc::initAlbum(CategoryModel *cate, CateItemModel *cateItem, ChipItemModel *chip, ChipItemModel *player)
@@ -106,7 +106,7 @@ int DataProc::getCurrentShowView()
         } else
         {
             GEN_Printf(LOG_ERROR, "is Not invalid view tab");
-            assert(0);
+            SF_ASSERT(0);
         }
     } else if (1 == mSwitch.mainTabIndex) //表示在我的界面
     {
@@ -120,12 +120,12 @@ int DataProc::getCurrentShowView()
         case 4: return CURRENT_VIEW_IN_SETTING;
         default:
             GEN_Printf(LOG_ERROR, "is Not invalid view tab");
-            assert(0);
+            SF_ASSERT(0);
         }
     } else
     {
         GEN_Printf(LOG_ERROR, "is Not invalid view tab");
-        assert(0);
+        SF_ASSERT(0);
     }
     return -1;
 }
@@ -247,7 +247,7 @@ int DataProc::getPlayThirdIndex(ChipItemModel *model)
         return mPlayPath.chip_item_index;
     } else
     {
-        assert(0);
+        SF_ASSERT(0);
     }
 }
 

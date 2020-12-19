@@ -23,7 +23,7 @@ char string2[] = "http://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg?pi
 
 
 void Application::initialize()
-{    
+{
     srand(time(NULL));
 //    for (int i = 0; i < sizeof (string1); ++i)
 //    {

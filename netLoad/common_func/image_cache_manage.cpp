@@ -27,7 +27,7 @@ void ImageCacheManage::loadImage(const ByteString &imgUrl, ImageStatus *notify)
         GEN_Printf(LOG_ERROR, "general image url is empty");
         return;
     }
-    assert(notify);
+    SF_ASSERT(notify);
 
     mList.push_back(filePath);
 

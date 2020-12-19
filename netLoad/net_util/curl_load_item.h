@@ -94,7 +94,7 @@ public:
 
     bool removeHandler(CurlLoadItem *item);
 
-private:
+public:
     CURLM   *m_pMulti;
 };
 

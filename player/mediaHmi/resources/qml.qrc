@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/multiMedia/Multimedia.js</file>
+        <file>qml/multiMedia/MediaMain.qml</file>
+        <file>qml/multiMedia/MediaMessageBox.qml</file>
+        <file>qml/multiMedia/ButtonPress.qml</file>
+        <file>qml/multiMedia/MediaSlider.qml</file>
+        <file>qml/multiMedia/ScrollBar.qml</file>
+        <file>qml/multiMedia/ScrollFont.qml</file>
+        <file>qml/multiMedia/MediaCtrlLab.qml</file>
+        <file>qml/multiMedia/VideoPlayView.qml</file>
+        <file>qml/multiMedia/MusicPlayView.qml</file>
+        <file>qml/multiMedia/MediaFileListView.qml</file>
+        <file>qml/multiMedia/MediaFileView.qml</file>
+        <file>qml/multiMedia/ImageTravelView.qml</file>
+        <file>qml/multiMedia/PictureCtrlLab.qml</file>
+    </qresource>
+</RCC>

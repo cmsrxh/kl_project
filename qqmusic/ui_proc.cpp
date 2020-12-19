@@ -2,8 +2,8 @@
 #include "model/cate_item_model.h"
 #include "model/chip_item_model.h"
 #include "model/collect_model.h"
-#include "iface/media_service_i_face.h"
-#include "iface/media_iface_common.h"
+#include "media_client_proxy.h"
+#include "media_iface_common.h"
 #include "model/local_data_proc.h"
 #include "model/data_proc.h"
 #include "model/detail_qobject.h"
@@ -63,48 +63,48 @@ void UIProc::init(QQmlContext *ctx)
 
 void UIProc::qmlStart()
 {
-    MediaServiceIFace::instance()->start();
+    MediaClientProxy::instance()->start();
 }
 
 void UIProc::qmlPlay()
 {
-    MediaServiceIFace::instance()->play();
+    MediaClientProxy::instance()->play();
 }
 
 void UIProc::qmlStop()
 {
-    MediaServiceIFace::instance()->stop();
+    MediaClientProxy::instance()->stop();
 }
 
 void UIProc::qmlPause()
 {
-    MediaServiceIFace::instance()->pause();
+    MediaClientProxy::instance()->pause();
 }
 
 void UIProc::qmlReset()
 {
-    MediaServiceIFace::instance()->reset();
+    MediaClientProxy::instance()->reset();
     Q_EMIT playingInfo("", "");
 }
 
 void UIProc::qmlPlayPause()
 {
-    MediaServiceIFace::instance()->playPause();
+    MediaClientProxy::instance()->playPause();
 }
 
 void UIProc::qmlSetFile(const QString &file)
 {
-    MediaServiceIFace::instance()->setFile(file.toStdString().c_str());
+    MediaClientProxy::instance()->setFile(file.toStdString().c_str());
 }
 
 void UIProc::qmlSeekTo(long msec, int mode)
 {
-    MediaServiceIFace::instance()->seekTo(msec, mode);
+    MediaClientProxy::instance()->seekTo(msec, mode);
 }
 
 int UIProc::qmlGetCurrentPosition()
 {
-    mCurPosition = MediaServiceIFace::instance()->getCurrentPosition();
+    mCurPosition = MediaClientProxy::instance()->getCurrentPosition();
 
     if (mCurDuring < 1)
     {
@@ -119,7 +119,7 @@ int UIProc::qmlGetCurrentPosition()
 
 int UIProc::qmlGetDuration()
 {    
-    mCurDuring =  mDuringBase ? (mDuringBase - mPositionBase) : MediaServiceIFace::instance()->getDuration();
+    mCurDuring =  mDuringBase ? (mDuringBase - mPositionBase) : MediaClientProxy::instance()->getDuration();
 
     if (mCurDuring >= mCacheValue)
     {
@@ -329,5 +329,5 @@ bool UIProc::isAudioView()
 void UIProc::setSourceUrl(const char *url)
 {
     // qDebug() << url;
-    MediaServiceIFace::instance()->setFile(url);
+    MediaClientProxy::instance()->setFile(url);
 }

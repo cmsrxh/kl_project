@@ -67,7 +67,7 @@ void qqmusic::Object::loadStatus(int status, void *data, void *arg)
             Application::instance()->postEvent(SIG_KL_COLLECT_ERR_OBJECT, (long)arg);
             break;
         default:
-            assert(0);
+            SF_ASSERT(0);
             break;
         }       
         break;

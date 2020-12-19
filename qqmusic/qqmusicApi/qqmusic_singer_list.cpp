@@ -43,7 +43,7 @@ NetUrl &qqmusic::SingerList::genQueryUrl()
     if (ret <= 0 || ret >= (int)(sizeof(mDataBuffer) - 1))
     {
         GEN_Printf(LOG_ERROR, "General signer list data param failed !");
-        assert(0);
+        SF_ASSERT(0);
     }
     mDataString.clear();
 

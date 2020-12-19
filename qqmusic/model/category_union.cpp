@@ -19,7 +19,7 @@ CategoryUnion::~CategoryUnion()
 void CategoryUnion::loadCategory(int cate_type, int cid)
 {
     bool ret = false;
-    assert(mCateType == cate_type);
+    SF_ASSERT(mCateType == cate_type);
 
     }
 
@@ -43,7 +43,7 @@ void CategoryUnion::errorInfo(int type, const ByteString &err_str)
         PopTipManage::instance()->sysNetLoadApiExcept(mCateType, PopTipManage::LOAD_MAIN_PAGE, err_str);
         break;
     default :
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }

@@ -59,6 +59,7 @@ void LoadItem::loadStatus(int status, void *data, void *arg)
     {
     case OP_CURL_STATUS_LOAD_ALL_OVER:      // 表示数据下载全部一次性返回了
         static_cast<LoadItem *>(arg)->loadOver();
+        GEN_Printf(LOG_DEBUG, "-------------------");
         static_cast<LoadItem *>(arg)->allDataObtain(static_cast<NetBuffer *>(data));
         break;
     case OP_CURL_STATUS_LOAD_ONE_FRAME:     // 表示数据下载方式按照块来计算，有多少数据就来多少

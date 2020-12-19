@@ -45,7 +45,7 @@ void CateItemUnion::loadCateItem(int arg1)
         break;
     }
     default:
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }
@@ -70,7 +70,7 @@ void CateItemUnion::errorInfo(int type, const ByteString &err_str)
         PopTipManage::instance()->sysNetLoadApiExcept(mCateItemType, mLoadAction, err_str);
         break;
     default :
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }

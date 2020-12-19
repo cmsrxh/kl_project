@@ -50,7 +50,7 @@ void DetailUnion::errorInfo(int type, const ByteString &err_str)
         PopTipManage::instance()->sysNetLoadApiExcept(mDetailType, mLoadAction, err_str);
         break;
     default :
-        assert(0);
+        SF_ASSERT(0);
         break;
     }
 }
