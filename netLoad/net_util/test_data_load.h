@@ -7,10 +7,11 @@ class TestDataLoad : public LoadItem
 {
 public:
     TestDataLoad();
+    ~TestDataLoad();
 
     void start();
 
-    void allDataObtain(uint8_t *data, size_t len);
+    void allDataObtain(NetBuffer */*data*/);
 
     void errorInfo(int type, const char *str);
 };

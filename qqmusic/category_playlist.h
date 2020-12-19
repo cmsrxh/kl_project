@@ -25,6 +25,7 @@ class CategoryPlaylistProc : public QObject, public UINotifyIface
     //! 专辑标签列表
     Q_PROPERTY(QStringList cateList READ cateList  NOTIFY cateListChanged)
 
+    //! @warning qml可能传递负数，造成数组越界
     Q_PROPERTY(QList<QObject *> cateSubs READ cateSubs NOTIFY cateSubsChanged)
 
 public:

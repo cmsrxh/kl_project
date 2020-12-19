@@ -18,9 +18,12 @@ LIBS += -L$$HOME/framework/$$PLATFORM/lib
 LIBS += -levents_core -levents_log -levents_util -lpthread
 
 # Input
-HEADERS += app_common.h application.h 
+HEADERS += app_common.h application.h \
+        $$PWD/net_util/test_data_load.h
 
 
-SOURCES += application.cpp main.cpp 
+SOURCES += application.cpp main.cpp \
+        $$PWD/net_util/test_data_load.cpp \
+
 
 include(netLoad.pri)

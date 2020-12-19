@@ -20,8 +20,14 @@ public:
      * @details true 表示需要用到 allDataObtain
      *          false 表示需要用到 oneFrameObtain和oneFrameObtainOver
      */
-    LoadItem(bool = true);
-    virtual ~LoadItem();
+    LoadItem();
+    LoadItem(bool isAll);
+    /**
+     * @warning 此处加上‘virtual’kaola应用中的qq_ip_positioning直接继承这个父类，程序立马段错误，发生各种意想不到的越界错误
+     *  只要去掉virtual 立马就没有错误了
+     *  但是在其他测试程序中测试，却未发生错误。？？？？？？
+     */
+    /*virtual*/ ~LoadItem();
 
     /*********************方式一********************/
     /**
@@ -33,7 +39,7 @@ public:
      * @return 是否成功
      * @details 设置参数，并执行下载
      */
-    bool setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr, CurlLoadArg *args = 0);
+    bool setLoad(const NetUrl &url, OpCurlStatus fstate, void *ptr, CurlLoadArg *args = nullptr);
 
     /**
      * @brief cancel
@@ -86,7 +92,7 @@ public:
      * @param len [out]
      * @details 表示一次性回调给的所有数据, 根据构造函数传递的参数是true
      */
-    virtual void allDataObtain(NetBuffer */*data*/) {}
+    virtual void allDataObtain(NetBuffer */*data*/);
 
     /**
      * @brief oneFrameObtain
@@ -95,19 +101,19 @@ public:
      * @details 表示传递的是整个下载过程中的一帧/一小块的数据，当构造传递的参数是false
      * 与oneFrameObtainOver函数搭配使用，构成真个下载流程
      */
-    virtual void oneFrameObtain(NetBuffer */*data*/) {}
+    virtual void oneFrameObtain(NetBuffer */*data*/);
     /**
      * @brief oneFrameObtainOver
      * @details 便是块数据下载完成，与oneFrameObtain函数搭配使用
      */
-    virtual void oneFrameObtainOver() {}
+    virtual void oneFrameObtainOver();
 
     /**
      * @brief errorInfo
      * @param type [out] libcurl库的错误类型
      * @param str [out] 对应错误的解释
      */
-    virtual void errorInfo(int /*type*/, const char */*str*/) {}
+    virtual void errorInfo(int /*type*/, const char */*str*/);
 private:    
     CurlLoadItem  *m_pLoad;
     bool           mIsLoadAll;

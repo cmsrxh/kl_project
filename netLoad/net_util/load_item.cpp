@@ -3,10 +3,17 @@
 #include "curl_load_proc.h"
 #include "load_item.h"
 
+LoadItem::LoadItem()
+    : m_pLoad(nullptr)
+    , mIsLoadAll(true)
+{
+GEN_Printf(LOG_DEBUG, "----------------------------");
+}
+
 LoadItem::LoadItem(bool isAll)
     : m_pLoad(nullptr)
     , mIsLoadAll(isAll)
-{    
+{
 }
 
 LoadItem::~LoadItem()
@@ -87,3 +94,11 @@ bool LoadItem::obtain(const NetUrl &url)
 
     return setLoad(url, LoadItem::loadStatus, (void *)this);
 }
+
+void LoadItem::allDataObtain(NetBuffer *) {}
+
+void LoadItem::oneFrameObtain(NetBuffer *) {}
+
+void LoadItem::oneFrameObtainOver() {}
+
+void LoadItem::errorInfo(int, const char *) {}

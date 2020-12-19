@@ -1,7 +1,7 @@
 #include "events/common_log.h"
 #include "app_common.h"
 #include "net_util/http_util.h"
-
+#include "net_util/test_data_load.h"
 #include "application.h"
 
 Application::Application()
@@ -43,14 +43,19 @@ static void test3()
 
 void Application::initialize()
 {
-    test1();
-    test2();
-    test3();
+//    test1();
+//    test2();
+//    test3();
 
 //    ByteString uri;
 //    HttpUtil::urlEncoding("!~ +=46>.://=&?<-A-陈猛-dgdsz.+-*/+-", uri);
 //    GEN_Printf(LOG_DEBUG, "%s", uri.string());
 //    uri.clear();
+
+    TestDataLoad *n = new  TestDataLoad;
+    LoadItem *i = n;
+    GEN_Printf(LOG_DEBUG, "----------------------------");
+    delete i;
 
     exit(1);
 #ifdef PLATFORM_HMI

@@ -26,8 +26,7 @@
 Application::Application()
     : m_pKLInit(NULL), m_pKLActive(NULL)
     , m_pPositionArea(new kl::AreaItem)
-{
-    GEN_Printf(LOG_DEBUG, "Application: %p", this);
+{    
 #ifdef USE_MPV_API_INTERFACE
     setlocale(LC_NUMERIC, "C");
 #endif
@@ -52,7 +51,6 @@ void Application::initialize()
     // postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
     this->start();
-    GEN_Printf(LOG_DEBUG, "----------%p------------", this);
 
     m_pPositionArea->id   = LocalConfig::instance()->getValue("location", "id");
     m_pPositionArea->name = LocalConfig::instance()->getValue("location", "name");
@@ -221,7 +219,7 @@ void Application::klInitGetOpenId()
 void Application::positioningManage(long qqPtr)
 {
     kl::AreaItem    area;
-    GEN_Printf(LOG_DEBUG, "----------------------");
+
     QQIPPositioning *ipPos = reinterpret_cast<QQIPPositioning *>(qqPtr);
 
     if (ipPos->locationValid())

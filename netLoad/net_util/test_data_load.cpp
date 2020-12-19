@@ -4,7 +4,12 @@
 TestDataLoad::TestDataLoad()
     : LoadItem(true)
 {
+    GEN_Printf(LOG_DEBUG, "----------------------------");
+}
 
+TestDataLoad::~TestDataLoad()
+{
+    GEN_Printf(LOG_DEBUG, "----------------------------");
 }
 
 void TestDataLoad::start()
@@ -12,9 +17,9 @@ void TestDataLoad::start()
     obtain(NetUrl("www.baidu.com"));
 }
 
-void TestDataLoad::allDataObtain(uint8_t *data, size_t len)
+void TestDataLoad::allDataObtain(NetBuffer *data)
 {
-    GEN_Printf(LOG_DEBUG, "Load Legnth: %ld\n %s", len, (char *)data);
+    GEN_Printf(LOG_DEBUG, "Load Legnth: %ld\n %s", data->size(), data->buffer());
 }
 
 void TestDataLoad::errorInfo(int type, const char *str)

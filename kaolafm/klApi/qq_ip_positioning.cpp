@@ -80,9 +80,7 @@ bool QQIPPositioning::obtain()
 }
 
 void QQIPPositioning::allDataObtain(NetBuffer *data)
-{
-    GEN_Printf(LOG_DEBUG, "----------%p---------", data);
-    return;
+{    
     //GEN_Printf(LOG_DEBUG, "[%d]=%s", data->size(), data->buffer());
     //printf("%s\n", bytes);
     cJSON *result, *ad_info, *location;
