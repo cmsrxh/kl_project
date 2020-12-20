@@ -484,7 +484,6 @@ void KLDataProc::bdcFirstCateTabClick(int index)
             GEN_Printf(LOG_WARN, "ID num is empty, %s.", bdcCate->hasSub.string());
             if (0 == index) // 需要定位当前位置
             {
-                GEN_Printf(LOG_DEBUG, "----------------------");
                 (new QQIPPositioning)->obtain();
             }
             return;

@@ -1,14 +1,12 @@
 #ifndef QQ_IP_POSITIONING_H
 #define QQ_IP_POSITIONING_H
 
-#include "app_common.h"
-#include "net_util/net_url.h"
 #include "net_util/load_item.h"
 
 class QQIPPositioning : public LoadItem
 {
 public:
-    QQIPPositioning();
+    explicit QQIPPositioning();
     ~QQIPPositioning();
 
     bool obtain();
