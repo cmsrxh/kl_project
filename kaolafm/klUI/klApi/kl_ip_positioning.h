@@ -2,12 +2,12 @@
 #define QQ_IP_POSITIONING_H
 
 #include "net_util/load_item.h"
-
-class QQIPPositioning : public LoadItem
+namespace kl {
+class IPPositioning : public LoadItem
 {
 public:
-    explicit QQIPPositioning();
-    ~QQIPPositioning();
+    explicit IPPositioning();
+    ~IPPositioning();
 
     bool obtain();
 
@@ -69,4 +69,5 @@ private:
     ByteString mMessage;   // 获取错误的信息
 };
 
+}
 #endif // QQ_IP_POSITIONING_H

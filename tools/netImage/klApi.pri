@@ -1,7 +1,7 @@
-HOME     = $$getenv("HOME")
-APISRC   = ../klApi
 
-INCLUDEPATH += ../klApi
+APISRC   = $${PWD}/../../kaolafm/klApi
+
+INCLUDEPATH += $${PWD}/../../kaolafm/klApi
 
 HEADERS += \
     $$APISRC/kl_url/kl_object.h \

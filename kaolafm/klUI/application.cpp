@@ -20,8 +20,8 @@
 #include "kl_record_manage.h"
 #include "kl_search_manage.h"
 #include "current_backup.h"
-#include "qq_ip_positioning.h"
-#include "application.h"
+#include "kl_ip_positioning.h"
+#include <application.h>
 
 Application::Application()
     : m_pKLInit(NULL), m_pKLActive(NULL)
@@ -50,7 +50,7 @@ void Application::initialize()
     // 启动收数据线程，并连接播放服务端socket
     // postCmd(SIG_SOCKET_CLIENT_MSG_EXIT);
 
-    this->start();
+    SF_ASSERT(this->start());
 
     m_pPositionArea->id   = LocalConfig::instance()->getValue("location", "id");
     m_pPositionArea->name = LocalConfig::instance()->getValue("location", "name");
@@ -58,13 +58,13 @@ void Application::initialize()
 
 void Application::run()
 {
-   const QEvt *evt;
+    const QEvt *evt;
 
     setName("Events/Core");
     initThreadPrivate();
 
     GEN_Printf(LOG_DEBUG, "event loop is started");
-    while(getMessage(evt))
+    while (getMessage(evt))
     {
         switch (evt->sig)
         {
@@ -220,7 +220,9 @@ void Application::positioningManage(long qqPtr)
 {
     kl::AreaItem    area;
 
-    QQIPPositioning *ipPos = reinterpret_cast<QQIPPositioning *>(qqPtr);
+    kl::IPPositioning *ipPos = reinterpret_cast<kl::IPPositioning *>(qqPtr);
+
+    ipPos->profile();
 
     if (ipPos->locationValid())
     {

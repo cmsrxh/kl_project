@@ -19,7 +19,7 @@
 #include "media_client_proxy.h"
 #include "media_iface_common.h"
 #include "media_service_call_back.h"
-#include "qq_ip_positioning.h"
+#include "kl_ip_positioning.h"
 #include "application.h"
 #include "current_backup.h"
 #include "../klIface/kl_service_notify.h"
@@ -484,7 +484,7 @@ void KLDataProc::bdcFirstCateTabClick(int index)
             GEN_Printf(LOG_WARN, "ID num is empty, %s.", bdcCate->hasSub.string());
             if (0 == index) // 需要定位当前位置
             {
-                (new QQIPPositioning)->obtain();
+                (new kl::IPPositioning)->obtain();
             }
             return;
         }

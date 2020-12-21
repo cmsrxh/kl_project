@@ -26,7 +26,7 @@ LIBS += -levents_core -levents_log -levents_util -lpthread
 
 
 #kl所有的数据加载API
-include(../klApi/klApi.pri)
+include(klApi/klApi.pri)
 
 #下载数据相关一些功能统集
 #include(../netLoad/netLoad.pri)
@@ -38,13 +38,12 @@ INCLUDEPATH += $${PWD}/../../netLoad
 #include(../playerClient/playerClient.pri)
 INCLUDEPATH += $${PWD}/../../player/iface
 
-LIBS        += -L$${PWD}/../../target/lib
-LIBS        += -lnetLoad  -lplayerIpcIface
-LIBS        += -lcurl -lssl -lcrypto
-
 #kl作为服务端接口，给各种需要调用kl功能的APP使用
 include(../klIface/klServiceIface.pri)
 
+LIBS        += -L$${PWD}/../../target/lib
+LIBS        += -lplayerIpcIface
+LIBS        += -lnetLoad -lcurl -lssl -lcrypto
 
 # Input
 HEADERS += application.h \

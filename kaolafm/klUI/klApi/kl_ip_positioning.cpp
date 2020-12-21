@@ -1,7 +1,7 @@
 #include <events/common_log.h>
 #include <openssl/md5.h>
 #include <application.h>
-#include "qq_ip_positioning.h"
+#include "kl_ip_positioning.h"
 
 #define Secret_key "6QgCuGQFVBJizbqTwoZ6eYYxab6ssJ"
 #define QQ_API_KEY "EHGBZ-F7GKJ-4YEFC-FU3KK-7JHRK-B2BJM"
@@ -35,7 +35,7 @@ md5("/ws/geocoder/v1?key=5Q5BZ-5EVWJ-SN5F3-*****&location=28.7033487,115.8660847
 https://apis.map.qq.com/ws/geocoder/v1?key=5Q5BZ-5EVWJ-SN5F3-K6QBZ-B3FAO-*****&location=28.7033487,115.8660847&sig=90da272bfa19122547298e2b0bcc0e50
 注意：计算 sig 要使用原始参数值，不要进行任何编码，但最终发送时的参数，是需要时行url编码的
 */
-QQIPPositioning::QQIPPositioning()
+kl::IPPositioning::IPPositioning()
     : mUrl("https://apis.map.qq.com/ws/location/v1/ip/", NetUrl::NET_HTTP_METHOD_GET)
 {
     unsigned char sign_bytes[16];
@@ -69,17 +69,17 @@ QQIPPositioning::QQIPPositioning()
     mUrl.append("sig", mSignature);
 }
 
-QQIPPositioning::~QQIPPositioning()
+kl::IPPositioning::~IPPositioning()
 {
     clear();
 }
 
-bool QQIPPositioning::obtain()
+bool kl::IPPositioning::obtain()
 {
     return LoadItem::obtain(mUrl);
 }
 
-void QQIPPositioning::allDataObtain(NetBuffer *data)
+void kl::IPPositioning::allDataObtain(NetBuffer *data)
 {    
     //GEN_Printf(LOG_DEBUG, "[%d]=%s", data->size(), data->buffer());
     //printf("%s\n", bytes);
@@ -126,13 +126,13 @@ end:
     Application::instance()->postKlEvent(SIG_LOCATION_POSITIONING, (long)this);
 }
 
-void QQIPPositioning::errorInfo(int type, const char *str)
+void kl::IPPositioning::errorInfo(int type, const char *str)
 {
     GEN_Printf(LOG_ERROR, "type=%d, error: %s", type, str);
     Application::instance()->postKlEvent(SIG_LOCATION_POSITIONING, (long)this);
 }
 
-void QQIPPositioning::profile()
+void kl::IPPositioning::profile()
 {
     GEN_Printf(LOG_DUMP, "上网IP: %s", mIp.string());
     GEN_Printf(LOG_DUMP, "国家: %s", mNation.string());

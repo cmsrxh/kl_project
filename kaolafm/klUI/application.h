@@ -26,10 +26,10 @@ class AreaItem;
 class Application : public SFLoop, public SimpleThread
 {
 public:
-    inline static Application *instance()
+    static Application *instance()
     {
-        static Application i;
-        return &i;
+        static Application *i = [] { return new Application; } ();
+        return i;
     }
     void initialize();
 

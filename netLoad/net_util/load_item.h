@@ -26,8 +26,10 @@ public:
      * @warning 此处加上‘virtual’kaola应用中的qq_ip_positioning直接继承这个父类，程序立马段错误，发生各种意想不到的越界错误
      *  只要去掉virtual 立马就没有错误了
      *  但是在其他测试程序中测试，却未发生错误。？？？？？？
+     *  解决: 发现是头文件包含出现偏差"app_common.h", klUI当前目录中,没有这个文件,在klApi有这个文件,
+     *       当编译查找这个头文件的时候,其实找到了netLoad目录下的头文件
      */
-    /*virtual*/ ~LoadItem();
+    virtual ~LoadItem();
 
     /*********************方式一********************/
     /**

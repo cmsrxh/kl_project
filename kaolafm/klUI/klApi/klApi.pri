@@ -1,6 +1,6 @@
 HOME     = $$getenv("HOME")
 
-INCLUDEPATH += ../klApi
+INCLUDEPATH += klApi
 
 HEADERS += \    
     $$PWD/kl_url/kl_active_manage.h \
@@ -33,7 +33,7 @@ HEADERS += \
     $$PWD/kl_save_record.h \
     $$PWD/kl_download_manage.h \    
     $$PWD/kl_search_manage.h \
-    $$PWD/qq_ip_positioning.h
+    $$PWD/kl_ip_positioning.h
 
 SOURCES += \    
     $$PWD/kl_url/kl_active_manage.cpp \
@@ -61,4 +61,4 @@ SOURCES += \
     $$PWD/kl_save_record.cpp \
     $$PWD/kl_download_manage.cpp \    
     $$PWD/kl_search_manage.cpp \
-    $$PWD/qq_ip_positioning.cpp
+    $$PWD/kl_ip_positioning.cpp
