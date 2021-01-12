@@ -1,0 +1,50 @@
+#ifndef PAGE_SIMPLE_H
+#define PAGE_SIMPLE_H
+
+#include <global/win_global_common.h>
+#include <util/queue_container_inc.h>
+
+/**
+ * @brief The PageSimple class
+ * @note 窗口队列处理
+ */
+class PageSimple
+{
+public:
+    class WinNode
+    {
+    public:
+        WinNode()
+            : winId(WIN_TYPE_INVALID)
+            , winArg(0)
+        {}
+        WinNode(int id, long arg)
+            : winId(id)
+            , winArg(arg)
+        {}
+
+        bool operator==(WinNode &n)
+        {
+            return (winId == n.winId &&
+                    winArg == n.winArg) ? true
+                                        : false;
+        }
+
+        int winId;
+        int winArg;
+    };
+
+    PageSimple();
+
+    void push(int winId, int winArg);
+
+    int  pop();
+
+    void clean();
+    
+private:
+    QueueContainerInc <WinNode> queue;
+    ListTable<WinNode>         &mList;
+};
+
+#endif // PAGE_SIMPLE_H

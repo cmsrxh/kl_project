@@ -7,10 +7,11 @@ SUBDIRS += netLoad/netLoadLib.pro
 #SUBDIRS += player/mediaPlayer.pro
 
 ## kaolaFM
-SUBDIRS += kaolafm/kaolafm.pro
+#SUBDIRS += kaolafm/kaolafm.pro
 
 # QQ音乐
-#SUBDIRS += qqmusic
+SUBDIRS += qqmusic
+SUBDIRS += qqmusic.new/qqmusic.new.pro
 
 ## 测试树形列表
 #SUBDIRS += tools/treeView
@@ -20,4 +21,4 @@ SUBDIRS += kaolafm/kaolafm.pro
 #SUBDIRS += tools/netNotify
 ## 测试代码，测试qml，图片控件
 #SUBDIRS += tools/netImage
-SUBDIRS += tools/testLoadItem/testLoadItem.pro
+#SUBDIRS += tools/testLoadItem/testLoadItem.pro

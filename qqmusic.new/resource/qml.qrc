@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/ViewManager.qml</file>
+        <file>qml/LayerManage.qml</file>
+        <file>qml/public/TextButton.qml</file>
+        <file>qml/public/ButtonPress.qml</file>
+        <file>qml/public/CommonSlider.qml</file>
+        <file>qml/public/ScrollBar.qml</file>
+        <file>qml/public/ScrollFont.qml</file>
+        <file>qml/public/MsgBoxBase.qml</file>
+        <file>qml/home/GlobalMsgLoader.qml</file>
+        <file>qml/home/Global.qml</file>
+        <file>qml/setting/update/VerifySuccess.qml</file>
+        <file>qml/setting/update/UpdateFileNothing.qml</file>
+        <file>qml/setting/update/UpdateBoxBase.qml</file>
+        <file>qml/setting/update/SliderMsgBox.qml</file>
+        <file>qml/setting/update/MsgBuffering.qml</file>
+        <file>qml/setting/update/McuUpdateSuccess.qml</file>
+        <file>qml/setting/update/FailedUpdateMcu.qml</file>
+        <file>qml/setting/update/FailedSign.qml</file>
+        <file>qml/setting/update/CheckNewVersion.qml</file>
+        <file>qml/MainView.qml</file>
+        <file>qml/home/TopBar.qml</file>
+        <file>qml/home/DockBar.qml</file>
+        <file>qml/home/DropDownDock.qml</file>
+        <file>qml/home/DropDownBgCtrl.qml</file>
+        <file>qml/home/HomeView.qml</file>
+        <file>qml/home/HomeView2.qml</file>
+        <file>qml/home/HomeView3.qml</file>
+        <file>qml/singerList/TagsView.qml</file>
+        <file>qml/singerList/TagFlow.qml</file>
+        <file>qml/singerList/TagButton.qml</file>
+        <file>qml/singerList/SingerList.qml</file>
+        <file>qml/singerList/PageSubFooter.qml</file>
+        <file>qml/singerList/PageFooter.qml</file>
+        <file>qml/playList/PlayList.qml</file>
+        <file>qml/playList/PageFooter.qml</file>
+        <file>qml/playList/FilletPictureButton.qml</file>
+        <file>qml/playList/CatePlayList.qml</file>
+        <file>qml/playList/CategoryList.qml</file>
+        <file>qml/public/RoundPictureButton.qml</file>
+        <file>qml/public/RoundPicture.qml</file>
+    </qresource>
+</RCC>
