@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import "../tool"
+import "../public"
 
 Item {
     Component.onCompleted: {
@@ -69,6 +69,6 @@ Item {
         anchors.right: singerList.right
         anchors.top: singerList.top
 
-        bgSrc: "qrc:/image/scrollBar.png"
+        bgSrc: "qrc:/image/public/scrollBar.png"
     }
 }

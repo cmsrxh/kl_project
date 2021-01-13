@@ -50,7 +50,7 @@ void PageQmlItem::qmlItemOver()
 {
     qDebug() << "construct over, show first";
 
-    createPage(WinSwitchInfo(WIN_TYPE_ONE));
+    createPage(WinSwitchInfo(WIN_TYPE_TWO));
 }
 
 void PageQmlItem::setCurrentCreateResult(QObject *comp, QObject *item)

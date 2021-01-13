@@ -10,7 +10,7 @@ Flow {
     Repeater {
         id: repeater
         property int cancelIndex: -1
-        model: singerIndexModel
+
         anchors.fill: parent
         TagButton
         {
