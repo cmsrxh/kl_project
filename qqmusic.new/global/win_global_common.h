@@ -5,9 +5,9 @@
 enum GlobalWinType {
     WIN_TYPE_INVALID = -1,
 
-    WIN_TYPE_ONE,
-    WIN_TYPE_TWO,
-    WIN_TYPE_THREE,
+    WIN_TYPE_CatePlayList,
+    WIN_TYPE_SingerList,
+    WIN_TYPE_,
 
     WIN_TYPE_MAX,
 };
@@ -32,7 +32,6 @@ public:
     GlobalWinType type;
     long          arg;
 };
-
 
 #endif // WIN_GLOBAL_COMMON_H_
 

@@ -25,9 +25,6 @@
         <file>qml/home/DockBar.qml</file>
         <file>qml/home/DropDownDock.qml</file>
         <file>qml/home/DropDownBgCtrl.qml</file>
-        <file>qml/home/HomeView.qml</file>
-        <file>qml/home/HomeView2.qml</file>
-        <file>qml/home/HomeView3.qml</file>
         <file>qml/singerList/TagsView.qml</file>
         <file>qml/singerList/TagFlow.qml</file>
         <file>qml/singerList/TagButton.qml</file>
@@ -41,5 +38,9 @@
         <file>qml/playList/CategoryList.qml</file>
         <file>qml/public/RoundPictureButton.qml</file>
         <file>qml/public/RoundPicture.qml</file>
+        <file>qml/home/RightLabel.qml</file>
+        <file>qml/home/LeftLabel.qml</file>
+        <file>qml/public/LineCtrl.qml</file>
+        <file>qml/public/MainPageBase1.qml</file>
     </qresource>
 </RCC>

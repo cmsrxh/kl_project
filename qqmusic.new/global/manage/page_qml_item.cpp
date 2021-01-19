@@ -11,10 +11,13 @@ PageQmlItem::PageQmlItem()
     : mCurrentItem(Q_NULLPTR), mNeedShowItem(Q_NULLPTR)
     , mFactory(new PagesFactory)
 {
-    connect(PagesManager::instance(), SIGNAL(notifyPageId(WinSwitchInfo)), this, SLOT(onPageChanged(WinSwitchInfo)));
-    connect(PagesManager::instance(), SIGNAL(notifyBack()), this, SLOT(onBack()));
+    PagesManager *instance = PagesManager::instance();
+    connect(instance, SIGNAL(notifyPageId(WinSwitchInfo)), this, SLOT(onPageChanged(WinSwitchInfo)));
+    connect(instance, SIGNAL(notifyBack()), this, SLOT(onBack()));
 
     connect(this, SIGNAL(createFailed(int,QString)), PagesManager::instance(), SLOT(onCreateFailed(int,QString)));
+
+    instance->setPageQml(this);
 }
 
 QObject *PageQmlItem::getNeedShowItem()
@@ -39,7 +42,7 @@ void PageQmlItem::onBack()
 
         mFactory->backCurrent(win);
 
-        show(node);
+        show(node, win.winArg);
     } else
     {
         GEN_Printf(LOG_DEBUG, "show is empty.");
@@ -50,7 +53,7 @@ void PageQmlItem::qmlItemOver()
 {
     qDebug() << "construct over, show first";
 
-    createPage(WinSwitchInfo(WIN_TYPE_TWO));
+    createPage(WinSwitchInfo(WIN_TYPE_SingerList));
 }
 
 void PageQmlItem::setCurrentCreateResult(QObject *comp, QObject *item)
@@ -73,7 +76,7 @@ void PageQmlItem::createPage(WinSwitchInfo const &info)
     {
         mFactory->windowSwitch(info);
 
-        show(node);
+        show(node, info.arg);
     } else
     {
         qDebug() << "c++" << node.url;
@@ -93,7 +96,7 @@ void PageQmlItem::createPage(WinSwitchInfo const &info)
 
             mFactory->windowSwitch(info);
 
-            show(node);
+            show(node, info.arg);
         } else
         {
             qCritical() << "create '" << node.url << "' failed.";
@@ -115,7 +118,7 @@ void PageQmlItem::createPage(WinSwitchInfo const &info)
 #endif
 }
 
-void PageQmlItem::show(const PagesFactory::Node &node)
+void PageQmlItem::show(const PagesFactory::Node &node, long arg)
 {
     if (node.item == mCurrentItem)
     {
@@ -136,13 +139,21 @@ void PageQmlItem::show(const PagesFactory::Node &node)
     {
         mNeedShowItem = node.item;
         QMetaObject::invokeMethod(this, "animateShow", Q_ARG(QVariant, true));
-        // 被qml中的属性赋值
+        // 'mCurrentItem' 被qml中的属性赋值
         // qDebug() << "animal show.";
     } else
     {
         node.item->setVisible(true);
         mCurrentItem = node.item;
     }
+
+    //qDebug() << "----set property: 'argvalue'" << arg;
+    // 设置qml中的属性值,只有在当前值与原来值发生变化的时候才会有信号通知出来
+    mCurrentItem->setProperty("argvalue", QVariant((int)arg));
+
+    // 调用具体窗口的信号函数
+    //QMetaObject::invokeMethod(mCurrentItem, "nextPage", Q_ARG(QVariant, 12));
+    //Q_EMIT mCurrentItem->nextPage(12);
 #endif
 
     Q_EMIT PagesManager::instance()->pageChanged(mFactory->getPrev(), mFactory->getCurrent());

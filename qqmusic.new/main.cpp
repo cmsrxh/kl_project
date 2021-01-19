@@ -11,6 +11,7 @@
 #include "global/manage/pages_manager.h"
 #include "pages/home/home_controller.h"
 #include "pages/playlist/category_playlist.h"
+#include "pages/singerlist/singer_list_proc.h"
 
 static QObject *globalControllerProvider(QQmlEngine *, QJSEngine *)
 {
@@ -33,7 +34,10 @@ static QObject *catePlayListControllerProvider(QQmlEngine *, QJSEngine *)
 {
     return CategoryPlaylistProc::instance();
 }
-
+static QObject *singerListControllerProvider(QQmlEngine *, QJSEngine *)
+{
+    return SingerListProc::instance();
+}
 static void qtMessageHandler(QtMsgType type, const QMessageLogContext &ctx, const QString &str)
 {
     int level        = 255;
@@ -81,6 +85,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(codec);
 
     PagesManager::instance()->init(&view);
+    GlobalControls::instance()->init(&view);
 
     qmlRegisterSingletonType<QObject>("com.hongjing.globalcontroller", 1, 0, "Api", globalControllerProvider);
     // 主页面之上的弹框,层级管理
@@ -88,9 +93,9 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<QObject>("com.hongjing.pagesManager", 1, 0, "Api", pagesManagerControllerProvider);
     qmlRegisterSingletonType<QObject>("com.hongjing.home", 1, 0, "Api", homeManagerControllerProvider);
     qmlRegisterSingletonType<QObject>("com.hongjing.catePlaylist", 1, 0, "Api", catePlayListControllerProvider);
+    qmlRegisterSingletonType<QObject>("com.hongjing.singerlist", 1, 0, "Api", singerListControllerProvider);
 
     qmlRegisterType<ImageFrameCpp, 1>("ImageFrame", 1, 0, "ImageFrame");
-
 
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setFlags(Qt::FramelessWindowHint); //设置无窗口

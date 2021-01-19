@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import com.hongjing.singerlist 1.0 as Singerlist
 
 GridView {
     id: singerList
@@ -7,8 +8,8 @@ GridView {
     cellWidth: 300
     cellHeight: 100
 
-    model: singerChildModel
-    currentIndex: singerChildModel.currenIndex
+    model: Singerlist.Api.singerChildModel
+    currentIndex: model.currentIndex
     clip: true
 
     footer: PageFooter {
@@ -32,7 +33,7 @@ GridView {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: singerProc.qmlSingerList(6, index)
+                onClicked: Singerlist.Api.qmlSingerList(6, index)
             }
         }
     }

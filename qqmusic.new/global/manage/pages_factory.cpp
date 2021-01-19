@@ -6,8 +6,7 @@ PagesFactory::PagesFactory()
     , mOrigin {
           Node("qrc:/qml/playList/CatePlayList.qml"),
           Node("qrc:/qml/singerList/SingerList.qml"),
-          Node("qrc:/qml/home/HomeView3.qml"),
-
+          Node(""),
           }
 {
 

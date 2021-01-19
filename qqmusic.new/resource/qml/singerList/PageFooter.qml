@@ -1,18 +1,19 @@
 import QtQuick 2.0
+import com.hongjing.singerlist 1.0 as Singerlist
 
 Item {
     id: pages
     property int currentIndex: -1
 
     Connections {
-        target: singerProc
+        target: Singerlist.Api
         onCurrentPageChanged: {
-            listAll(singerProc.currentPage, singerProc.singerPages)
+            listAll(Singerlist.Api.currentPage, Singerlist.Api.singerPages)
         }
     }
 
     Component.onCompleted: {
-        listAll(singerProc.currentPage, singerProc.singerPages)
+        listAll(Singerlist.Api.currentPage, Singerlist.Api.singerPages)
     }
 
     function listAll(cur, nums)
@@ -122,7 +123,7 @@ Item {
                             console.log("Invalid Clicked.", index)
                             return
                         }
-                        singerProc.qmlSingerList(7, cur);
+                        Singerlist.Api.qmlSingerList(7, cur);
                     }
                 }
             }

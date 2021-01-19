@@ -57,7 +57,11 @@ HEADERS += \
     pages/playlist/category_playlist.h \
     pages/playlist/cpl_cate_item_model.h \
     common/load_model_base.h \
-    pages/playlist/pl_category_model.h
+    pages/playlist/pl_category_model.h \
+    pages/singerlist/singer_list_proc.h \
+    common/app_load_common.h \
+    pages/singerlist/singer_list_model.h \
+    pages/singerlist/singer_tag_info.h
 
 SOURCES += main.cpp \
     application/application.cpp \
@@ -77,7 +81,10 @@ SOURCES += main.cpp \
     pages/playlist/category_playlist.cpp \
     pages/playlist/cpl_cate_item_model.cpp \
     common/load_model_base.cpp \
-    pages/playlist/pl_category_model.cpp
+    pages/playlist/pl_category_model.cpp \
+    pages/singerlist/singer_list_proc.cpp \
+    pages/singerlist/singer_list_model.cpp \
+    pages/singerlist/singer_tag_info.cpp
 
 RESOURCES += resource/qml.qrc \
              resource/image.qrc

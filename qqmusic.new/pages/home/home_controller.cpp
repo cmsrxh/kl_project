@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QGuiApplication>
+#include "global/ctrl/global_controller.h"
 #include "global/manage/pages_manager.h"
 #include "home_controller.h"
 
@@ -97,13 +98,25 @@ public:
 HomeController::HomeController(QObject *parent)
     : QObject(parent)
     , mTopBarVisible(true)
-    , mDockBarVisible(true)
+    , mDockBarVisible(false)
+    , mLeftTabIndex(-1)
     , statusEvents(new StatusPrivate)
     , m_pStatusViewMouseHandler(nullptr)
     , m_pStatusBarMouseHandler(nullptr)
 {
-
+    connect(PagesManager::instance(), SIGNAL(pageChanged(WinSwitchInfo, WinSwitchInfo)), this, SLOT(onPageChanaged(WinSwitchInfo, WinSwitchInfo)));
     // connect(ActivityManager::getInstance(), SIGNAL(activityChanged(Activity*,Activity*)), this, SLOT(onActivityChanged(Activity*,Activity*)));
+}
+
+int HomeController::leftTabIndex() const
+{
+    return mLeftTabIndex;
+}
+
+void HomeController::setLeftTabIndex(int leftTabIndex)
+{
+    mLeftTabIndex = leftTabIndex;
+    Q_EMIT leftTabIndexChanged();
 }
 
 bool HomeController::dockBarVisible() const
@@ -140,30 +153,67 @@ void HomeController::qmlSetStatusBarMouseHandler(QQuickItem *item)
     m_pStatusBarMouseHandler = item;
 }
 
-void HomeController::qmlPowerModeClicked()
+void HomeController::qmlMainTabClick(int i)
 {
-    qDebug() << "power mode clicked, not used.";
+    qDebug() << "index: " << i;
+    switch (i) {
+    case 0:   // setting, 设置
+        break;
+    case 1:   // favorite, 收藏
+        break;
+    case 2:   // search, 搜索
+        break;
+    case 3:   // singerlist, 歌手列表
+        PagesManager::instance()->start(WIN_TYPE_SingerList);
+        break;
+    case 4:   // cateplaylist, 歌单推荐
+        PagesManager::instance()->start(WIN_TYPE_CatePlayList);
+        break;
+    default:
+        break;
+    }
+
 }
 
-void HomeController::qmlBtSwitchClicked()
+void HomeController::qmlOperate(const QString &op)
 {
-    qDebug() << "bt btn clicked, not used.";
+    qDebug () << "operate: " << op;
 
+    if (op == "close")
+    {
+        qWarning() << "Window Close !";
+
+        GlobalControls::instance()->programExit();
+    } else if (op == "minimize")
+    {
+        qWarning() << "Window minimize !";
+        GlobalControls::instance()->windowMinimize();
+        // application.visibility = Window.Minimized
+    } else if (op == "up")
+    {
+        PagesManager::instance()->upToTop();
+    } else if (op == "forward")
+    {
+        PagesManager::instance()->nextPage();
+    } else if (op == "back")
+    {
+        PagesManager::instance()->prevPage();
+    }
 }
 
-void HomeController::qmlHomeOneBtn()
+void HomeController::onPageChanaged(const WinSwitchInfo &prevPage, const WinSwitchInfo &newPage)
 {
-    PagesManager::instance()->start(WIN_TYPE_ONE);
-}
-
-void HomeController::qmlHomeTwoBtn()
-{
-    PagesManager::instance()->start(WIN_TYPE_TWO);
-}
-
-void HomeController::qmlHomeThreeBtn()
-{
-    PagesManager::instance()->start(WIN_TYPE_THREE);
+    qDebug() << "prevPage: " << prevPage.type << "newPage: " << newPage.type;
+    switch (newPage.type) {
+    case WIN_TYPE_CatePlayList:
+        setLeftTabIndex(4);
+        break;
+    case WIN_TYPE_SingerList:
+        setLeftTabIndex(3);
+        break;
+    default:
+        break;
+    }
 }
 
 bool HomeController::eventFilter(QObject *watched, QEvent *event)

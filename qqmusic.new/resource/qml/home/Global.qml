@@ -14,13 +14,13 @@ Item {
     }
 
     /*左侧停靠栏*/
-    DockBar{
-        id: dockBarId
-        x: 0; y:0
-        width: 60
-        height: parent.height
+//    DockBar{
+//        id: dockBarId
+//        x: 0; y:0
+//        width: 60
+//        height: parent.height
 
-        visible: Home.Api.dockBarVisible
-    }
+//        visible: Home.Api.dockBarVisible
+//    }
 
 }

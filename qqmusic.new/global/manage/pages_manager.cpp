@@ -16,16 +16,43 @@
 //};
 PagesManager::PagesManager()
     : mMainViewEnable(true)
-    , mViewHandler(nullptr)
+    , mPageQml(Q_NULLPTR)
+    , mViewHandler(Q_NULLPTR)
 {
     qRegisterMetaType<WinSwitchInfo>("WinSwitchInfo");
 
     qmlRegisterType<PageQmlItem>("page.item", 1, 0, "PageItem");
 }
 
+void PagesManager::setPageQml(PageQmlItem *pageQml)
+{
+    mPageQml = pageQml;
+}
+
 bool PagesManager::backgroundEnable() const
 {
     return true;
+}
+
+void PagesManager::upToTop()
+{
+    QObject *curItem = mPageQml->currentItem();
+
+    QMetaObject::invokeMethod(curItem, "upToTop");
+}
+
+void PagesManager::nextPage()
+{
+    QObject *curItem = mPageQml->currentItem();
+
+    QMetaObject::invokeMethod(curItem, "nextPage");
+}
+
+void PagesManager::prevPage()
+{
+    QObject *curItem = mPageQml->currentItem();
+
+    QMetaObject::invokeMethod(curItem, "prevPage");
 }
 
 #if 0

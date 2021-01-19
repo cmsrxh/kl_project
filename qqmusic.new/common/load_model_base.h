@@ -1,17 +1,9 @@
 #ifndef LOAD_MODEL_BASE_H
 #define LOAD_MODEL_BASE_H
 
-#include "common_func/common_func.h"
-
+#include "app_load_common.h"
 #include <QAbstractListModel>
 #include <QtQml>
-
-#define QStringFromByteString(str) \
-    QString::fromUtf8((str).string(), (str).size())
-
-#define QStringFromCString(str) \
-    QString::fromUtf8(str)
-
 
 class LoadModelBase : public QAbstractListModel, public UINotifyIface
 {

@@ -40,7 +40,7 @@ public Q_SLOTS:
 
 private:
     void createPage(WinSwitchInfo const &info);
-    void show(PagesFactory::Node const &node);
+    void show(PagesFactory::Node const &node, long arg);
 
     QQuickItem   *mCurrentItem;
     QQuickItem   *mNeedShowItem;

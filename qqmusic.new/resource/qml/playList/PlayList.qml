@@ -14,10 +14,10 @@ Item {
         // currentIndex: catePlayListModel.currenIndex
         clip: true
 
-        header: Item {
-            width: parent.width
-            height: 80
-        }
+//        header: Item {
+//            width: parent.width
+//            height: 80
+//        }
         footer: PageFooter {
             width: parent.width
             height: 120

@@ -5,6 +5,7 @@
 #include <global/win_global_common.h>
 
 class QQuickView;
+class PageQmlItem;
 class PagesManager : public QObject
 {
     Q_OBJECT
@@ -25,6 +26,17 @@ public:
     void setMainViewEnable(bool mainViewEnable);
 
     bool backgroundEnable() const;
+
+    //! 向当前页发送返回顶部的消息
+    void upToTop();
+
+    //! 向当前页发送切换到下一页数据
+    void nextPage();
+
+    //! 向当前页发送切换到上一页数据的消息
+    void prevPage();
+
+    void setPageQml(PageQmlItem *pageQml);
 
 public Q_SLOTS:
     //! 开始窗口的切换
@@ -52,11 +64,11 @@ Q_SIGNALS:
 private:
     PagesManager();
 
-    bool        mMainViewEnable;
+    bool         mMainViewEnable;
 
-
-    QQuickView *mViewHandler;
-    QString     mMainUrl;
+    PageQmlItem *mPageQml;
+    QQuickView  *mViewHandler;
+    QString      mMainUrl;
 };
 
 #endif // PAGES_MANAGER_H
