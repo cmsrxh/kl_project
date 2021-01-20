@@ -2,7 +2,7 @@
 #include "page_queue.h"
 
 PageQueue::PageQueue()
-    : mList(queue.refQueue(QueueContainerInc <WinNode>::PREPARE))
+    : mList(mQueue.refQueue(QueueContainerInc <WinNode>::PREPARE))
 {
 }
 
@@ -26,11 +26,11 @@ void PageQueue::push(const PageQueue::WinNode &cur)
 
     if (it == mList.end())
     {
-        WinNode *n = queue.getFreeNode();
+        WinNode *n = mQueue.getFreeNode();
 
         *n = cur;
 
-        queue.putNode(QueueContainerInc <WinNode>::PREPARE, n);
+        mQueue.putNode(QueueContainerInc <WinNode>::PREPARE, n);
         // mList.push_back();
     }
 }
@@ -45,7 +45,7 @@ PageQueue::WinNode PageQueue::pop()
 
         id = it;
 
-        queue.move(QueueContainerInc <WinNode>::PREPARE, QueueContainerInc <WinNode>::FREE, &it);
+        mQueue.move(QueueContainerInc <WinNode>::PREPARE, QueueContainerInc <WinNode>::FREE, &it);
     }
 
     return id;
@@ -61,7 +61,7 @@ void PageQueue::remove(const PageQueue::WinNode &cur)
 //        GEN_Printf(LOG_DEBUG, "winId: %d", it->winId);
         if (*it == cur)
         {
-            queue.move(QueueContainerInc <WinNode>::PREPARE, QueueContainerInc <WinNode>::FREE, it);
+            mQueue.move(QueueContainerInc <WinNode>::PREPARE, QueueContainerInc <WinNode>::FREE, it);
             return;
         }
     }
@@ -69,7 +69,7 @@ void PageQueue::remove(const PageQueue::WinNode &cur)
 
 void PageQueue::clean()
 {
-    queue.clearPrepare();
+    mQueue.clearPrepare();
 }
 
 void PageQueue::profile()

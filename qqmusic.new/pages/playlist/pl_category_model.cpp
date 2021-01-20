@@ -41,7 +41,7 @@ void PLCategoryModel::obtain()
     }
 }
 
-int PLCategoryModel::rowCount(const QModelIndex &parent) const
+int PLCategoryModel::rowCount(const QModelIndex &) const
 {
     return mCateList.size();
 }
@@ -65,12 +65,23 @@ QObject * PLCategoryModel::getSubCate(int i)
 {
     if (i >= 0 && i < mCateGroupItems.size())
     {
-        return mCateGroupItems[i]; //dynamic_cast<PLCategorySubItemModel *> (mCateGroupItems[i])->getSubCateStrList();
+        return mCateGroupItems[i];
     } else
     {
-        return Q_NULLPTR; //QStringList();
+        return Q_NULLPTR;
     }
 }
+
+//QStringList PLCategoryModel::getSubCateStrList(int i)
+//{
+//    if (i >= 0 && i < mCateGroupItems.size())
+//    {
+//        return dynamic_cast<PLCategorySubItemModel *> (mCateGroupItems[i])->getSubCateStrList();
+//    } else
+//    {
+//        return QStringList();
+//    }
+//}
 
 bool PLCategoryModel::getCateId(int groud_index, int index, int &cateId)
 {
@@ -92,7 +103,7 @@ void PLCategoryModel::updateIndex(int cateId, int oldCateId)
 {
     // 更新标签ID
     int times = 2;
-
+    qDebug() << "update Index: " << cateId << oldCateId;
     ListTable<qqmusic::CateNode>::iterator it = mCateLoad->nodes().begin();
     for (int i = 0; it != mCateLoad->nodes().end(); ++it, i++)
     {
@@ -176,17 +187,18 @@ void PLCategoryModel::onLoadFailed(int type, const QString &errStr)
 PLCategorySubItemModel::PLCategorySubItemModel()
     : mCurIndex(-1)
 {
+    roles[CATEGORY_NAME] = "subCateName";
 }
 
 PLCategorySubItemModel::~PLCategorySubItemModel()
 {
     qWarning() << "---sub cate list destruct.---";
+    Q_ASSERT(0);
 }
 
 void PLCategorySubItemModel::pushNode(const PLCategorySubItemModel::ItemNode &n)
 {
     subCate.push_back(n);
-    subCateStrList.push_back(QStringFromByteString(n.name));
 }
 
 int PLCategorySubItemModel::curIndex() const
@@ -212,7 +224,20 @@ bool PLCategorySubItemModel::getCateId(int index, int &cateId)
     return true;
 }
 
-QStringList PLCategorySubItemModel::getSubCateStrList() const
+int PLCategorySubItemModel::rowCount(const QModelIndex &) const
 {
-    return subCateStrList;
+    return subCate.size();
+}
+
+QVariant PLCategorySubItemModel::data(const QModelIndex &index, int role) const
+{
+    int i = index.row();
+    if ( i < 0 || i >= (int)subCate.size())
+    {
+        return QVariant();
+    }
+
+    const ItemNode &n = subCate[i];
+
+    return ( CATEGORY_NAME == role) ? QStringFromByteString(n.name) : QVariant();
 }

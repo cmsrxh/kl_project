@@ -51,6 +51,17 @@ public:
      */
     WinSwitchInfo getPrev() const;
 
+    /**
+     * @brief cleanShow
+     * @details 清除显示列表多余的节点
+     */
+    void cleanShow();
+
+    /**
+     * @brief cleanHide
+     * @details 清除隐藏列表多余的节点
+     */
+    void cleanHide();
 private:
     /**
      * @brief windowSwitch

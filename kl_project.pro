@@ -10,7 +10,7 @@ SUBDIRS += netLoad/netLoadLib.pro
 #SUBDIRS += kaolafm/kaolafm.pro
 
 # QQ音乐
-SUBDIRS += qqmusic
+#SUBDIRS += qqmusic
 SUBDIRS += qqmusic.new/qqmusic.new.pro
 
 ## 测试树形列表

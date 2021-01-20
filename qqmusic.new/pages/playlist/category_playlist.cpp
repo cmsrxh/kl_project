@@ -12,8 +12,25 @@ CategoryPlaylistProc::CategoryPlaylistProc()
     , mPlayListModel(new CPLCateItemModel)
     , mPageTotals(0), mCurrentPage(1)
     , mOldCategoryId(0)
+    , mCateGroupIndex(0)
 {
     connect(mPlayListModel, SIGNAL(sigPlayListUpdate()), this, SLOT(onPlayListUpdate()));
+}
+
+int CategoryPlaylistProc::cateGroupIndex() const
+{
+    return mCateGroupIndex;
+}
+
+void CategoryPlaylistProc::setCateGroupIndex(int cateGroupIndex)
+{
+    qDebug() << "group index change" << cateGroupIndex;
+
+    if (mCateGroupIndex != cateGroupIndex)
+    {
+        mCateGroupIndex = cateGroupIndex;
+        Q_EMIT cateGroupIndexChanged();
+    }
 }
 
 void CategoryPlaylistProc::init(QQmlContext *)
@@ -55,6 +72,11 @@ QObject *CategoryPlaylistProc::catePlayList() const
     return mPlayListModel;
 }
 
+QObject *CategoryPlaylistProc::curSubCate() const
+{
+    return mCateModel->getSubCate(mCateGroupIndex);
+}
+
 void CategoryPlaylistProc::qmlCatePageIndexOperate(int index)
 {
     if (-2 == index)
@@ -80,7 +102,9 @@ void CategoryPlaylistProc::qmlObtainCatePlayList()
 void CategoryPlaylistProc::qmlGroupCateIndex(int groud_index, int index)
 {
     int cateId = 0;
-    qDebug() << "Group ID=" << groud_index << "Current Id=" << index;
+    qDebug() << "Group ID=" << groud_index << mCateGroupIndex << "Current Id=" << index;
+
+    Q_ASSERT(groud_index == mCateGroupIndex);
 
     if (mCateModel->getCateId(groud_index, index, cateId))
     {

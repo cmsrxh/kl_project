@@ -29,6 +29,12 @@ class CategoryPlaylistProc : public QObject
 
     //! 专辑标签下的播放列表对象model
     Q_PROPERTY(QObject * catePlayList READ catePlayList NOTIFY catePlayListChanged)
+
+    //! 左侧组标签ID
+    Q_PROPERTY(int cateGroupIndex READ cateGroupIndex WRITE setCateGroupIndex NOTIFY cateGroupIndexChanged)
+
+    //! 当前组ID下面的数据
+    Q_PROPERTY(QObject * curSubCate READ curSubCate NOTIFY curSubCateChanged)
 public:
     static CategoryPlaylistProc *instance()
     {
@@ -55,6 +61,12 @@ public:
 
     //! 专辑标签下的播放列表对象model
     QObject * catePlayList() const;
+
+    //! 子标签列表model
+    QObject * curSubCate() const;
+
+    int  cateGroupIndex() const;
+    void setCateGroupIndex(int cateGroupIndex);
 
 public Q_SLOTS:
     /**
@@ -94,6 +106,8 @@ Q_SIGNALS:
     void cateListChanged();
     void catePlayListChanged();
 
+    void cateGroupIndexChanged();
+    void curSubCateChanged();
 private:
     CategoryPlaylistProc();
 
@@ -103,6 +117,8 @@ private:
     int     mPageTotals;                //!< 表示当前标签下的歌手总数量
     int     mCurrentPage;               //!< 表示当前处于那一页
     int     mOldCategoryId;             //!< 记入点击时的标签ID
+
+    int     mCateGroupIndex;
 };
 
 #endif // CATEGORY_PLAYLIST_H

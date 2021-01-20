@@ -1,4 +1,6 @@
 #include <events/common_log.h>
+#include <QQmlComponent>
+#include <QQuickItem>
 #include "pages_factory.h"
 
 PagesFactory::PagesFactory()
@@ -84,4 +86,38 @@ WinSwitchInfo PagesFactory::getPrev() const
 {
     PageQueue::WinNode cur = mShowList.front();
     return WinSwitchInfo((GlobalWinType)cur.winId, cur.winArg);
+}
+
+void PagesFactory::cleanShow()
+{
+    ListTable<PageQueue::WinNode> &lst = mShowList.list();
+    ListTable<PageQueue::WinNode>::iterator it = lst.begin();
+    for (; it != lst.end(); ++it)
+    {
+        int winId = it->winId;
+
+        SF_ASSERT(winId > WIN_TYPE_INVALID && winId < WIN_TYPE_MAX );
+        if (false == mOrigin[winId].isHome)
+        {
+            if (winId != mCurrent.winId)
+            {
+                GEN_Printf(LOG_DEBUG, "----remove: %d----", winId);
+
+                //delete mOrigin[winId].comp;
+                mOrigin[winId].item->deleteLater();
+
+                mOrigin[winId].comp = Q_NULLPTR;
+                mOrigin[winId].item = Q_NULLPTR;
+
+                ListTable<PageQueue::WinNode>::iterator delIt = it;
+                --it;
+                mShowList.queue().move(QueueContainerInc <PageQueue::WinNode>::PREPARE, QueueContainerInc <PageQueue::WinNode>::FREE, delIt);
+            }
+        }
+    }
+}
+
+void PagesFactory::cleanHide()
+{
+
 }

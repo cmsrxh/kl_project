@@ -64,8 +64,18 @@ public:
 
     void profile();
 
+    // clean operate.
+    ListTable<WinNode> &list()
+    {
+        return mList;
+    }
+    QueueContainerInc <WinNode> &queue()
+    {
+        return mQueue;
+    }
+
 private:
-    QueueContainerInc <WinNode> queue;
+    QueueContainerInc <WinNode> mQueue;
     ListTable<WinNode>         &mList;
 };
 

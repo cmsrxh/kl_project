@@ -23,7 +23,7 @@ public:
     // qml call
     //! @warning qml可能传递负数，造成数组越界
     //! 获取标签子对象
-    Q_INVOKABLE QObject * getSubCate(int i);
+    QObject * getSubCate(int i);
 
     //! UI点击获取子列表的cateId数据
     bool getCateId(int groud_index, int index, int &cateId);
@@ -44,7 +44,7 @@ private:
     QVector<QObject *>  mCateGroupItems;
 };
 
-class PLCategorySubItemModel : public QObject
+class PLCategorySubItemModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -65,15 +65,22 @@ public:
 
     bool getCateId(int index, int &cateId);
 
-    Q_INVOKABLE QStringList getSubCateStrList() const;
+    QHash<int, QByteArray> roleNames() const
+    {
+        return roles;
+    }
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 Q_SIGNALS:
     void curIndexChanged();
 
 private:
+    QHash<int, QByteArray>  roles;
+
     int                     mCurIndex;
     QVector<ItemNode>       subCate;
-    QStringList             subCateStrList;
 };
 
 #endif // PL_CATEGORY_MODEL_H

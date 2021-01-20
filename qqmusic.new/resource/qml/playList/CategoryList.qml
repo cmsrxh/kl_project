@@ -4,7 +4,7 @@ import com.hongjing.catePlaylist 1.0 as CatePL
 
 Item {
     id : cate
-    property int currentGround: 0
+    property int currentGround: CatePL.Api.cateGroupIndex
 
     //ScrollView {
     Flickable {
@@ -68,7 +68,8 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                currentGround = index
+                                CatePL.Api.cateGroupIndex = index
+                                // currentGround = index
                                 // console.log("currentGround=", index)
                             }
                         }
@@ -78,9 +79,6 @@ Item {
                         id: loader
                         anchors.top: row.bottom
                         anchors.topMargin: 5
-
-                        property int groupIndex: index
-                        // property int groupCateIndex: CatePL.Api.cateSubs[index].curIndex
                         sourceComponent: currentGround == index ? secTree : null
                     }
                 }
@@ -98,9 +96,7 @@ Item {
             Repeater {
                 id: repeater
 
-                property var modelVal: CatePL.Api.cateList.getSubCate(groupIndex)
-
-                model: modelVal.getSubCateStrList();
+                model: CatePL.Api.curSubCate
                 Item {
                     width: textLab.implicitWidth + 10
                     height: 60
@@ -110,15 +106,15 @@ Item {
                         anchors.centerIn: parent
                         horizontalAlignment: Qt.AlignHCenter
                         verticalAlignment: Qt.AlignVCenter
-                        text: repeater.model[index]
-                        color: repeater.modelVal.curIndex === index ? "#5CB8FC" : "gray"
+                        text: subCateName
+                        color: repeater.model.curIndex === index ? "#5CB8FC" : "gray"
                         font.pixelSize: 28
                     }
 
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            CatePL.Api.qmlGroupCateIndex(groupIndex, index);
+                            CatePL.Api.qmlGroupCateIndex(cate.currentGround, index);
                         }
                     }
                 }

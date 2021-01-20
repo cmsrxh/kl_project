@@ -53,7 +53,7 @@ void PageQmlItem::qmlItemOver()
 {
     qDebug() << "construct over, show first";
 
-    createPage(WinSwitchInfo(WIN_TYPE_SingerList));
+    createPage(WinSwitchInfo(WIN_TYPE_CatePlayList));
 }
 
 void PageQmlItem::setCurrentCreateResult(QObject *comp, QObject *item)
@@ -157,5 +157,8 @@ void PageQmlItem::show(const PagesFactory::Node &node, long arg)
 #endif
 
     Q_EMIT PagesManager::instance()->pageChanged(mFactory->getPrev(), mFactory->getCurrent());
+
+    mFactory->cleanHide();
+    mFactory->cleanShow();
 }
 
