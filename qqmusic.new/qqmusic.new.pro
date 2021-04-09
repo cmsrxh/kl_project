@@ -32,7 +32,8 @@ INCLUDEPATH += $${PWD}/../netLoad
 INCLUDEPATH += $${PWD}/../player/iface
 
 LIBS        += -L$${PWD}/../target/lib
-LIBS        += -lnetLoad  -lplayerIpcIface
+LIBS        += -lnetLoad
+#-lplayerIpcIface
 
 HEADERS += \
     application/app_common.h \

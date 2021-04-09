@@ -1,5 +1,5 @@
 #include <events/common_log.h>
-#include <openssl/md5.h>
+//#include <openssl/md5.h>
 #include <application/application.h>
 #include "qqmusic_object.h"
 
